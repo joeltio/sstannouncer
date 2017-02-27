@@ -1,6 +1,9 @@
 package sstinc.sstannouncer;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -10,7 +13,7 @@ import java.io.StringReader;
 
 import static org.junit.Assert.*;
 
-
+@RunWith(AndroidJUnit4.class)
 public class FetchRSSTest {
     @Test
     public void fetch_rss() {
