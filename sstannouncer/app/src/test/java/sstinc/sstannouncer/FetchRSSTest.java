@@ -11,20 +11,19 @@ import java.io.StringReader;
 import static org.junit.Assert.*;
 
 
-
 public class FetchRSSTest {
     @Test
     public void fetch_rss() {
         RSSFeed rssFeed = new RSSFeed();
-        RSSFeed.fetchRSS();
-        String rss = RSSFeed.getRawXML();
+        rssFeed.fetchRSS();
+        String rss = rssFeed.getRawXML();
         assertFalse(rss.isEmpty());
     }
 
     @Test
     public void rss_isXML() throws XmlPullParserException {
         RSSFeed rssFeed = new RSSFeed();
-        RSSFeed.fetchRSS();
+        rssFeed.fetchRSS();
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         XmlPullParser parser = factory.newPullParser();
@@ -34,7 +33,7 @@ public class FetchRSSTest {
     @Test
     public void rss_isBlogger() throws XmlPullParserException, IOException {
         RSSFeed rssFeed = new RSSFeed();
-        RSSFeed.fetchRSS();
+        rssFeed.fetchRSS();
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         XmlPullParser parser = factory.newPullParser();
