@@ -20,12 +20,9 @@ public class RSSFeed {
 
             urlConnection.connect();
             this.rawXML = convertStreamToString(urlConnection.getInputStream());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MalformedURLException|IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public String getRawXML() {
