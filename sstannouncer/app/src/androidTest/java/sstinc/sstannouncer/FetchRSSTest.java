@@ -49,7 +49,7 @@ public class FetchRSSTest {
                 assertTrue(parser.getText().startsWith("tag:blogger.com"));
                 break;
             }
-            parser.nextTag();
+            eventType = parser.next();
         }
     }
 }
