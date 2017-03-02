@@ -8,21 +8,23 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RunWith(AndroidJUnit4.class)
 public class ParseRSSTest {
-
     @Test
     public void rss_last_changed_isValidDate() {
         RSSFeed rssFeed = new RSSFeed();
         rssFeed.fetchRSS();
 
-        assertTrue(rssFeed.lastChanged() instanceof Date);
+        assertTrue(rssFeed.getLastChanged() != null);
+        assertTrue(rssFeed.getLastChanged() instanceof Date);
 
         Date now = new Date();
-        assertTrue(rssFeed.lastChanged().before(now));
+
+        assertTrue(rssFeed.getLastChanged().before(now));
     }
 
     @Test
@@ -43,21 +45,10 @@ public class ParseRSSTest {
 
     @Test
     public void rss_entries_notEmpty() {
-        /**
-         * entry:
-         id
-         published
-         updated
-         category
-         title
-         content
-         link(edit, rss, site)
-         author
-         */
         RSSFeed rssFeed = new RSSFeed();
         rssFeed.fetchRSS();
 
-        Entry[] entries = rssFeed.getEntries();
+        List<Entry> entries = rssFeed.getEntries();
         for (Entry entry : entries) {
             assertFalse(entry.getId().isEmpty());
             assertFalse(entry.getPublished().isEmpty());
@@ -82,7 +73,7 @@ public class ParseRSSTest {
         RSSFeed rssFeed = new RSSFeed();
         rssFeed.fetchRSS();
 
-        Entry[] entries = rssFeed.getEntries();
+        List<Entry> entries = rssFeed.getEntries();
         for (Entry entry : entries) {
             // Example id: tag:blogger.com,1999:blog-2263345748458699524.post-351551394302599923
             String idRegex = "tag:blogger\\.com,\\d{4}:blog-\\d+\\.post-\\d+";
