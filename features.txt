@@ -1,5 +1,5 @@
 Retrieve RSS feed
-    Load XML from site
+    [DONE] Load XML from site
     Parse XML from site
 Display feed in fragment
 Show post details
