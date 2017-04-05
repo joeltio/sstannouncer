@@ -1,14 +1,15 @@
-Retrieve RSS feed
+1 Retrieve RSS feed
     [DONE] Load XML from site
     Parse XML from site
-Display feed in fragment
-Show post details
-Check RSS feed in background
-Add setting to refresh rate
-Add setting to auto download images and videos
-Save posts to database
-Show images
-Show videos
-Images have optional download
-Add search by tag in action bar
-Add search by tag and text in action bar
+1 Display feed in fragment
+2 Show post details
+2 Check RSS feed in background
+-- releasable -- 14/04/17
+1 Add setting to refresh rate
+3 Add setting to auto download images and videos
+2 Save posts to database
+3 Show images
+3 Show videos
+2 Images have optional download
+2 Add search by tag in action bar
+2 Add search by tag and text in action bar
