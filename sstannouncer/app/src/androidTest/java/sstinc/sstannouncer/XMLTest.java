@@ -9,10 +9,17 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import sstinc.sstannouncer.Feed.XML;
+
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class XMLTest {
+    private static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+
     @Test
     public void XML_fetch_not_empty() {
         XML xml = new XML();
