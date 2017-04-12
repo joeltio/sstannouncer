@@ -5,50 +5,55 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
-
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@RunWith(AndroidJUnit4.class)
-public class ParseRSSTest {
-    @Test
-    public void rss_last_changed_isValidDate() {
-        RSSFeed rssFeed = new RSSFeed();
-        rssFeed.fetchRSS();
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-        assertTrue(rssFeed.getLastChanged() != null);
-        assertTrue(rssFeed.getLastChanged() instanceof Date);
+@RunWith(AndroidJUnit4.class)
+public class RSSParserTest {
+    @Test
+    public void feed_last_changed_is() {
+        XML xml = new XML();
+        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        Feed feed = RSSParser.parse(xml);
+
+        assertTrue(feed.getLastChanged() != null);
+        assertTrue(feed.getLastChanged() instanceof Date);
 
         Date now = new Date();
 
-        assertTrue(rssFeed.getLastChanged().before(now));
+        assertTrue(feed.getLastChanged().before(now));
     }
 
     @Test
-    public void rss_hasCategories() {
-        RSSFeed rssFeed = new RSSFeed();
-        rssFeed.fetchRSS();
+    public void feed_hasCategories() {
+        XML xml = new XML();
+        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        Feed feed = RSSParser.parse(xml);
 
-        assertFalse(rssFeed.getCategories().isEmpty());
+        assertFalse(feed.getCategories().isEmpty());
     }
 
     @Test
-    public void rss_hasEntries() {
-        RSSFeed rssFeed = new RSSFeed();
-        rssFeed.fetchRSS();
+    public void feed_hasEntries() {
+        XML xml = new XML();
+        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        Feed feed = RSSParser.parse(xml);
 
-        assertFalse(rssFeed.getEntries().isEmpty());
+        assertFalse(feed.getEntries().isEmpty());
     }
 
     @Test
-    public void rss_entries_notEmpty() {
-        RSSFeed rssFeed = new RSSFeed();
-        rssFeed.fetchRSS();
+    public void feed_entries_notEmpty() {
+        XML xml = new XML();
+        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        Feed feed = RSSParser.parse(xml);
 
-        List<Entry> entries = rssFeed.getEntries();
+        List<Entry> entries = feed.getEntries();
         for (Entry entry : entries) {
             assertFalse(entry.getId().isEmpty());
             assertFalse(entry.getPublished().isEmpty());
@@ -69,11 +74,12 @@ public class ParseRSSTest {
     }
 
     @Test
-    public void rss_entries_hasValidData() {
-        RSSFeed rssFeed = new RSSFeed();
-        rssFeed.fetchRSS();
+    public void feed_entries_hasValidData() {
+        XML xml = new XML();
+        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        Feed feed = RSSParser.parse(xml);
 
-        List<Entry> entries = rssFeed.getEntries();
+        List<Entry> entries = feed.getEntries();
         for (Entry entry : entries) {
             // Example id: tag:blogger.com,1999:blog-2263345748458699524.post-351551394302599923
             String idRegex = "tag:blogger\\.com,\\d{4}:blog-\\d+\\.post-\\d+";
