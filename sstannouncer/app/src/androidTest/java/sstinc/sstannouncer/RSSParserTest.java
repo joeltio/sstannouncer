@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import sstinc.sstannouncer.Feed.Entry;
+import sstinc.sstannouncer.Feed.Feed;
+import sstinc.sstannouncer.Feed.RSSParser;
+import sstinc.sstannouncer.Feed.XML;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
