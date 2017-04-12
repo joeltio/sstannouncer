@@ -1,4 +1,4 @@
-package sstinc.sstannouncer;
+package sstinc.sstannouncer.Feed;
 
 import java.util.ArrayList;
 import java.util.List;
