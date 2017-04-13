@@ -1,7 +1,7 @@
 package sstinc.sstannouncer.Feed;
 
 public class RSSParser {
-    static Feed parse(XML xml) {
+    public static Feed parse(XML xml) {
         return new Feed();
     }
 }
