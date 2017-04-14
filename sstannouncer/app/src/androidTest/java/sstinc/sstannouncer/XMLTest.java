@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 import sstinc.sstannouncer.Feed.XML;
 
@@ -68,6 +69,24 @@ public class XMLTest {
             XML feed = xml.xpathNode("/feed/id");
             String id = feed.xpathString("/id/text()");
             assertEquals("tag:blogger.com,1999:blog-2263345748458699524", id);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void XML_xpath_returns_multiple_XML_objects() {
+        XML xml = new XML();
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+            ArrayList<XML> entries = xml.xpathMultipleNodes("/feed/entry");
+            assertEquals(25, entries.size());
+            fail("This needs to be checked if it is always 25.");
+
+            for (XML entry : entries) {
+                String publishedDate = entry.xpathString("/entry/published/text()");
+                assertEquals(29, publishedDate.length());
+            }
         } catch (Exception e) {
             fail(e.getMessage());
         }
