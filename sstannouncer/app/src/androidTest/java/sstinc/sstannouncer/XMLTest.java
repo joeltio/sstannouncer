@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -26,8 +25,8 @@ public class XMLTest {
         assertTrue(xml.getRawXML().isEmpty());
         try {
             xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         assertFalse(xml.getRawXML().isEmpty());
     }
@@ -43,9 +42,9 @@ public class XMLTest {
             urlConnection.connect();
             String fetchedXML = convertStreamToString(urlConnection.getInputStream());
 
-            assertEquals(fetchedXML, xml.getRawXML());
-        } catch (IOException e) {
-            e.printStackTrace();
+            assertEquals(xml.getRawXML(), fetchedXML);
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
     }
 
@@ -54,11 +53,11 @@ public class XMLTest {
         XML xml = new XML();
         try {
             xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
-        } catch (IOException e) {
-            e.printStackTrace();
+            String id = xml.xpathString("/feed/id/text()");
+            assertEquals("tag:blogger.com,1999:blog-2263345748458699524", id);
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
-        String id = (String) xml.xpath("/feed/id/text()");
-        assertEquals(id, "tag:blogger.com,1999:blog-226334574845869952");
     }
 
     @Test
@@ -66,11 +65,11 @@ public class XMLTest {
         XML xml = new XML();
         try {
             xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
-        } catch (IOException e) {
-            e.printStackTrace();
+            XML feed = xml.xpathNode("/feed/id");
+            String id = feed.xpathString("/id/text()");
+            assertEquals("tag:blogger.com,1999:blog-2263345748458699524", id);
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
-        XML feed = (XML) xml.xpath("/feed/");
-        String id = (String) feed.xpath("/id/text()");
-        assertEquals(id, "tag:blogger.com,1999:blog-226334574845869952");
     }
 }
