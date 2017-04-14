@@ -21,9 +21,9 @@ public class Resource {
      */
     Resource(String URL, Date timeStamp, String data)
     {
-        this.URL = URL:
-        this.timeStamp = timeStamp:
-        this.data = data:
+        this.URL = URL;
+        this.timeStamp = timeStamp;
+        this.data = data;
     }
 
     //Resource Metadata
