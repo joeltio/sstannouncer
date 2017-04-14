@@ -24,15 +24,19 @@ public class XMLTest {
     public void XML_fetch_not_empty() {
         XML xml = new XML();
         assertTrue(xml.getRawXML().isEmpty());
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         assertFalse(xml.getRawXML().isEmpty());
     }
 
     @Test
     public void XML_fetch_correct_XML() {
         XML xml = new XML();
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
         try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
             URL url = new URL("http://studentsblog.sst.edu.sg/feeds/posts/default");
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -48,8 +52,11 @@ public class XMLTest {
     @Test
     public void XML_xpath_returns_correct_id() {
         XML xml = new XML();
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
-
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String id = (String) xml.xpath("/feed/id/text()");
         assertEquals(id, "tag:blogger.com,1999:blog-226334574845869952");
     }
@@ -57,8 +64,11 @@ public class XMLTest {
     @Test
     public void XML_xpath_returns_sub_XML_object() {
         XML xml = new XML();
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
-
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         XML feed = (XML) xml.xpath("/feed/");
         String id = (String) feed.xpath("/id/text()");
         assertEquals(id, "tag:blogger.com,1999:blog-226334574845869952");

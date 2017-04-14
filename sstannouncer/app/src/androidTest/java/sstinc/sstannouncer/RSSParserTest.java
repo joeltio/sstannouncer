@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,7 +24,11 @@ public class RSSParserTest {
     @Test
     public void feed_last_changed_is() {
         XML xml = new XML();
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Feed feed = RSSParser.parse(xml);
 
         assertTrue(feed.getLastChanged() != null);
@@ -37,7 +42,11 @@ public class RSSParserTest {
     @Test
     public void feed_hasCategories() {
         XML xml = new XML();
+        try {
         xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Feed feed = RSSParser.parse(xml);
 
         assertFalse(feed.getCategories().isEmpty());
@@ -46,7 +55,11 @@ public class RSSParserTest {
     @Test
     public void feed_hasEntries() {
         XML xml = new XML();
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Feed feed = RSSParser.parse(xml);
 
         assertFalse(feed.getEntries().isEmpty());
@@ -55,7 +68,11 @@ public class RSSParserTest {
     @Test
     public void feed_entries_notEmpty() {
         XML xml = new XML();
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Feed feed = RSSParser.parse(xml);
 
         List<Entry> entries = feed.getEntries();
@@ -81,7 +98,12 @@ public class RSSParserTest {
     @Test
     public void feed_entries_hasValidData() {
         XML xml = new XML();
-        xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        try {
+            xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Feed feed = RSSParser.parse(xml);
 
         List<Entry> entries = feed.getEntries();
