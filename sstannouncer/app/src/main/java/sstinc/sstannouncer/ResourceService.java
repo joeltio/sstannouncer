@@ -7,7 +7,7 @@ package sstinc.sstannouncer;
  * @see sstinc.sstannouncer.Service
  */
 
-public class ResourceService implements Service
+public class ResourceService extends Service
 {
     private ResourceAcquirer acquirer;
     private Resource resource;

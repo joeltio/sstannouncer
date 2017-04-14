@@ -7,7 +7,7 @@ package sstinc.sstannouncer;
  * @see sstinc.sstannouncer.Resource
  */
 
-public interface ResourceAcquirer
+public abstract class ResourceAcquirer
 {
     /**
      * Retrieves a resource
@@ -19,6 +19,6 @@ public interface ResourceAcquirer
      * @return Returns An integer value describing the state of the retrival.
      *
      */
-    public static int retrieve(Resource resource);
+    public abstract static int retrieve(Resource resource);
 
 }

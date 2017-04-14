@@ -5,7 +5,7 @@ package sstinc.sstannouncer;
  * A interface that describes a background process that does a job
  */
 
-public interface Service extends Runnable
+public abstract class Service extends Runnable
 {
     /**
      * Obtains the status of the service.

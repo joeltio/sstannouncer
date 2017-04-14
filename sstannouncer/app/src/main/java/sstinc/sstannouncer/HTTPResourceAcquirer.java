@@ -9,11 +9,11 @@ import java.util.Date;
  * Defines a resource acquirer that obtains resources via HTTP.
  * @see sstinc.sstannouncer.ResourceAcquirer
  */
-public class HTTPResourceAcquirer implements ResourceAcquirer
+public class HTTPResourceAcquirer extends ResourceAcquirer
 {
     private static String convertStreamToString(java.io.InputStream is) {
-    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-    return s.hasNext() ? s.next() : "";
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 
     /**
