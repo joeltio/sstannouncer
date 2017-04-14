@@ -1,13 +1,12 @@
 package sstinc.sstannouncer.Feed;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Entry {
     private String id, publishDate, lastUpdated, author, bloggerLink, title, content;
-    private List<String> categories;
+    private ArrayList<String> categories;
     public Entry(String id, String publishDate, String lastUpdated,
-                 List<String> categories, String author, String bloggerLink,
+                 ArrayList<String> categories, String author, String bloggerLink,
                  String title, String content) {
         this.id = id;
         this.publishDate = publishDate;
@@ -27,7 +26,7 @@ public class Entry {
     public String getLastUpdated() {
         return this.lastUpdated;
     }
-    public List<String> getCategories() {
+    public ArrayList<String> getCategories() {
         return this.categories;
     }
     public String getAuthorName() {
