@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +25,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XML {
@@ -93,5 +96,18 @@ public class XML {
         String nodeXml = convertNodeToString(node);
 
         return new XML(nodeXml);
+    }
+
+    public ArrayList<XML> xpathMultipleNodes(String xpathString) throws XPathExpressionException,
+            IOException, TransformerException, ParserConfigurationException, SAXException {
+        XPathExpression xpath = createXPath(xpathString);
+        NodeList nl = (NodeList) xpath.evaluate(this.xmlDocument, XPathConstants.NODESET);
+        ArrayList<XML> nodes = new ArrayList<>();
+        for (int i=0; i<nl.getLength(); i++) {
+            Node n = nl.item(i);
+            nodes.add(new XML(convertNodeToString(n)));
+        }
+
+        return nodes;
     }
 }
