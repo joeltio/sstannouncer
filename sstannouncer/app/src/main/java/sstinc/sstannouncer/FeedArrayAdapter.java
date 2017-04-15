@@ -54,10 +54,10 @@ public class FeedArrayAdapter extends ArrayAdapter<Entry> {
         // Reduce the amount of text in the textView by splitting before newline if possible
         if (entry.getContent().contains("\n")) {
             viewHolder.title_textView.setText(entry.getTitle());
-            viewHolder.description_textView.setText(entry.getContent().split("\n")[0]);
+            viewHolder.description_textView.setText(entry.makeFilteredContent().split("\n")[0]);
         } else {
             viewHolder.title_textView.setText(entry.getTitle());
-            viewHolder.description_textView.setText(entry.getContent());
+            viewHolder.description_textView.setText(entry.makeFilteredContent());
         }
 
         try {
