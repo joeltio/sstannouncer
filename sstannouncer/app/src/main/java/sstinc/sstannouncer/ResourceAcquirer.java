@@ -19,6 +19,5 @@ public abstract class ResourceAcquirer
      * @return Returns An integer value describing the state of the retrival.
      *
      */
-    public abstract static int retrieve(Resource resource);
-
+    public abstract int retrieve(Resource resource);
 }

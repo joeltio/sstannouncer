@@ -11,7 +11,9 @@ import java.util.Date;
  */
 public class HTTPResourceAcquirer extends ResourceAcquirer
 {
-    private static String convertStreamToString(java.io.InputStream is) {
+
+    private String convertStreamToString(java.io.InputStream is)
+    {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }
@@ -27,7 +29,7 @@ public class HTTPResourceAcquirer extends ResourceAcquirer
      * @param resource The resource to retrieve
      * @return Returns the status of the retrival.
      */
-    public static int retrieve(Resource resource)
+    public int retrieve(Resource resource)
     {
         Date resourceTimeStamp = null;
         String resourceData = null;
@@ -40,9 +42,8 @@ public class HTTPResourceAcquirer extends ResourceAcquirer
             retrieveConnection = (HttpURLConnection) resourceURL.openConnection();
             retrieveConnection.connect();
 
-            resourceTimeStamp = new Date(); //Time Stamp set to current time
-            resourceData = convertStreamToString(retrieveConnection.getInputStream());
-
+            resourceTimeStamp = new Date(retrieveConnection.getLastModified());
+            resourceData = this.convertStreamToString(retrieveConnection.getInputStream());
             status = - retrieveConnection.getResponseCode();
         }
         catch (IOException exp)
