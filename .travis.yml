@@ -1,6 +1,6 @@
 notifications:
     email: false
 language: android
-script: ./sstannouncer/gradlew build
+script:
     - cd sstannouncer
     - ./gradlew
