@@ -58,8 +58,8 @@ public class Event {
     //Equality
     @Override
     public boolean equals(Object obj) {
-        if(super.equals(obj) == false) false;
-        if(obj.getClass() != this.getClass()) false;
+        if(super.equals(obj) == false) return false;
+        if(obj.getClass() != this.getClass()) return false;
 
         Event otherObject = (Event)obj;
         if(otherObject.getIdentifier().equals(this.getIdentifier()))
