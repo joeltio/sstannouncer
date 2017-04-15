@@ -4,8 +4,7 @@ package sstinc.sstannouncer;
  * Service
  * A interface that describes a background process that does a job
  */
-
-public abstract class Service extends Runnable
+public abstract class Service implements Runnable
 {
     /**
      * Obtains the status of the service.
@@ -13,14 +12,14 @@ public abstract class Service extends Runnable
      *
      * @return Returns status value.
      */
-    public int getStatus();
+    public abstract int getStatus();
 
     /**
      * Determines whether the service is alive and doing its work, or not
      *
      * @return Returns true if the service is alive, false if not alvie;
      */
-    public boolean isAlive();
+    public abstract boolean isAlive();
 
     /**
      * Initiate the service.
@@ -29,19 +28,19 @@ public abstract class Service extends Runnable
      *
      * @see Service#kill()
      */
-    public void start();
+    public abstract void start();
 
     /**
      * End the service.
      * The Service is allowed to run cleanup actions
      * If the service is not alive, nothing would be done.
      */
-    public void end();
+    public abstract void end();
 
     /**
      * Terminate the service immediately.
      * The service would not be able to run cleanup actions
      * If the service is not alive, nothing would be done.
      */
-    public void kill();
+    public abstract void kill();
 }
