@@ -6,6 +6,6 @@
         android:id="@+id/menu_web_post"
         android:orderInCategory="100"
         android:title=""
-        android:icon="@drawable/ic_open_in_browser_white_24dp
+        android:icon="@drawable/ic_open_in_browser_white_24dp"
         app:showAsAction="always" />
 </menu>
