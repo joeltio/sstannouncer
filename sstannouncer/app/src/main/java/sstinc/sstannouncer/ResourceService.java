@@ -94,4 +94,6 @@ public class ResourceService extends Service
             this.serviceThread.interrupt();
         }
     }
+
+    public void run() {}
 }
