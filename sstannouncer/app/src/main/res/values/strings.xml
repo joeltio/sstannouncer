@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">SST Announcer</string>
     <string name="action_settings">Settings</string>
+
+    <string name="toolbar_all">All Posts</string>
+    <string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>
 </resources>
