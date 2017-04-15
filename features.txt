@@ -1,7 +1,7 @@
-1 Retrieve RSS feed
-    [DONE] Load XML from site
+1 [DONE] Retrieve RSS feed
+    Load XML from site
     Parse XML from site
-1 Display feed in fragment
+1 [DONE] Display feed in fragment
 2 Show post details
 2 Check RSS feed in background
 -- releasable -- 14/04/17
