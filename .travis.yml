@@ -20,4 +20,4 @@ cache:
 
 script:
     - cd sstannouncer
-    - ./gradlew
+    - ./gradlew assembleDebug
