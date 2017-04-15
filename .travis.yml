@@ -1,6 +1,10 @@
 notifications:
     email: false
 language: android
+android:
+    components:
+        - build-tools-23.0.1
+        - android-25
 script:
     - cd sstannouncer
     - ./gradlew
