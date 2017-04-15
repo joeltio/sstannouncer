@@ -1,5 +1,10 @@
 package sstinc.sstannouncer;
 
+import android.text.method.ReplacementTransformationMethod;
+
+import java.util.Date;
+import java.util.InputMismatchException;
+
 /**
  * Defines a service which maintains a resource
  *
@@ -9,12 +14,27 @@ package sstinc.sstannouncer;
 
 public class ResourceService extends Service
 {
+    /**
+     * Resource Changed Event
+     * The Resource Service would raise this event when the resource is changed.
+     * The event data field would the changed resource that is encoded in a string format defined by
+     * <code>Resource.toString()</code>.
+     *
+     * @see Resource#toString()
+     */
+    public Event ResourceChangedEvent;
+
+    private double frequency;
+
     private ResourceAcquirer acquirer;
     private Resource resource;
     private int status;
+
     private String serviceThreadName;
     private volatile boolean serviceThreadStop;
     Thread serviceThread;
+
+    private EventController boundEventControl;
 
 
     /**
@@ -43,11 +63,50 @@ public class ResourceService extends Service
         else return false;
     }
 
+    /**
+     * Change the Frequency of the Resource Service.
+     * Change the frequency that the Resource Service checks for changes to the resource.
+     * Changes to the frequency would only take effect on the next run of the service.
+     * The frequency best accuracy be 1/1000 Hz.
+     *
+     * @param frequency Frequency to check for changes to the resource in Hertz (Hz)
+     *
+     */
+    public void setFrequency(double frequency)
+    {
+        this.frequency = frequency;
+    }
+
+    /**
+     * Bind to an Event Controller
+     * Bind to the specified Event Controller.
+     * The Resource Service would raise a <code>ResourceChanged</code> event when the resource the
+     * service maintains changes.
+     *
+     * @param eventController-The event controller to bind to.
+     */
+    public void bind(EventController eventController)
+    {
+        this.boundEventControl = eventController;
+    }
+
+    /**
+     * Unbind from an Event Controller
+     * Unbind from the specified Event Controller
+     * The Resource Service would stop raising a <code>ResourceChanged</code> event when the
+     * resource to service maintains changes.
+     */
+    public void unbind()
+    {
+        this.boundEventControl = null;
+    }
 
     /**
      * Constructor for ResourceService
      * Creates a new resource service that would maintain the resource passed by the caller.
-     * The resource mantains the resource using the methodology provided by the ResourceAcquirer.
+     * The resource maintains the resource using the methodology provided by the ResourceAcquirer.
+     * The <code>frequency</code> defines the frequency of the service to checl for new updates to
+     * resource.
      *
      * @param resource The resource to maintain.
      * @param acquirer The way the resource is acquired.
@@ -58,8 +117,10 @@ public class ResourceService extends Service
     {
         this.resource = resource;
         this.acquirer = acquirer;
+        this.ResourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
+                this.resource.getURL()));
         this.status = 0;
-        this.serviceThreadName = "ResourceService##" + resource.getURL();
+        this.serviceThreadName = "ResourceService/" + resource.getURL();
         this.serviceThread = new Thread(this, this.serviceThreadName);
         this.serviceThreadStop = false;
     }
@@ -82,7 +143,7 @@ public class ResourceService extends Service
                 this.serviceThread.join();
             }
             catch(InterruptedException e) {
-                return;
+                this.kill();
             }
         }
     }
@@ -95,5 +156,38 @@ public class ResourceService extends Service
         }
     }
 
-    public void run() {}
+    //Service Thread
+    @Override
+    public void run()
+    {
+        while(this.serviceThreadStop == false)
+        {
+            //Set current time stamp to the current resource time stamp or to the unix epoch.
+            Date currentTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
+                    this.resource.getTimeStamp();
+
+            this.status = this.acquirer.retrieve(this.resource);
+
+            if(this.status == 0 && currentTimeStamp.before(this.resource.getTimeStamp()))
+            {
+                //Retrieve Successful and Resource Changed
+                if(this.boundEventControl != null)
+                {
+                    Event changeEvent = new Event(ResourceChangedEvent.getIdentifier(),
+                            this.resource.getTimeStamp(), this.resource.toString());
+                    this.boundEventControl.raise(changeEvent);
+                }
+            }
+
+            //Frequency Control
+            double delay = 1.0/this.frequency;
+            long delayMillis = (long) delay * 1000;
+            try {
+                Thread.sleep(delayMillis);
+            }
+            catch(InterruptedException e){
+                this.kill();
+            }
+        }
+    }
 }
