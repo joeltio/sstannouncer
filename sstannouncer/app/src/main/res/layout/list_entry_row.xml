@@ -18,14 +18,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/date_textView"
+            android:layout_toStartOf="@+id/date_textView"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/fontPrimaryDark" />
 
         <TextView
-            android:id="@+id/date_textView"
+            android:id="@id/date_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
