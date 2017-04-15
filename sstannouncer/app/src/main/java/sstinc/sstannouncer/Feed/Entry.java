@@ -1,5 +1,7 @@
 package sstinc.sstannouncer.Feed;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +49,16 @@ public class Entry {
     }
     public String getContent() {
         return this.content;
+    }
+
+    public String makeFilteredContent() {
+        String content = this.content;
+        // Remove HTML tags
+        content = content.replaceAll("<[^>]*>", "");
+        // Unescape characters
+        content = StringEscapeUtils.unescapeHtml4(content);
+
+        return content;
     }
 
     public static String toShortDate(String dateString) throws ParseException {
