@@ -1,4 +1,4 @@
 notifications:
     email: false
 language: android
-script: ./sstannouncer/gradlew
+script: ./sstannouncer/gradlew build connectedCheck
