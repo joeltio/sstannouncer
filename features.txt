@@ -4,7 +4,8 @@
 1 [DONE] Display feed in fragment
 2 [DONE] Show post details
 2 Check RSS feed in background
-1 Button to link to original blog post
+1 [DONE] Button to link to original blog post
+2 Pull to refresh
 -- releasable -- 14/04/17
 1 Add setting to refresh rate
 3 Add setting to auto download images and videos
