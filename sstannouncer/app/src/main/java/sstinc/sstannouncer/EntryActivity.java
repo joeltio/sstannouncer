@@ -1,6 +1,7 @@
 package sstinc.sstannouncer;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -17,6 +18,8 @@ public class EntryActivity extends AppCompatActivity {
 
     public static String ENTRY_EXTRA = "sstinc.sstannouncer.EntryActivity.ENTRY_EXTRA";
 
+    private Entry entryShown;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,18 +32,18 @@ public class EntryActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        Entry entry = intent.getParcelableExtra(ENTRY_EXTRA);
+        this.entryShown = intent.getParcelableExtra(ENTRY_EXTRA);
 
         TextView title = (TextView) findViewById(R.id.entry_title);
         TextView author = (TextView) findViewById(R.id.entry_author);
         TextView content = (TextView) findViewById(R.id.entry_content);
         TextView published = (TextView) findViewById(R.id.entry_published);
 
-        title.setText(entry.getTitle());
-        author.setText(entry.getAuthorName());
-        content.setText(Html.fromHtml(entry.getContent()));
+        title.setText(this.entryShown.getTitle());
+        author.setText(this.entryShown.getAuthorName());
+        content.setText(Html.fromHtml(this.entryShown.getContent()));
         try {
-            published.setText(Entry.toShortDate(entry.getPublished()));
+            published.setText(Entry.toShortDate(this.entryShown.getPublished()));
         } catch (ParseException e) {
             Log.e(this.getClass().getName(), e.getMessage());
         }
@@ -58,6 +61,9 @@ public class EntryActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             finish();
+        } else if (id == R.id.menu_web_post) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.entryShown.getBloggerLink()));
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
