@@ -1,4 +1,4 @@
-package sstinc.sstannouncer;
+package sstinc.sstannouncer.event;
 
 import java.util.Date;
 

@@ -1,11 +1,11 @@
-package sstinc.sstannouncer;
+package sstinc.sstannouncer.event;
 
 import java.util.*;
 
 /**
  * Event Controller
  * Facilitates the prorogation of events.
- * @see sstinc.sstannouncer.Event
+ * @see Event
  */
 public class EventController {
     private Map<String, Map<String, EventHandler>> eventMap;

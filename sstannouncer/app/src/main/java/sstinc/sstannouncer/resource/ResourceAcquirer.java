@@ -1,10 +1,12 @@
-package sstinc.sstannouncer;
+package sstinc.sstannouncer.resource;
+
+import sstinc.sstannouncer.resource.Resource;
 
 /**
  * Acquires a resource using a predefined methodology
  * The interface encompasses a methodology for retrieving resources
  *
- * @see sstinc.sstannouncer.Resource
+ * @see Resource
  */
 
 public abstract class ResourceAcquirer

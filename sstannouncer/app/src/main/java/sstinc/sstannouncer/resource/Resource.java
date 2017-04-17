@@ -1,9 +1,8 @@
-package sstinc.sstannouncer;
+package sstinc.sstannouncer.resource;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 /**
  * Defines a resource.

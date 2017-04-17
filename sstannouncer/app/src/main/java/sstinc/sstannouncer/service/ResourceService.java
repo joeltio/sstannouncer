@@ -1,15 +1,17 @@
-package sstinc.sstannouncer;
-
-import android.text.method.ReplacementTransformationMethod;
+package sstinc.sstannouncer.service;
 
 import java.util.Date;
-import java.util.InputMismatchException;
+
+import sstinc.sstannouncer.resource.Resource;
+import sstinc.sstannouncer.resource.ResourceAcquirer;
+import sstinc.sstannouncer.event.Event;
+import sstinc.sstannouncer.event.EventController;
 
 /**
  * Defines a service which maintains a resource
  *
- * @see sstinc.sstannouncer.Resource
- * @see sstinc.sstannouncer.Service
+ * @see Resource
+ * @see Service
  */
 
 public class ResourceService extends Service
@@ -111,7 +113,7 @@ public class ResourceService extends Service
      * @param resource The resource to maintain.
      * @param acquirer The way the resource is acquired.
      *
-     * @see sstinc.sstannouncer.ResourceAcquirer
+     * @see ResourceAcquirer
      */
     ResourceService(Resource resource, ResourceAcquirer acquirer)
     {

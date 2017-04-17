@@ -1,13 +1,16 @@
-package sstinc.sstannouncer;
+package sstinc.sstannouncer.resource;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 
+import sstinc.sstannouncer.resource.Resource;
+import sstinc.sstannouncer.resource.ResourceAcquirer;
+
 /**
  * Defines a resource acquirer that obtains resources via HTTP.
- * @see sstinc.sstannouncer.ResourceAcquirer
+ * @see ResourceAcquirer
  */
 public class HTTPResourceAcquirer extends ResourceAcquirer
 {

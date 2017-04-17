@@ -1,4 +1,6 @@
-package sstinc.sstannouncer;
+package sstinc.sstannouncer.event;
+
+import sstinc.sstannouncer.event.Event;
 
 /**
  * Event Handler
