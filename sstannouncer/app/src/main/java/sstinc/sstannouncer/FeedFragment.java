@@ -38,9 +38,8 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        getListView().setOnItemClickListener(this);
         if (savedInstanceState == null) {
-            getListView().setOnItemClickListener(this);
-
             new fetchNewFeed().execute(true);
         }
     }
