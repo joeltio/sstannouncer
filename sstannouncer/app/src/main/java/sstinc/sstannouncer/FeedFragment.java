@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -56,6 +57,12 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
+
+        mSwipeRefreshLayout.setColorSchemeColors(
+                ContextCompat.getColor(getActivity(), R.color.progress_1),
+                ContextCompat.getColor(getActivity(), R.color.progress_2),
+                ContextCompat.getColor(getActivity(), R.color.progress_3)
+        );
 
         mSwipeRefreshLayout.setOnRefreshListener(
             new SwipeRefreshLayout.OnRefreshListener() {

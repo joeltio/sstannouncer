@@ -5,4 +5,8 @@
     <color name="colorPrimary">#2196f3</color>
     <color name="colorPrimaryDark">#1976d2</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="progress_1">#F44336</color>
+    <color name="progress_2">@color/colorPrimary</color>
+    <color name="progress_3">#4CAF50</color>
 </resources>
