@@ -1,5 +1,7 @@
 package sstinc.sstannouncer.event;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -8,23 +10,11 @@ import java.util.Date;
  * An event is identified by its identifier and may contain data useful to interested parties.
  */
 public class Event {
+
     private String identifier;
     private Date timeStamp;
     private String data;
-
-    /**
-     * Event Constructor.
-     * Creates a new event for the given identifier.
-     * Sets the timeStamp and data of the new event to <code>null</code>.
-     *
-     * @param identifier A unique identifier used to identify the event;
-     */
-    public Event(String identifier)
-    {
-        this.identifier = identifier;
-        this.timeStamp = null;
-        this.data = null;
-    }
+    private String delim = "\035\006\005\022\001\002";
 
     /**
      * Event Constructor.
@@ -42,6 +32,23 @@ public class Event {
         this.data = data;
     }
 
+    /**
+     * Event Constructor.
+     * Creates a new event for the a string.
+     * The string must be from the <code>toString()</code> method.
+     *
+     * @param event String to convert to an event.
+     *
+     * @see Event#toString()
+     */
+    public Event(String event)
+    {
+        this.identifier = identifier;
+        this.timeStamp = null;
+        this.data = null;
+    }
+
+
     public String getIdentifier() {
         return identifier;
     }
@@ -50,12 +57,10 @@ public class Event {
         return timeStamp;
     }
 
-
     public String getData() {
         return data;
     }
 
-    //Equality
     @Override
     public boolean equals(Object obj) {
         if(super.equals(obj) == false) return false;
@@ -67,5 +72,17 @@ public class Event {
             return true;
         }
         return false;
+
+    }
+
+
+    @Override
+    public String toString()
+    {
+        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+        return String.format("%s%s%s%s%s", this.getIdentifier(), this.delim,
+                dateFormatter.format(this.getTimeStamp()), this.delim,
+                this.getData());
     }
 }
