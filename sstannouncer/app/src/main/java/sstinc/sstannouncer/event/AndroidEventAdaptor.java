@@ -87,14 +87,7 @@ public class AndroidEventAdaptor {
      */
     public AndroidEventAdaptor(EventController eventController)
     {
-        final AndroidEventAdaptor adaptor = this;
         this.boundEventController = eventController;
-        this.boundEventController.listen(this.toString(), "*", new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                adaptor.sendEvent(event);
-            }
-        });
 
         AndroidEventAdaptor.MessageHandler eventAdaptor =
                 new AndroidEventAdaptor.MessageHandler(this);
@@ -138,8 +131,9 @@ public class AndroidEventAdaptor {
     }
 
     /**
-     * Attempt to connect with the remote process.
-     * Attempt to connect with the remote process for <code>remoteMessenger</code>.
+     * Attempt to connect the adaptor.
+     * Attempt to connect with the remote process for <code>remoteMessenger</code> and the bound
+     * event controller.
      *
      * @param remoteMessenger The messenger to use to communicate with the remote process.
      *
@@ -147,6 +141,16 @@ public class AndroidEventAdaptor {
      */
     public boolean connect(Messenger remoteMessenger)
     {
+        //Listen to local Event Controller
+        final AndroidEventAdaptor adaptor = this;
+        this.boundEventController.listen(this.toString(), "*", new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                adaptor.sendEvent(event);
+            }
+        });
+
+        //Connect to Remote Process
         this.remoteMessenger = remoteMessenger;
         this.sendInitMessage();
 
@@ -155,13 +159,15 @@ public class AndroidEventAdaptor {
     }
 
     /**
-     * Disconnect from the remote process.
-     * Disconnect from the remote process and run cleanup actions.
-     * If not already connected with the remote process, only cleanup actions would be done.
+     * Disconnect from the adaptor
+     * Disconnect from the remote process and bound event controller.
      *
      */
     public void disconnect()
     {
+        this.boundEventController.unlisten(this.toString(), "*");
+
+        this.sendTermMessage();
         this.remoteMessenger = null;
     }
 
