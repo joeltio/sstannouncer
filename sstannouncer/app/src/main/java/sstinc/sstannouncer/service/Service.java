@@ -31,11 +31,11 @@ public abstract class Service implements Runnable
     public abstract void start();
 
     /**
-     * End the service.
+     * Stop the service.
      * The Service is allowed to run cleanup actions
      * If the service is not alive, nothing would be done.
      */
-    public abstract void end();
+    public abstract void stop();
 
     /**
      * Terminate the service immediately.

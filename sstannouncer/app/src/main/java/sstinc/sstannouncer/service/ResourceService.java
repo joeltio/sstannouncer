@@ -40,6 +40,30 @@ public class ResourceService extends Service
 
 
     /**
+     * Constructor for ResourceService
+     * Creates a new resource service that would maintain the resource passed by the caller.
+     * The resource maintains the resource using the methodology provided by the ResourceAcquirer.
+     * The <code>frequency</code> defines the frequency of the service to checl for new updates to
+     * resource.
+     *
+     * @param resource The resource to maintain.
+     * @param acquirer The way the resource is acquired.
+     *
+     * @see ResourceAcquirer
+     */
+    ResourceService(Resource resource, ResourceAcquirer acquirer)
+    {
+        this.resource = resource;
+        this.acquirer = acquirer;
+        this.ResourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
+                this.resource.getURL()));
+        this.status = 0;
+        this.serviceThreadName = "ResourceService/" + resource.getURL();
+        this.serviceThread = new Thread(this, this.serviceThreadName);
+        this.serviceThreadStop = false;
+
+
+    /**
      * Status of the resource.
      * This value may be useful to determine the validity of the resource obtained.
      * Returns the status of the Resource Acquirer for the most recent retrival of the resource.
@@ -103,30 +127,6 @@ public class ResourceService extends Service
         this.boundEventControl = null;
     }
 
-    /**
-     * Constructor for ResourceService
-     * Creates a new resource service that would maintain the resource passed by the caller.
-     * The resource maintains the resource using the methodology provided by the ResourceAcquirer.
-     * The <code>frequency</code> defines the frequency of the service to checl for new updates to
-     * resource.
-     *
-     * @param resource The resource to maintain.
-     * @param acquirer The way the resource is acquired.
-     *
-     * @see ResourceAcquirer
-     */
-    ResourceService(Resource resource, ResourceAcquirer acquirer)
-    {
-        this.resource = resource;
-        this.acquirer = acquirer;
-        this.ResourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
-                this.resource.getURL()));
-        this.status = 0;
-        this.serviceThreadName = "ResourceService/" + resource.getURL();
-        this.serviceThread = new Thread(this, this.serviceThreadName);
-        this.serviceThreadStop = false;
-    }
-
     public void start()
     {
         if(this.isAlive() == true )  this.kill();
@@ -136,7 +136,7 @@ public class ResourceService extends Service
         this.serviceThread.start();
     }
 
-    public void end()
+    public void stop()
     {
         if(this.isAlive() == true)
         {
