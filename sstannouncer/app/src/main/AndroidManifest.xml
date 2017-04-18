@@ -3,6 +3,7 @@
     package="sstinc.sstannouncer">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -21,6 +22,19 @@
             </intent-filter>
         </activity>
         <activity android:name=".EntryActivity"></activity>
+
+        <!-- Service Boot -->
+        <receiver android:name=".service.AndroidServiceBoot">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <!-- Resource Service -->
+        <service
+            android:name=".service.AndroidServiceAdaptor"
+            android:process=":res_service"
+            >
+        </service>
     </application>
 
 </manifest>
