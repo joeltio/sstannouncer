@@ -115,8 +115,8 @@ public class Resource {
     {
         DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
-        return String.format("%s%s%s%s%s", this.getURL(), delim,
+        return String.format("%s%s%s%s%s", this.getURL(), this.delim,
                 dateFormatter.format(this.timeStamp),
-                delim, this.getData());
+                this.delim, this.getData());
     }
 }

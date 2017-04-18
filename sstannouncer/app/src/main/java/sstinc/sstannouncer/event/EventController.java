@@ -27,6 +27,7 @@ public class EventController {
      * Note that listening for a event does not require the event to exist.
      * Only one listen request would be accepted for a single listener event pair.
      * It is the responsibility of the caller to stop listening to  the notification using
+     * To listen to all events, call this method with eventIdentifier as "*".
      * <code>unlisten()</code>
      *
      * @param listenerIdentifier A unique identifier to identify the caller.
@@ -60,14 +61,17 @@ public class EventController {
     /**
      * UnListen to a event
      * Stop listening to a event specified by <code>eventIdentifier</code>.
-     * If the event specified is currently does not exist or has never been listened tooby the
+     * If the event specified is currently does not exist or has never been listened to by the
      * listener, the invocation of this method would do nothing and return false.
+     * To revert a previous request to listen to all events, pass eventIdentifier as "*".
+     * NOTE: You can only revert a request to listen to all events, this does not revert all
+     * individual listen requests.
      *
      * @param listenerIdentifier A unique identifier to identify the caller.
      * @param eventIdentifier The Event Identifier of the event to unlisten from.
      *
-     * @return Returns true if unlisten request was successful, false if the event specified does not
-     * exist or has never been listed too be the listener.
+     * @return Returns true if unlisten request was successful, false if the event specified does
+     * not exist or has never been listed too be the listener.
      *
      * @see EventController#listen(String, String, EventHandler)
      *
