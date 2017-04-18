@@ -32,11 +32,10 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
     private static final String FEED_FRAGMENT_PREFERENCE = "feed_fragment_preference";
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
 
-    private ArrayList<Entry> mEntries;
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setRetainInstance(true);
 
         getListView().setOnItemClickListener(this);
         if (savedInstanceState == null) {
@@ -76,11 +75,6 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             }
         );
 
-        if (savedInstanceState != null) {
-            ArrayList<Entry> entries = savedInstanceState.getParcelableArrayList("entries");
-            setListAdapter(new FeedArrayAdapter(getActivity(), entries));
-            mEntries = entries;
-        }
         return mSwipeRefreshLayout;
     }
 
@@ -150,18 +144,11 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             super.onPostExecute(entries);
             if (!entries.isEmpty()) {
                 setListAdapter(new FeedArrayAdapter(getActivity(), entries));
-                mEntries = entries;
             }
             if (mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("entries", mEntries);
     }
 
     private class ListFragmentSwipeRefreshLayout extends SwipeRefreshLayout {
