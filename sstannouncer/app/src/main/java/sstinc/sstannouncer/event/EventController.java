@@ -15,7 +15,7 @@ public class EventController {
      * Creates a new event controller if one does not already exist.
      * Returns
      */
-    EventController()
+    public EventController()
     {
         this.eventMap = new HashMap<String, Map<String, EventHandler>>();
     }

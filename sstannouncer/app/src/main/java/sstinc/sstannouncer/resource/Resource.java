@@ -23,7 +23,7 @@ public class Resource {
      * @param timeStamp A time stamp describing when the data is last changed or updated.
      * @param data The data or information of the resource.
      */
-    Resource(String URL, Date timeStamp, String data)
+    public Resource(String URL, Date timeStamp, String data)
     {
         this.URL = URL;
         this.timeStamp = timeStamp;
@@ -38,7 +38,7 @@ public class Resource {
      *
      * @see Resource#toString() .
      */
-    Resource(String resource)
+    public Resource(String resource)
     {
         DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         String []slicedResource = resource.split(this.delim);
