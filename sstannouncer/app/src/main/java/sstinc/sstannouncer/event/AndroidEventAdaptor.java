@@ -56,15 +56,15 @@ public class AndroidEventAdaptor {
 
 
     //Message Subject
-    public static int MESSAGE_INIT_CONNECTION = 0; //Message to initialise a connection.
-    public static int MESSAGE_TERM_CONNECTION = 1; //Message to terminate a connection.
-    public static int MESSAGE_PING_CONNECTION = 2; //Message to test a connection;
-    public static int MESSAGE_PING_ACK = 3; //Message to acknowledge a ping
-    public static int MESSAGE_SEND_EVENT = 4; //Message to send a event.
+    private static int MESSAGE_INIT_CONNECTION = 0; //Message to initialise a connection.
+    private static int MESSAGE_TERM_CONNECTION = 1; //Message to terminate a connection.
+    private static int MESSAGE_PING_CONNECTION = 2; //Message to test a connection;
+    private static int MESSAGE_PING_ACK = 3; //Message to acknowledge a ping
+    private static int MESSAGE_SEND_EVENT = 4; //Message to send a event.
 
     //Message Data
-    public static String MESSAGE_DATA_MESSENGER = "msg.data.messenger";
-    public static String MESSAGE_DATA_EVENT = "msg.data.event";
+    private static String MESSAGE_DATA_MESSENGER = "msg.data.messenger";
+    private static String MESSAGE_DATA_EVENT = "msg.data.event";
 
     private EventController boundEventController;
     private Messenger localMessenger; //Messenger to receive messages sent the the local process.
