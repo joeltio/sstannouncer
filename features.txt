@@ -3,7 +3,7 @@
     Parse XML from site
 1 [DONE] Display feed in fragment
 2 [DONE] Show post details
-2 [DONE] Check RSS feed in background
+2 [DONE, UNTESTED] Check RSS feed in background
 1 [DONE] Button to link to original blog post
 2 [DONE] Pull to refresh
 -- releasable -- 14/04/17
@@ -11,8 +11,8 @@
 3 Add setting to auto download images and videos
 2 Save posts to database
 1 [DONE] Links linked would open browser
-2 Show images
-3 Show videos
+2 [DONE] Show images
+3 [DONE, UNTESTED] Show videos
 2 Images have optional download
 2 Add search by tag in action bar
 2 Add search by tag and text in action bar
