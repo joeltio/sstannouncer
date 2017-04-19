@@ -115,8 +115,19 @@ public class EventController {
     public ArrayList<EventHandler> buildHandlerList(String eventIdentifier)
     {
         if(this.eventMap.get(eventIdentifier) == null) return null;
-        Map<String, EventHandler> handlerMap = this.eventMap.get(eventIdentifier);
-        ArrayList<EventHandler> handlerList = new ArrayList<EventHandler>(handlerMap.values());
+        Map<String, EventHandler> eventhandlerMap = this.eventMap.get(eventIdentifier);
+        Map<String, EventHandler> wildCardHandlerMap = this.eventMap.get("*");
+
+        ArrayList<EventHandler> handlerList = new ArrayList<EventHandler>();
+
+        if(eventhandlerMap != null)
+        {
+            handlerList.addAll(eventhandlerMap.values());
+        }
+        if(wildCardHandlerMap != null)
+        {
+            handlerList.addAll(wildCardHandlerMap.values());
+        }
 
         return handlerList;
     }

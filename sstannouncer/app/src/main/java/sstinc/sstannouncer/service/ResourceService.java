@@ -56,7 +56,8 @@ public class ResourceService extends Service
         this.resource = resource;
         this.acquirer = acquirer;
         this.ResourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
-                this.resource.getURL()));
+                this.resource.getURL()), null, null);
+
         this.status = 0;
         this.serviceThreadName = "ResourceService/" + resource.getURL();
         this.serviceThread = new Thread(this, this.serviceThreadName);
