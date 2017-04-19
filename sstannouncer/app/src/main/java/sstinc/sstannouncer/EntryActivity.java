@@ -5,10 +5,12 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -37,13 +39,12 @@ public class EntryActivity extends AppCompatActivity {
 
         TextView title = (TextView) findViewById(R.id.entry_title);
         TextView author = (TextView) findViewById(R.id.entry_author);
-        TextView content = (TextView) findViewById(R.id.entry_content);
+        WebView content = (WebView) findViewById(R.id.entry_content);
         TextView published = (TextView) findViewById(R.id.entry_published);
 
         title.setText(this.entryShown.getTitle());
         author.setText(this.entryShown.getAuthorName());
-        content.setText(Html.fromHtml(this.entryShown.getContent()));
-        content.setMovementMethod(LinkMovementMethod.getInstance());
+        content.loadData(this.entryShown.getContent(), "text/html; charset=utf-8", "utf-8");
         try {
             published.setText(Entry.toShortDate(this.entryShown.getPublished()));
         } catch (ParseException e) {

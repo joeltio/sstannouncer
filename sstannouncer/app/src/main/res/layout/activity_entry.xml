@@ -54,7 +54,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
 
-        <TextView
+        <WebView
             android:id="@+id/entry_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
