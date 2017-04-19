@@ -39,7 +39,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
         getListView().setOnItemClickListener(this);
         if (savedInstanceState == null) {
-            new fetchNewFeed().execute(true);
+            new fetchNewFeed(true).execute();
         }
     }
 
@@ -88,7 +88,13 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
     }
 
     // Fetches and updates the feed only if it has been modified
-    private class fetchNewFeed extends AsyncTask<Boolean, Void, ArrayList<Entry>> {
+    private class fetchNewFeed extends AsyncTask<Void, Void, ArrayList<Entry>> {
+        boolean force = false;
+        private fetchNewFeed() {}
+        private fetchNewFeed(boolean force) {
+            this.force = force;
+        }
+
         private boolean feedHasBeenModified() {
             boolean feedHasBeenModified = true;
 
@@ -101,9 +107,9 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 URL url = new URL(getResources().getString(R.string.blog_rss_url));
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("HEAD");
+                urlConnection.connect();
 
                 feedHasBeenModified = lastModified.equals(urlConnection.getHeaderField("Last-Modified"));
-
                 urlConnection.getInputStream().close();
             } catch (Exception e) {
                 Log.e(this.getClass().getName(), e.getMessage());
@@ -117,12 +123,9 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         }
 
         @Override
-        protected ArrayList<Entry> doInBackground(Boolean... force_bools) {
-            // true if first element of force_bools is true else false
-            boolean force = force_bools.length > 0 && force_bools[0];
-
+        protected ArrayList<Entry> doInBackground(Void... voids) {
             ArrayList<Entry> entries;
-            if (force || feedHasBeenModified()) {
+            if (this.force || feedHasBeenModified()) {
                 try {
                     XML xml = new XML();
                     xml.fetch(getString(R.string.blog_rss_url));
