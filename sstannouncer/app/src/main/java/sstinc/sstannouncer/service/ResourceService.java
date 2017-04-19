@@ -61,6 +61,7 @@ public class ResourceService extends Service
         this.serviceThreadName = "ResourceService/" + resource.getURL();
         this.serviceThread = new Thread(this, this.serviceThreadName);
         this.serviceThreadStop = false;
+    }
 
 
     /**

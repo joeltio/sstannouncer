@@ -41,13 +41,27 @@ public class HTTPResourceAcquirer extends ResourceAcquirer
 
         try
         {
+
+            //Retrieve the HTTP Header to test for a resource change
             URL resourceURL = new URL(resource.getURL());
             retrieveConnection = (HttpURLConnection) resourceURL.openConnection();
+            retrieveConnection.setRequestMethod("HEAD");
             retrieveConnection.connect();
 
             resourceTimeStamp = new Date(retrieveConnection.getLastModified());
-            resourceData = this.convertStreamToString(retrieveConnection.getInputStream());
-            status = - retrieveConnection.getResponseCode();
+
+            if(resourceTimeStamp.compareTo(resource.getTimeStamp()) <= 0)
+            {
+                //Retrieve the Resource itself.
+                retrieveConnection.disconnect();
+                retrieveConnection.setRequestMethod("GET");
+                retrieveConnection.connect();
+
+                resourceData = this.convertStreamToString(retrieveConnection.getInputStream());
+                resource.mutate(resourceData, resourceTimeStamp);
+
+                status = - retrieveConnection.getResponseCode();
+            }
         }
         catch (IOException exp)
         {
@@ -55,7 +69,6 @@ public class HTTPResourceAcquirer extends ResourceAcquirer
             return status;
         }
 
-        resource.mutate(resourceData, resourceTimeStamp);
         return 0;
     }
 

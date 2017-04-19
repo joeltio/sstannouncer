@@ -303,7 +303,8 @@ public class AndroidEventAdaptor {
             try
             {
                 this.remoteMessenger.send(messageTerm);
-            }catch(RemoteException exp)
+            }
+            catch(RemoteException exp)
             {
 
             }
