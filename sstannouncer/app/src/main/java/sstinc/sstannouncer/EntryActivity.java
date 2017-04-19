@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ public class EntryActivity extends AppCompatActivity {
         title.setText(this.entryShown.getTitle());
         author.setText(this.entryShown.getAuthorName());
         content.setText(Html.fromHtml(this.entryShown.getContent()));
+        content.setMovementMethod(LinkMovementMethod.getInstance());
         try {
             published.setText(Entry.toShortDate(this.entryShown.getPublished()));
         } catch (ParseException e) {
