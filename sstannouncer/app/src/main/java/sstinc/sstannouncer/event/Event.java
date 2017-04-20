@@ -43,9 +43,20 @@ public class Event {
      */
     public Event(String event)
     {
-        this.identifier = identifier;
-        this.timeStamp = null;
-        this.data = null;
+        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        String []slicedEvent = event.split(this.delim);
+
+        this.identifier = slicedEvent[0];
+        try
+        {
+            this.timeStamp = dateFormatter.parse(slicedEvent[1]);
+
+        }
+        catch(java.text.ParseException exp)
+        {
+            this.timeStamp = new Date();
+        }
+        this.data = slicedEvent[2];
     }
 
 
