@@ -11,6 +11,7 @@ import java.util.Date;
 
 import sstinc.sstannouncer.R;
 import sstinc.sstannouncer.event.AndroidEventAdaptor;
+import sstinc.sstannouncer.event.Event;
 import sstinc.sstannouncer.event.EventController;
 import sstinc.sstannouncer.resource.HTTPResourceAcquirer;
 import sstinc.sstannouncer.resource.Resource;
@@ -56,6 +57,8 @@ public class AndroidServiceAdaptor extends Service
         ResourceAcquirer resourceAcquirer = new HTTPResourceAcquirer();
 
         this.resourceService = new ResourceService(this.resource, resourceAcquirer);
+        this.resourceService.setResourceChangedEvent(new
+                Event(getString(R.string.event_resource_changed_blog), null, null));
         this.resourceService.bind(this.eventController);
         this.resourceService.start();
     }

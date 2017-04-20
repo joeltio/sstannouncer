@@ -6,4 +6,7 @@
     <string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>
     <string name="entry_by_text">by</string>
     <string name="open_in_browser">Open in browser</string>
+    <string name="event_resource_changed_blog">
+        event_resourcechanged_http://studentsblog.sst.edu.sg/feeds/posts/default
+    </string>
 </resources>

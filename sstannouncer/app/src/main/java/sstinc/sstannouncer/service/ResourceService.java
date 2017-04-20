@@ -16,15 +16,7 @@ import sstinc.sstannouncer.event.EventController;
 
 public class ResourceService extends Service
 {
-    /**
-     * Resource Changed Event
-     * The Resource Service would raise this event when the resource is changed.
-     * The event data field would the changed resource that is encoded in a string format defined by
-     * <code>Resource.toString()</code>.
-     *
-     * @see Resource#toString()
-     */
-    public Event ResourceChangedEvent;
+    private Event resourceChangedEvent;
 
     private double frequency;
 
@@ -55,7 +47,7 @@ public class ResourceService extends Service
     {
         this.resource = resource;
         this.acquirer = acquirer;
-        this.ResourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
+        this.resourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
                 this.resource.getURL()), null, null);
 
         this.status = 0;
@@ -129,6 +121,38 @@ public class ResourceService extends Service
         this.boundEventControl = null;
     }
 
+    /**
+     * Get Resource Changed Event
+     * The Resource Service would raise this event when the resource is changed.
+     * The event data field would the changed resource that is encoded in a string format defined by
+     * <code>Resource.toString()</code>.
+     * By default the event identifier is defined as "EVENT_RS_ResourceChanged_(URL)", where (URL)
+     * is the resource URL.
+     *
+     * @see Resource#toString()
+     */
+    public Event getResourceChangedEvent()
+    {
+        return this.resourceChangedEvent;
+    }
+
+    /**
+     * Set Resource Changed Event
+     * Change the event raised by the Resource Service when the resource changes.
+     * The event would be raise with the data field overwritten with the changed resource encoded
+     * is a string format defined by <code>Resource.toString()</code> and the time stamp overwritten
+     * with the time that the resource was updated.
+     *
+     * @see Resource#toString()
+     *
+     * @param event The event to change the current Resource Changed Event.
+     *
+     */
+    public void setResourceChangedEvent(Event event)
+    {
+        this.resourceChangedEvent = event;
+    }
+
     public void start()
     {
         if(this.isAlive() == true )  this.kill();
@@ -166,7 +190,7 @@ public class ResourceService extends Service
     {
         while(this.serviceThreadStop == false)
         {
-            //Set current time stamp to the current resource time stamp or to the unix epoch.
+
             Date currentTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
                     this.resource.getTimeStamp();
 
@@ -177,7 +201,7 @@ public class ResourceService extends Service
                 //Retrieve Successful and Resource Changed
                 if(this.boundEventControl != null)
                 {
-                    Event changeEvent = new Event(ResourceChangedEvent.getIdentifier(),
+                    Event changeEvent = new Event(resourceChangedEvent.getIdentifier(),
                             this.resource.getTimeStamp(), this.resource.toString());
                     this.boundEventControl.raise(changeEvent);
                 }
