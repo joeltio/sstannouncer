@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 
+import sstinc.sstannouncer.event.AndroidEventAdaptor;
 import sstinc.sstannouncer.event.Event;
 import sstinc.sstannouncer.event.EventController;
 import sstinc.sstannouncer.event.EventHandler;
@@ -60,6 +61,45 @@ public class EventSystemTest
         });
         eventController.raise(testEvent);
         assertTrue(eventStatus);
+    }
+
+    @Test
+    public void testAndroidEventAdaptor()
+    {
+        EventController localEventController = new EventController();
+        EventController remoteEventController = new EventController();
+        AndroidEventAdaptor localEventAdaptor = new AndroidEventAdaptor(localEventController);
+        AndroidEventAdaptor remoteEventAdaptor = new AndroidEventAdaptor(remoteEventController);
+        Event testEvent = new Event("test.event", new Date(0), "Hello");
+        eventStatus = false;
+
+        //Connection Adaptors
+        localEventAdaptor.connect(remoteEventAdaptor.getLocalMessenger());
+        assertTrue(localEventAdaptor.connected());
+
+        //Transmission of Event
+        localEventController.listen(this.toString(), "test.event", new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                //Test Passing of Event
+                assertEquals(event.getIdentifier(), "test.event");
+                assertEquals(event.getTimeStamp(), new Date(0));
+                assertEquals(event.getData(), "Hello");
+                eventStatus = true;
+            }
+        });
+
+        remoteEventController.raise(testEvent);
+
+        try
+        {
+            Thread.sleep(1); //Event Processing Must be done within 1ms
+        }catch(InterruptedException exp){};
+
+        assertTrue(eventStatus);
+
+        localEventAdaptor.disconnect();
+        remoteEventAdaptor.disconnect();
     }
 
 }
