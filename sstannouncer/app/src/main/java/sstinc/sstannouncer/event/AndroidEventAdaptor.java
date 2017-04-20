@@ -1,6 +1,7 @@
 package sstinc.sstannouncer.event;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.RemoteException;
 
 import java.lang.ref.WeakReference;
 import java.nio.BufferUnderflowException;
+import java.util.Enumeration;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -33,7 +35,7 @@ public class AndroidEventAdaptor {
      * Message Handler
      * Message Handler for use with Messenger for inter process communication.
      */
-    public static class MessageHandler extends Handler {
+    public class MessageHandler extends Handler {
         private WeakReference<AndroidEventAdaptor> eventAdaptor;
 
         /**
@@ -45,6 +47,7 @@ public class AndroidEventAdaptor {
          */
         MessageHandler(AndroidEventAdaptor eventAdaptor)
         {
+            super(Looper.getMainLooper());
             this.eventAdaptor = new WeakReference<AndroidEventAdaptor>(eventAdaptor);
         }
 
@@ -70,6 +73,8 @@ public class AndroidEventAdaptor {
     private Messenger localMessenger; //Messenger to receive messages sent the the local process.
     private Messenger remoteMessenger; //Messenger to send messages to remote process
 
+    private Event deliveredEvent;
+
     //Ping Data
     private Thread pingThread;
     private boolean pingResult;
@@ -92,6 +97,15 @@ public class AndroidEventAdaptor {
         AndroidEventAdaptor.MessageHandler eventAdaptor =
                 new AndroidEventAdaptor.MessageHandler(this);
         this.localMessenger = new Messenger(eventAdaptor);
+
+        //Listen to local Event Controller
+        final AndroidEventAdaptor adaptor = this;
+        this.boundEventController.listen(this.toString(), "*", new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                adaptor.sendEvent(event);
+            }
+        });
     }
 
 
@@ -111,7 +125,10 @@ public class AndroidEventAdaptor {
 
         try
         {
-            Thread.currentThread().wait();
+            synchronized(this.pingThread)
+            {
+                Thread.currentThread().wait();
+            }
         }
         catch(InterruptedException exp)
         {
@@ -141,14 +158,6 @@ public class AndroidEventAdaptor {
      */
     public boolean connect(Messenger remoteMessenger)
     {
-        //Listen to local Event Controller
-        final AndroidEventAdaptor adaptor = this;
-        this.boundEventController.listen(this.toString(), "*", new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                adaptor.sendEvent(event);
-            }
-        });
 
         //Connect to Remote Process
         this.remoteMessenger = remoteMessenger;
@@ -217,22 +226,26 @@ public class AndroidEventAdaptor {
 
     private void receiveEvent(Event event)
     {
+        this.deliveredEvent = event;
         this.boundEventController.raise(event);
     }
 
     private void sendEvent(Event event)
     {
-        if(this.connected() == true)
-        {
-            Message eventMessage = new Message();
-            eventMessage.what = AndroidEventAdaptor.MESSAGE_SEND_EVENT;
-            Bundle messageData = new Bundle();
-            messageData.putString(AndroidEventAdaptor.MESSAGE_DATA_EVENT, event.toString());
+        if(this.deliveredEvent == null || this.deliveredEvent.equals(event) == false) {
+            if(this.connected() == true)
+            {
+                Message eventMessage = new Message();
+                eventMessage.what = AndroidEventAdaptor.MESSAGE_SEND_EVENT;
+                Bundle messageData = new Bundle();
+                messageData.putString(AndroidEventAdaptor.MESSAGE_DATA_EVENT, event.toString());
+                eventMessage.setData(messageData);
 
-            try {
-                this.remoteMessenger.send(eventMessage);
-            } catch (RemoteException exp) {
+                try {
+                    this.remoteMessenger.send(eventMessage);
+                } catch (RemoteException exp) {
 
+                }
             }
         }
     }
@@ -271,7 +284,10 @@ public class AndroidEventAdaptor {
     private void receivePingACK()
     {
         this.pingResult = true;
-        this.pingThread.notify();
+
+        synchronized(this.pingThread) {
+            this.pingThread.notify();
+        }
     }
 
     private void sendInitMessage()
