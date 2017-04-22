@@ -29,8 +29,10 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         if (savedInstanceState == null) {
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             onNavigationItemSelected(navigationView.getMenu().getItem(0));
             navigationView.setCheckedItem(0);
             navigationView.getMenu().getItem(0).setChecked(true);
@@ -51,7 +53,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        // Handle navbar item selection
         if (id == R.id.nav_all_posts) {
             FeedFragment feedFragment = new FeedFragment();
             getFragmentManager().beginTransaction().replace(
@@ -60,6 +61,13 @@ public class MainActivity extends AppCompatActivity
                     feedFragment.getTag()
             ).commit();
             toolbar.setTitle(R.string.nav_all_posts);
+        } else if (id == R.id.nav_settings) {
+            SettingsFragment settingsFragment = new SettingsFragment();
+            getFragmentManager().beginTransaction().replace(
+                    R.id.content_main,
+                    settingsFragment,
+                    settingsFragment.getTag()
+            ).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
