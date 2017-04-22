@@ -95,7 +95,6 @@ public class Resource {
     @Override
     public boolean equals(Object obj)
     {
-        if (super.equals(obj) == false) return false;
         if (obj.getClass() != this.getClass()) return false;
 
         Resource otherObject = (Resource) obj;
