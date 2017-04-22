@@ -35,7 +35,7 @@ public class XML {
         this.rawXml = "";
     }
 
-    private XML(String rawXml) throws IOException, ParserConfigurationException, SAXException {
+    public XML(String rawXml) throws IOException, ParserConfigurationException, SAXException {
         this.rawXml = rawXml;
         this.xmlDocument = createDocument(convertStringToStream(this.rawXml));
     }

@@ -1,11 +1,18 @@
 package sstinc.sstannouncer.android;
 
+//**** REMOVE ON NOTIFICATION REDESIGN
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+
+import java.net.Inet4Address;
+
+import sstinc.sstannouncer.EntryActivity;
+import sstinc.sstannouncer.Feed.Entry;
 
 /**
  * Android notification Adaptor
@@ -43,10 +50,8 @@ public class AndroidNotificationAdaptor
      * @param ID An user specified unique identifier that identifies the notification
      * @param title The title of the notification.
      * @param content The content of the notification.
-     * @param target The Target class to start when the user interacts with the notification
-     *                   interacts with the notification.
      */
-    public void build(int ID, String title, String content, Class target)
+    public void build(int ID, String title, String content, Entry entry)
     {
         this.notifcationID = ID;
 
@@ -55,7 +60,8 @@ public class AndroidNotificationAdaptor
         builder.setContentTitle(title);
         builder.setContentText(content);
 
-        Intent targetIntent = new Intent(this.context,target);
+        Intent targetIntent = new Intent(this.context, EntryActivity.class);
+        targetIntent.putExtra(EntryActivity.ENTRY_EXTRA, entry);
         PendingIntent pendingTargetIntent =
                 PendingIntent.getActivity(this.context,
                         this.notifcationID,
@@ -71,7 +77,6 @@ public class AndroidNotificationAdaptor
      * Display the Notification that has been built by <code>build()</code> method.
      * If notification has never been built, no notification would be displayed.
      *
-     * @see AndroidNotificationAdaptor#build(int, String, String, Class)
      */
     public void display()
     {

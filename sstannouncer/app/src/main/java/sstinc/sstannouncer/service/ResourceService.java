@@ -35,7 +35,7 @@ public class ResourceService extends Service
      * Constructor for ResourceService
      * Creates a new resource service that would maintain the resource passed by the caller.
      * The resource maintains the resource using the methodology provided by the ResourceAcquirer.
-     * The <code>frequency</code> defines the frequency of the service to checl for new updates to
+     * The <code>frequency</code> defines the frequency of the service to check for new updates to
      * resource.
      *
      * @param resource The resource to maintain.
@@ -47,7 +47,7 @@ public class ResourceService extends Service
     {
         this.resource = resource;
         this.acquirer = acquirer;
-        this.resourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
+        this.resourceChangedEvent = new Event(String.format("service.resource.changed ",
                 this.resource.getURL()), new Date(0), "");
 
         this.status = 0;
@@ -126,7 +126,7 @@ public class ResourceService extends Service
      * The Resource Service would raise this event when the resource is changed.
      * The event data field would the changed resource that is encoded in a string format defined by
      * <code>Resource.toString()</code>.
-     * By default the event identifier is defined as "EVENT_RS_ResourceChanged_(URL)", where (URL)
+     * By default the event identifier is defined as "service.resource.changed", where (URL)
      * is the resource URL.
      *
      * @see Resource#toString()

@@ -8,10 +8,16 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.Date;
+import java.util.concurrent.Exchanger;
 
+import sstinc.sstannouncer.Feed.Feed;
+import sstinc.sstannouncer.Feed.FeedNotificationAdaptor;
+import sstinc.sstannouncer.Feed.RSSParser;
+import sstinc.sstannouncer.Feed.XML;
 import sstinc.sstannouncer.R;
 import sstinc.sstannouncer.event.Event;
 import sstinc.sstannouncer.event.EventController;
+import sstinc.sstannouncer.event.EventHandler;
 import sstinc.sstannouncer.resource.HTTPResourceAcquirer;
 import sstinc.sstannouncer.resource.Resource;
 import sstinc.sstannouncer.resource.ResourceAcquirer;
@@ -61,6 +67,35 @@ public class AndroidServiceAdaptor extends Service
                 Event(getString(R.string.event_resource_changed_blog), null, null));
         this.resourceService.bind(this.eventController);
         this.resourceService.start();
+
+        //NOTIFICATION ~ REMOVE ON REDESIGN, TIGHTLY COUPLED CODE>>>
+        this.eventController.listen(this.toString(), this.resourceService.getResourceChangedEvent().getIdentifier(),
+                new EventHandler() {
+                    @Override
+                    public void handle(Event event) {
+                        Resource resource = new Resource(event.getData());
+                        AndroidNotificationAdaptor notificationAdaptor =
+                                new AndroidNotificationAdaptor(getApplicationContext());
+                        XML rss = null;
+                        Feed feed = null;
+
+                        try
+                        {
+                            rss = new XML(resource.getData());
+                            feed = RSSParser.parse(rss);
+                        }catch (Exception exp)
+                        {
+                            Log.e("Resource Service", "Caught Exception trying to parse blog rss",
+                                    exp);
+                            return;
+                        }
+
+                        FeedNotificationAdaptor feedNotificationAdaptor =
+                                new FeedNotificationAdaptor(feed, "Student Blog", notificationAdaptor);
+                        feedNotificationAdaptor.changeFeed(feed);
+                    }
+                });
+        //NOTIFICATION ~ REMOVE ON REDESIGN
     }
 
     /**
