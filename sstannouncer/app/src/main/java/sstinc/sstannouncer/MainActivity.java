@@ -8,17 +8,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.toolbar_all));
         setSupportActionBar(toolbar);
 
@@ -27,6 +28,13 @@ public class MainActivity extends AppCompatActivity
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        if (savedInstanceState == null) {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            onNavigationItemSelected(navigationView.getMenu().getItem(0));
+            navigationView.setCheckedItem(0);
+            navigationView.getMenu().getItem(0).setChecked(true);
+        }
     }
 
     @Override
@@ -44,6 +52,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         // Handle navbar item selection
+        if (id == R.id.nav_all_posts) {
+            FeedFragment feedFragment = new FeedFragment();
+            getFragmentManager().beginTransaction().replace(
+                    R.id.content_main,
+                    feedFragment,
+                    feedFragment.getTag()
+            ).commit();
+            toolbar.setTitle(R.string.nav_all_posts);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
