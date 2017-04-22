@@ -2,6 +2,7 @@ package sstinc.sstannouncer.Feed;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -16,14 +17,33 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class Entry implements Parcelable {
-    private String id, publishDate, lastUpdated, author, bloggerLink, title, content;
+    private String id, author, bloggerLink, title, content;
+    private Date publishDate, lastUpdated;
     private ArrayList<String> categories;
+
+    private Date bloggerDateStringToDate(String dateString) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSSz",
+                Locale.ENGLISH);
+        try {
+            return format.parse(dateString);
+        } catch (ParseException e) {
+            Log.e(this.getClass().getName(), e.getMessage());
+            return null;
+        }
+    }
+
+    private String dateToBloggerDateString(Date date) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSSz",
+                Locale.ENGLISH);
+        return format.format(date);
+    }
+
     public Entry(String id, String publishDate, String lastUpdated,
                  ArrayList<String> categories, String author, String bloggerLink,
                  String title, String content) {
         this.id = id;
-        this.publishDate = publishDate;
-        this.lastUpdated = lastUpdated;
+        this.publishDate = bloggerDateStringToDate(publishDate);
+        this.lastUpdated = bloggerDateStringToDate(lastUpdated);
         this.categories = categories;
         this.author = author;
         this.bloggerLink = bloggerLink;
@@ -33,10 +53,10 @@ public class Entry implements Parcelable {
     public String getId() {
         return this.id;
     }
-    public String getPublished() {
+    public Date getPublished() {
         return this.publishDate;
     }
-    public String getLastUpdated() {
+    public Date getLastUpdated() {
         return this.lastUpdated;
     }
     public ArrayList<String> getCategories() {
@@ -65,10 +85,7 @@ public class Entry implements Parcelable {
         return content;
     }
 
-    public static String toShortDate(String dateString) throws ParseException {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSSz",
-                Locale.ENGLISH);
-        Date date = format.parse(dateString);
+    public static String toShortDate(Date date) throws ParseException {
         Date now = new Date();
 
         Calendar dateCalendar = new GregorianCalendar();
@@ -92,8 +109,8 @@ public class Entry implements Parcelable {
 
     public Entry(Parcel in) {
         this.id = in.readString();
-        this.publishDate = in.readString();
-        this.lastUpdated = in.readString();
+        this.publishDate = bloggerDateStringToDate(in.readString());
+        this.lastUpdated = bloggerDateStringToDate(in.readString());
         this.author = in.readString();
         this.bloggerLink = in.readString();
         this.title = in.readString();
@@ -109,8 +126,8 @@ public class Entry implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.id);
-        parcel.writeString(this.publishDate);
-        parcel.writeString(this.lastUpdated);
+        parcel.writeString(dateToBloggerDateString(this.publishDate));
+        parcel.writeString(dateToBloggerDateString(this.lastUpdated));
         parcel.writeString(this.author);
         parcel.writeString(this.bloggerLink);
         parcel.writeString(this.title);

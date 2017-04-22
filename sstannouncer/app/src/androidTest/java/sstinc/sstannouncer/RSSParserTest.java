@@ -16,8 +16,7 @@ import sstinc.sstannouncer.Feed.RSSParser;
 import sstinc.sstannouncer.Feed.XML;
 
 import static junit.framework.Assert.fail;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class RSSParserTest {
@@ -75,8 +74,8 @@ public class RSSParserTest {
             List<Entry> entries = feed.getEntries();
             for (Entry entry : entries) {
                 assertFalse(entry.getId().isEmpty());
-                assertFalse(entry.getPublished().isEmpty());
-                assertFalse(entry.getLastUpdated().isEmpty());
+                assertNotNull(entry.getPublished());
+                assertNotNull(entry.getLastUpdated());
                 assertFalse(entry.getAuthorName().isEmpty());
                 assertFalse(entry.getBloggerLink().isEmpty());
 
@@ -107,11 +106,6 @@ public class RSSParserTest {
                 // Example id: tag:blogger.com,1999:blog-2263345748458699524.post-351551394302599923
                 String idRegex = "tag:blogger\\.com,\\d{4}:blog-\\d+\\.post-\\d+";
                 assertTrue(validate_with_regex(entry.getId(), idRegex));
-
-                // The regex only matches for numbers, a month like 14 would still be accepted
-                String dateRegex = "\\d{4}(-\\d{2}){2}T\\d{2}(:\\d{2}){2}\\.\\d{3}\\+\\d{2}:\\d{2}";
-                assertTrue(validate_with_regex(entry.getPublished(), dateRegex));
-                assertTrue(validate_with_regex(entry.getLastUpdated(), dateRegex));
 
                 // This is a very basic check, other links may pass
                 assertTrue(entry.getBloggerLink().startsWith("http://"));
