@@ -26,7 +26,7 @@ public class ResourceService extends Service
 
     private String serviceThreadName;
     private volatile boolean serviceThreadStop;
-    Thread serviceThread;
+    private volatile Thread serviceThread;
 
     private EventController boundEventControl;
 
@@ -43,17 +43,17 @@ public class ResourceService extends Service
      *
      * @see ResourceAcquirer
      */
-    ResourceService(Resource resource, ResourceAcquirer acquirer)
+    public ResourceService(Resource resource, ResourceAcquirer acquirer)
     {
         this.resource = resource;
         this.acquirer = acquirer;
         this.resourceChangedEvent = new Event(String.format("EVENT_RS_ResourceChanged_%s",
-                this.resource.getURL()), null, null);
+                this.resource.getURL()), new Date(0), "");
 
         this.status = 0;
         this.serviceThreadName = "ResourceService/" + resource.getURL();
-        this.serviceThread = new Thread(this, this.serviceThreadName);
         this.serviceThreadStop = false;
+        this.frequency = 1.0;
     }
 
 
@@ -77,8 +77,8 @@ public class ResourceService extends Service
      */
     public boolean isAlive()
     {
+        if(this.serviceThread == null) return false;
         Thread.State serviceThreadState = serviceThread.getState();
-
         if(serviceThreadState == Thread.State.RUNNABLE) return true;
         else return false;
     }
@@ -157,8 +157,8 @@ public class ResourceService extends Service
     {
         if(this.isAlive() == true )  this.kill();
 
-        this.serviceThread = new Thread(this, this.serviceThreadName);
         this.serviceThreadStop = false;
+        this.serviceThread = new Thread(this, this.serviceThreadName);
         this.serviceThread.start();
     }
 
@@ -185,18 +185,17 @@ public class ResourceService extends Service
     }
 
     //Service Thread
-    @Override
     public void run()
     {
         while(this.serviceThreadStop == false)
         {
 
-            Date currentTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
+            Date previousTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
                     this.resource.getTimeStamp();
 
             this.status = this.acquirer.retrieve(this.resource);
 
-            if(this.status == 0 && currentTimeStamp.before(this.resource.getTimeStamp()))
+            if(this.status == 0 && previousTimeStamp.compareTo(this.resource.getTimeStamp()) < 0)
             {
                 //Retrieve Successful and Resource Changed
                 if(this.boundEventControl != null)
