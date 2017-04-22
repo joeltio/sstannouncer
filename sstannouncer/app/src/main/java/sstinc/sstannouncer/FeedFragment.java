@@ -95,42 +95,41 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             this.force = force;
         }
 
-        private boolean feedHasBeenModified() {
-            boolean feedHasBeenModified = true;
-
-            SharedPreferences preferences = getActivity().getSharedPreferences(
-                    FEED_FRAGMENT_PREFERENCE, Context.MODE_PRIVATE);
-            String lastModified = preferences.getString(LAST_MODIFIED_PREFERENCE, "");
-
-            HttpURLConnection urlConnection = null;
+        private String fetchLastModified() {
+            String lastModified = null;
             try {
                 URL url = new URL(getResources().getString(R.string.blog_rss_url));
-                urlConnection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("HEAD");
                 urlConnection.connect();
 
-                feedHasBeenModified = lastModified.equals(urlConnection.getHeaderField("Last-Modified"));
-                urlConnection.getInputStream().close();
+                lastModified =  urlConnection.getHeaderField("Last-Modified");
+                urlConnection.disconnect();
             } catch (Exception e) {
                 Log.e(this.getClass().getName(), e.getMessage());
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
             }
-
-            return feedHasBeenModified;
+            return lastModified;
         }
 
         @Override
         protected ArrayList<Entry> doInBackground(Void... voids) {
             ArrayList<Entry> entries;
-            if (this.force || feedHasBeenModified()) {
+            SharedPreferences preferences = getActivity().getSharedPreferences(
+                    FEED_FRAGMENT_PREFERENCE, Context.MODE_PRIVATE);
+            String localLastModified = preferences.getString(LAST_MODIFIED_PREFERENCE, "");
+            String onlineLastModified = fetchLastModified();
+            boolean feedHasBeenModified = !localLastModified.equals(onlineLastModified);
+
+            if (this.force || feedHasBeenModified) {
                 try {
                     XML xml = new XML();
                     xml.fetch(getString(R.string.blog_rss_url));
                     Feed feed = RSSParser.parse(xml);
                     entries = feed.getEntries();
+
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(LAST_MODIFIED_PREFERENCE, onlineLastModified);
+                    editor.apply();
                 } catch (Exception e) {
                     Log.e(this.getClass().getName(), e.getMessage());
                     entries = new ArrayList<>();
