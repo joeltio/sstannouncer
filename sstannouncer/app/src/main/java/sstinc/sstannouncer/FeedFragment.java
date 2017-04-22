@@ -25,12 +25,19 @@ import sstinc.sstannouncer.Feed.Entry;
 import sstinc.sstannouncer.Feed.Feed;
 import sstinc.sstannouncer.Feed.RSSParser;
 import sstinc.sstannouncer.Feed.XML;
+import sstinc.sstannouncer.android.AndroidEventAdaptor;
+import sstinc.sstannouncer.android.AndroidServiceAdaptor;
+import sstinc.sstannouncer.event.Event;
+import sstinc.sstannouncer.event.EventController;
+import sstinc.sstannouncer.event.EventHandler;
 
 public class FeedFragment extends ListFragment implements AdapterView.OnItemClickListener {
     public FeedFragment() {}
 
     private static final String FEED_FRAGMENT_PREFERENCE = "feed_fragment_preference";
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
+    private EventController eventController;
+    private AndroidEventAdaptor androidEventAdaptor;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -39,6 +46,25 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
         getListView().setOnItemClickListener(this);
         if (savedInstanceState == null) {
+            this.eventController = new EventController();
+            this.androidEventAdaptor = new AndroidEventAdaptor(this.eventController);
+
+            // Connect to service
+            Intent connectIntent = new Intent(getActivity(), AndroidServiceAdaptor.class);
+            connectIntent.putExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER,
+                    this.androidEventAdaptor.getLocalMessenger());
+            getActivity().startService(connectIntent);
+
+            eventController.listen(this.toString(),
+                    getResources().getString(R.string.event_resource_changed_blog),
+                    new EventHandler() {
+                @Override
+                public void handle(Event event) {
+                    // Temporary code, would be better to use already
+                    // retrieved xml.
+                    new fetchNewFeed(true).execute();
+                }
+            });
             new fetchNewFeed(true).execute();
         }
     }
