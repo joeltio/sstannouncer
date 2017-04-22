@@ -1,10 +1,10 @@
-package sstinc.sstannouncer.service;
+package sstinc.sstannouncer.android;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.net.Inet4Address;
+import sstinc.sstannouncer.android.AndroidServiceAdaptor;
 
 
 /**

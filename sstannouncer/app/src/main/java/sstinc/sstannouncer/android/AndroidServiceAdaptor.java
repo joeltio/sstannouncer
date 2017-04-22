@@ -1,4 +1,4 @@
-package sstinc.sstannouncer.service;
+package sstinc.sstannouncer.android;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,12 +10,12 @@ import android.util.Log;
 import java.util.Date;
 
 import sstinc.sstannouncer.R;
-import sstinc.sstannouncer.event.AndroidEventAdaptor;
 import sstinc.sstannouncer.event.Event;
 import sstinc.sstannouncer.event.EventController;
 import sstinc.sstannouncer.resource.HTTPResourceAcquirer;
 import sstinc.sstannouncer.resource.Resource;
 import sstinc.sstannouncer.resource.ResourceAcquirer;
+import sstinc.sstannouncer.service.ResourceService;
 
 /**
  * Defines an Adaptor between Android and Service.
@@ -31,7 +31,7 @@ import sstinc.sstannouncer.resource.ResourceAcquirer;
  *
  * @see android.app.Service
  * @see sstinc.sstannouncer.event.EventController
- * @see sstinc.sstannouncer.event.AndroidEventAdaptor
+ * @see AndroidEventAdaptor
  */
 public class AndroidServiceAdaptor extends Service
 {
@@ -70,7 +70,7 @@ public class AndroidServiceAdaptor extends Service
      * Messenger of the Local Android Event Adaptor.
      *
      * @see android.app.Service
-     * @see sstinc.sstannouncer.event.AndroidEventAdaptor
+     * @see AndroidEventAdaptor
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

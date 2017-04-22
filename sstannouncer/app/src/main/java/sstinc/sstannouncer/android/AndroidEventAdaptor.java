@@ -1,4 +1,4 @@
-package sstinc.sstannouncer.event;
+package sstinc.sstannouncer.android;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.os.RemoteException;
 
 import java.lang.ref.WeakReference;
-import java.nio.BufferUnderflowException;
-import java.util.Enumeration;
-import java.util.concurrent.ThreadLocalRandom;
+
+import sstinc.sstannouncer.event.Event;
+import sstinc.sstannouncer.event.EventController;
+import sstinc.sstannouncer.event.EventHandler;
 
 /**
  * Android Event Adaptor

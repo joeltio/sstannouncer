@@ -1,16 +1,13 @@
 package sstinc.sstannouncer;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.lang.ref.WeakReference;
 import java.util.Date;
 
-import sstinc.sstannouncer.event.AndroidEventAdaptor;
+import sstinc.sstannouncer.android.AndroidEventAdaptor;
 import sstinc.sstannouncer.event.Event;
 import sstinc.sstannouncer.event.EventController;
 import sstinc.sstannouncer.event.EventHandler;

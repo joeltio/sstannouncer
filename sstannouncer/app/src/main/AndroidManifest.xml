@@ -24,14 +24,14 @@
         <activity android:name=".EntryActivity"></activity>
 
         <!-- Service Boot -->
-        <receiver android:name=".service.AndroidServiceBoot">
+        <receiver android:name=".android.AndroidServiceBoot">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <!-- Resource Service -->
         <service
-            android:name=".service.AndroidServiceAdaptor"
+            android:name=".android.AndroidServiceAdaptor"
             android:process=":res_service"
             >
         </service>
