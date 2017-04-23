@@ -121,15 +121,15 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             this.force = force;
         }
 
-        private String fetchLastModified() {
-            String lastModified = null;
+        private long fetchLastModified() {
+            long lastModified = -1;
             try {
                 URL url = new URL(getResources().getString(R.string.blog_rss_url));
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("HEAD");
                 urlConnection.connect();
 
-                lastModified =  urlConnection.getHeaderField("Last-Modified");
+                lastModified =  urlConnection.getLastModified();
                 urlConnection.disconnect();
             } catch (Exception e) {
                 Log.e(this.getClass().getName(), e.getMessage());
@@ -142,9 +142,9 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             ArrayList<Entry> entries;
             SharedPreferences preferences = getActivity().getSharedPreferences(
                     FEED_FRAGMENT_PREFERENCE, Context.MODE_PRIVATE);
-            String localLastModified = preferences.getString(LAST_MODIFIED_PREFERENCE, "");
-            String onlineLastModified = fetchLastModified();
-            boolean feedHasBeenModified = !localLastModified.equals(onlineLastModified);
+            long localLastModified = preferences.getLong(LAST_MODIFIED_PREFERENCE, 0);
+            long onlineLastModified = fetchLastModified();
+            boolean feedHasBeenModified = localLastModified != onlineLastModified;
 
             if (this.force || feedHasBeenModified) {
                 try {
@@ -154,7 +154,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     entries = feed.getEntries();
 
                     SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString(LAST_MODIFIED_PREFERENCE, onlineLastModified);
+                    editor.putLong(LAST_MODIFIED_PREFERENCE, onlineLastModified);
                     editor.apply();
                 } catch (Exception e) {
                     Log.e(this.getClass().getName(), e.getMessage());
