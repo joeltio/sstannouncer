@@ -2,6 +2,7 @@ package sstinc.sstannouncer.filter;
 
 
 
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -50,16 +51,17 @@ public class Filter{
     public Collection<Object> filter()
     {
         ArrayList <Object> feedList = new ArrayList<>(this.feed);
+        ArrayList<Object> filterList = new ArrayList<>(this.feed);
         for(Object object : feedList)
         {
             boolean shouldFilter = this.predicate.filter(object);
             if(shouldFilter == true)
             {
-                feedList.remove(object);
+                filterList.remove(object);
             }
         }
 
-        return (Collection<Object>) feedList;
+        return (Collection<Object>) filterList;
     }
 }
 

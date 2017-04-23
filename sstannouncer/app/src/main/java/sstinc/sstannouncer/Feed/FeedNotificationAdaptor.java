@@ -42,6 +42,7 @@ public class FeedNotificationAdaptor {
         this.feed = feed;
         this.title = title;
         this.lastModified = feed.getLastChanged();
+        this.adaptor = adaptor;
     }
 
     /**
@@ -65,15 +66,17 @@ public class FeedNotificationAdaptor {
                     if(object.getClass() == Entry.class)
                     {
                         Entry feedEntry = (Entry)object;
-                        if(lastModified.compareTo(feedEntry.getLastUpdated()) >= 0)
+                        if(lastModified.compareTo(feedEntry.getLastUpdated()) < 0)
                         {
-                            return true;
+                            return false; //Don't Filter
                         }
                     }
 
-                    return false;
+                    return true; //Filter
                 }
             }, (Collection<Object>)feedEntries);
+
+            this.lastModified = feed.getLastChanged();
 
             Collection<Object> filteredObject = changeFilter.filter();
             ArrayList<Entry> changedEntries = new ArrayList<>();

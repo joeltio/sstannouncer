@@ -167,12 +167,6 @@ public class ResourceService extends Service
         if(this.isAlive() == true)
         {
             this.serviceThreadStop = true;
-            try {
-                this.serviceThread.join();
-            }
-            catch(InterruptedException e) {
-                this.kill();
-            }
         }
     }
 
@@ -189,7 +183,6 @@ public class ResourceService extends Service
     {
         while(this.serviceThreadStop == false)
         {
-
             Date previousTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
                     this.resource.getTimeStamp();
 
@@ -208,13 +201,14 @@ public class ResourceService extends Service
 
             //Frequency Control
             double delay = 1.0/this.frequency;
-            long delayMillis = (long) delay * 1000;
+            double delayMillis = (double) delay * 1000;
             try {
-                Thread.sleep(delayMillis);
+                Thread.sleep((long)delayMillis);
             }
             catch(InterruptedException e){
                 this.kill();
             }
+
         }
     }
 }

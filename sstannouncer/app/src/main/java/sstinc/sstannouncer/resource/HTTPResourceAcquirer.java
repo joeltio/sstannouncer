@@ -52,7 +52,7 @@ public class HTTPResourceAcquirer extends ResourceAcquirer
 
             status = - checkConnection.getResponseCode();
 
-            if(resourceTimeStamp.compareTo(resource.getTimeStamp()) >= 0)
+            if(resourceTimeStamp.compareTo(resource.getTimeStamp()) > 0)
             {
                 //Retrieve the Resource itself.
                 HttpURLConnection retrieveConnection =

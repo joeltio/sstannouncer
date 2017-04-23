@@ -112,40 +112,15 @@ public class AndroidEventAdaptor {
 
     /**
      * Determines if the Adaptor is connected.
-     * Determines if the Adaptor is connected and able to transmit and recieve events;
+     * Determines if the Adaptor is connected and able to transmit and retrieve events;
+     * Requires at most 10 secs to determine if the Adaptor is connected.
      * Triggers disconnect if ping is not successful.
      *
      * @return Returns true if the Adaptor is connected, false otherwise.
      */
     public boolean connected()
     {
-        this.pingThread = Thread.currentThread();
-        this.pingResult = false;
-
-        this.sendPing();
-
-        try
-        {
-            synchronized(this.pingThread)
-            {
-                Thread.currentThread().wait();
-            }
-        }
-        catch(InterruptedException exp)
-        {
-
-        }
-
-        if(this.pingResult == true)
-        {
-            //Ping was successful
-            return true;
-        }
-        else
-        {
-            //Ping was failure
-            return false;
-        }
+        return this.pingResult;
     }
 
     /**
@@ -154,18 +129,15 @@ public class AndroidEventAdaptor {
      * event controller.
      *
      * @param remoteMessenger The messenger to use to communicate with the remote process.
-     *
-     * @return Returns if the connection attempt was successful, false otherwise
      */
-    public boolean connect(Messenger remoteMessenger)
+    public void connect(Messenger remoteMessenger)
     {
 
         //Connect to Remote Process
         this.remoteMessenger = remoteMessenger;
         this.sendInitMessage();
 
-        return this.connected();
-
+        this.sendPing();
     }
 
     /**
@@ -285,10 +257,6 @@ public class AndroidEventAdaptor {
     private void receivePingACK()
     {
         this.pingResult = true;
-
-        synchronized(this.pingThread) {
-            this.pingThread.notify();
-        }
     }
 
     private void sendInitMessage()

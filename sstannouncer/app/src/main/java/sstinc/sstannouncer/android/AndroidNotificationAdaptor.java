@@ -13,6 +13,7 @@ import java.net.Inet4Address;
 
 import sstinc.sstannouncer.EntryActivity;
 import sstinc.sstannouncer.Feed.Entry;
+import sstinc.sstannouncer.R;
 
 /**
  * Android notification Adaptor
@@ -68,6 +69,8 @@ public class AndroidNotificationAdaptor
                         targetIntent,
                         0);
         builder.setContentIntent(pendingTargetIntent);
+        builder.setSmallIcon(R.drawable.announcer);
+        builder.setAutoCancel(true);
 
         this.notification = builder.build();
     }

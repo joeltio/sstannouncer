@@ -1,20 +1,27 @@
 package sstinc.sstannouncer.android;
 
+import android.app.Presentation;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Exchanger;
+import java.util.prefs.Preferences;
 
 import sstinc.sstannouncer.Feed.Feed;
 import sstinc.sstannouncer.Feed.FeedNotificationAdaptor;
 import sstinc.sstannouncer.Feed.RSSParser;
 import sstinc.sstannouncer.Feed.XML;
 import sstinc.sstannouncer.R;
+import sstinc.sstannouncer.SettingsFragment;
 import sstinc.sstannouncer.event.Event;
 import sstinc.sstannouncer.event.EventController;
 import sstinc.sstannouncer.event.EventHandler;
@@ -56,17 +63,32 @@ public class AndroidServiceAdaptor extends Service
     public void onCreate() {
         super.onCreate();
 
+        //Storage - Remove on REDESIGN
+        final SharedPreferences settings =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final SharedPreferences.Editor  settingsEditor = settings.edit();
+        final DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        String stringTimeStamp = dateFormatter.format(new Date(0));
+        stringTimeStamp = settings.getString("resource.timestamp", stringTimeStamp);
+        Date timeStamp = null;
+        try {
+            timeStamp = dateFormatter.parse(stringTimeStamp);
+        }catch(Exception exp){};
+        //Storage - Remove on REDESIGN
+
+        Log.d(this.LOG_TAG, stringTimeStamp);
+
         this.eventController = new EventController();
         this.androidEventAdaptor = new AndroidEventAdaptor(this.eventController);
         this.resource = new
-                Resource(getString(R.string.blog_rss_url), new Date(0), null);
+                Resource(getString(R.string.blog_rss_url), timeStamp, null);
         ResourceAcquirer resourceAcquirer = new HTTPResourceAcquirer();
 
         this.resourceService = new ResourceService(this.resource, resourceAcquirer);
         this.resourceService.setResourceChangedEvent(new
                 Event(getString(R.string.event_resource_changed_blog), null, null));
         this.resourceService.bind(this.eventController);
-        this.resourceService.start();
+        this.resourceService.setFrequency(0.1 / 6); //Check Every Minute
 
         //NOTIFICATION ~ REMOVE ON REDESIGN, TIGHTLY COUPLED CODE>>>
         this.eventController.listen(this.toString(), this.resourceService.getResourceChangedEvent().getIdentifier(),
@@ -78,6 +100,10 @@ public class AndroidServiceAdaptor extends Service
                                 new AndroidNotificationAdaptor(getApplicationContext());
                         XML rss = null;
                         Feed feed = null;
+
+                        //Storage - remove on redesign
+                        settingsEditor.putString("resource.timestamp", dateFormatter.format(resource.getTimeStamp()));
+                        settingsEditor.apply();
 
                         try
                         {
@@ -96,6 +122,7 @@ public class AndroidServiceAdaptor extends Service
                     }
                 });
         //NOTIFICATION ~ REMOVE ON REDESIGN
+
     }
 
     /**
@@ -111,31 +138,24 @@ public class AndroidServiceAdaptor extends Service
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
-        if(intent.getBooleanExtra(AndroidServiceAdaptor.INTENT_EXTRA_START_BOOTUP, false) == true)
-        {
-            //Service Start
-            Log.i(this.LOG_TAG, "Resource Service Started");
-        }
-        else
+
+        if(intent != null && intent.hasExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER) == true)
         {
             //Service Connect
-            Log.i(this.LOG_TAG, "Connection Requests Recieved");
-            Log.i(this.LOG_TAG, "Attempting Connection");
+            try {
+                Thread.sleep(1000 * 5);
+            }
+            catch(InterruptedException e){};
             Messenger remoteMessenger = intent.
                     getParcelableExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER);
-            this.androidEventAdaptor.connect(remoteMessenger);
 
-            if(this.androidEventAdaptor.connected())
-            {
-                Log.i(this.LOG_TAG, "Connection Established");
-            }
-            else
-            {
-                Log.i(this.LOG_TAG, "Connection Failed ");
-            }
+            this.androidEventAdaptor.connect(remoteMessenger);
         }
 
-        return Service.START_REDELIVER_INTENT;
+        //Service Start
+        this.resourceService.start();
+
+        return Service.START_STICKY;
     }
 
     @Nullable
