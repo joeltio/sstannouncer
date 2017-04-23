@@ -8,11 +8,11 @@
 2 [DONE] Pull to refresh
 -- releasable -- 14/04/17
 1 Add setting to refresh rate
-3 Add setting to auto download images and videos
+3 [DONE] Add setting to auto download images and videos
 2 Save posts to database
 1 [DONE] Links linked would open browser
 2 [DONE] Show images
-3 [DONE, UNTESTED] Show videos
+3 [DONE] Show videos
 2 Images have optional download
 2 Add search by tag in action bar
 2 Add search by tag and text in action bar
