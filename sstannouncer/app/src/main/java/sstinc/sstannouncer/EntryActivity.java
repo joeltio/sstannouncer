@@ -19,8 +19,6 @@ import sstinc.sstannouncer.Feed.Entry;
 public class EntryActivity extends AppCompatActivity {
 
     public static String ENTRY_EXTRA = "sstinc.sstannouncer.EntryActivity.ENTRY_EXTRA";
-    public static String ENTRY_ACTIVITY_PREFERENCE = "entry_activity_preference";
-    public static String SHOW_IMAGES_PREFERENCE = "show_images";
 
     private Entry entryShown;
 
