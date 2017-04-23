@@ -15,4 +15,11 @@
 
     <string name="nav_settings">Settings</string>
     <string name="nav_all_posts">All Posts</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_show_images">show_images</string>
+    <string name="pref_title_show_images">Download Images</string>
+    <string name="pref_description_show_images">Automatically download images when loading each post</string>
 </resources>

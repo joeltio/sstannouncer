@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_header_general">
+        <CheckBoxPreference
+            android:key="@string/pref_show_images"
+            android:title="@string/pref_title_show_images"
+            android:summary="@string/pref_description_show_images" />
+    </PreferenceCategory>
+</PreferenceScreen>

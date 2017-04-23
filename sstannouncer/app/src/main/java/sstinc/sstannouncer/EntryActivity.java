@@ -1,7 +1,9 @@
 package sstinc.sstannouncer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,8 @@ import sstinc.sstannouncer.Feed.Entry;
 public class EntryActivity extends AppCompatActivity {
 
     public static String ENTRY_EXTRA = "sstinc.sstannouncer.EntryActivity.ENTRY_EXTRA";
+    public static String ENTRY_ACTIVITY_PREFERENCE = "entry_activity_preference";
+    public static String SHOW_IMAGES_PREFERENCE = "show_images";
 
     private Entry entryShown;
 
@@ -42,6 +46,13 @@ public class EntryActivity extends AppCompatActivity {
         title.setText(this.entryShown.getTitle());
         author.setText(this.entryShown.getAuthorName());
         content.loadData(this.entryShown.getContent(), "text/html; charset=utf-8", "utf-8");
+
+        content.getSettings().setJavaScriptEnabled(true);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean showImages = preferences.getBoolean(
+                getResources().getString(R.string.pref_show_images), false);
+        content.getSettings().setLoadsImagesAutomatically(showImages);
+
         try {
             published.setText(Entry.toShortDate(this.entryShown.getPublished()));
         } catch (ParseException e) {
