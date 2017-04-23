@@ -69,7 +69,7 @@ public class AndroidNotificationAdaptor
                         targetIntent,
                         0);
         builder.setContentIntent(pendingTargetIntent);
-        builder.setSmallIcon(R.drawable.announcer);
+        builder.setSmallIcon(R.drawable.notifcation_icon);
         builder.setAutoCancel(true);
 
         this.notification = builder.build();
