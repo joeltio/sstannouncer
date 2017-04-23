@@ -30,6 +30,7 @@ import sstinc.sstannouncer.android.AndroidServiceAdaptor;
 import sstinc.sstannouncer.event.Event;
 import sstinc.sstannouncer.event.EventController;
 import sstinc.sstannouncer.event.EventHandler;
+import sstinc.sstannouncer.resource.Resource;
 
 public class FeedFragment extends ListFragment implements AdapterView.OnItemClickListener {
     public FeedFragment() {}
@@ -60,9 +61,27 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     new EventHandler() {
                 @Override
                 public void handle(Event event) {
-                    // Temporary code, would be better to use already
-                    // retrieved xml.
-                    new fetchNewFeed(true).execute();
+                    Resource resource = new Resource(event.getData());
+                    ArrayList<Entry> entries;
+                    try {
+                        XML xml = new XML(resource.getData());
+                        Feed feed = RSSParser.parse(xml);
+
+                        entries = feed.getEntries();
+
+                        SharedPreferences preferences = getActivity().getSharedPreferences(
+                                FEED_FRAGMENT_PREFERENCE, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putLong(LAST_MODIFIED_PREFERENCE, resource.getTimeStamp().getTime());
+                        editor.apply();
+                    } catch (Exception e) {
+                        Log.e(this.getClass().getName(), e.getMessage());
+                        entries = new ArrayList<>();
+                    }
+
+                    if (!entries.isEmpty()) {
+                        setListAdapter(new FeedArrayAdapter(getActivity(), entries));
+                    }
                 }
             });
             new fetchNewFeed(true).execute();
