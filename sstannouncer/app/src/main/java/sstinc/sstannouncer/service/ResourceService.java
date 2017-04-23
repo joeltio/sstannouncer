@@ -2,6 +2,7 @@ package sstinc.sstannouncer.service;
 
 import java.util.Date;
 
+import sstinc.sstannouncer.event.EventHandler;
 import sstinc.sstannouncer.resource.Resource;
 import sstinc.sstannouncer.resource.ResourceAcquirer;
 import sstinc.sstannouncer.event.Event;
@@ -17,6 +18,7 @@ import sstinc.sstannouncer.event.EventController;
 public class ResourceService extends Service
 {
     private Event resourceChangedEvent;
+    private Event frequencyChangeEvent;
 
     private double frequency;
 
@@ -49,6 +51,7 @@ public class ResourceService extends Service
         this.acquirer = acquirer;
         this.resourceChangedEvent = new Event(String.format("service.resource.changed ",
                 this.resource.getURL()), new Date(0), "");
+        this.frequencyChangeEvent = new Event("service.resource.set.frequency", new Date(0), "");
 
         this.status = 0;
         this.serviceThreadName = "ResourceService/" + resource.getURL();
@@ -107,7 +110,16 @@ public class ResourceService extends Service
      */
     public void bind(EventController eventController)
     {
+        final ResourceService resourceService = this;
         this.boundEventControl = eventController;
+        this.boundEventControl.listen(this.toString(), this.getFrequencyChangeEvent().getData(),
+                new EventHandler() {
+                    @Override
+                    public void handle(Event event) {
+                        double changeFrequency = Double.parseDouble(event.toString());
+                        resourceService.setFrequency(changeFrequency);
+                    }
+                });
     }
 
     /**
@@ -151,6 +163,19 @@ public class ResourceService extends Service
     public void setResourceChangedEvent(Event event)
     {
         this.resourceChangedEvent = event;
+    }
+
+    /**
+     * Get Frequency Change Event
+     * The resource service listens for this event, on event raise, the resource service would
+     * set the resource service frequency defined by the string representation of the frequency
+     * in the event's data field. The string representation is defined by Double.toString().
+     *
+     * @return The event raise to change the resource service resource.
+     */
+    public Event getFrequencyChangeEvent()
+    {
+        return this.frequencyChangeEvent;
     }
 
     public void start()
