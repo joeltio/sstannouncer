@@ -2,6 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:title="@string/pref_header_general">
+        <ListPreference
+            android:key="@string/pref_refresh_rate"
+            android:title="@string/pref_title_refresh_rate"
+            android:summary="@string/pref_description_refresh_rate"
+            android:defaultValue="0"
+            android:entries="@array/pref_refresh_rate_array"
+            android:entryValues="@array/pref_refresh_rate_array_values"/>
         <CheckBoxPreference
             android:key="@string/pref_show_images"
             android:title="@string/pref_title_show_images"

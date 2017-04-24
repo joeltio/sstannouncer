@@ -20,9 +20,30 @@
     <string name="nav_all_posts">All Posts</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <!-- Data Usage settings -->
+    <string name="pref_header_general">Data Usage</string>
     <string name="pref_show_images">show_images</string>
     <string name="pref_title_show_images">Download Images</string>
     <string name="pref_description_show_images">Automatically download images when loading each post</string>
+
+    <string name="pref_refresh_rate">refresh_rate</string>
+    <string name="pref_title_refresh_rate">Set Refresh Rate</string>
+    <string name="pref_description_refresh_rate">Set how often Announcer checks for new posts</string>
+
+    <string-array name="pref_refresh_rate_array">
+        <item>Never</item>
+        <item>1 Minute</item>
+        <item>5 Minutes</item>
+        <item>30 Minutes</item>
+        <item>1 Hour</item>
+        <item>12 Hours</item>
+    </string-array>
+    <string-array name="pref_refresh_rate_array_values">
+        <item>0</item>
+        <item>60</item>
+        <item>300</item>
+        <item>1800</item>
+        <item>3600</item>
+        <item>43200</item>
+    </string-array>
 </resources>
