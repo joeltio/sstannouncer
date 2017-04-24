@@ -54,7 +54,6 @@ public class ServiceSystemTest {
         testEventController.listen(this.toString(), testEvent.getIdentifier(), new EventHandler() {
             @Override
             public void handle(Event event) {
-                Log.d("testResourceEvent", "Resource changed event");
                 eventStatus = true;
             }
         });

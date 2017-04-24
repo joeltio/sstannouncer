@@ -71,8 +71,6 @@ public class AndroidServiceAdaptor extends Service
         }catch(Exception exp){};
         //Storage - Remove on REDESIGN
 
-        Log.d(this.LOG_TAG, stringTimeStamp);
-
         this.eventController = new EventController();
         this.androidEventAdaptor = new AndroidEventAdaptor(this.eventController);
         this.resource = new
@@ -106,8 +104,6 @@ public class AndroidServiceAdaptor extends Service
                             feed = RSSParser.parse(rss);
                         }catch (Exception exp)
                         {
-                            Log.e("Resource Service", "Caught Exception trying to parse blog rss",
-                                    exp);
                             return;
                         }
 

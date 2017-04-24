@@ -1,6 +1,7 @@
 package com.sst.anouncements.service;
 
 
+
 import android.util.Log;
 
 import com.sst.anouncements.event.Event;
@@ -10,6 +11,7 @@ import com.sst.anouncements.resource.Resource;
 import com.sst.anouncements.resource.ResourceAcquirer;
 
 import java.util.Date;
+
 
 /**
  * Defines a service which maintains a resource
@@ -122,7 +124,6 @@ public class ResourceService extends Service
                 new EventHandler() {
                     @Override
                     public void handle(Event event) {
-                        Log.d("Resource Service", event.getData());
                         double changeFrequency = Double.parseDouble(event.getData());
                         if(changeFrequency == -1.0)
                         {

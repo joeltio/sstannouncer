@@ -78,8 +78,6 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                         editor.putLong(LAST_MODIFIED_PREFERENCE, resource.getTimeStamp().getTime());
                         editor.apply();
                     } catch (Exception e) {
-                        Log.e(this.getClass().getName(), e.getMessage());
-                        entries = new ArrayList<>();
                     }
 
                     if (!entries.isEmpty()) {
@@ -164,7 +162,6 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 lastModified =  urlConnection.getLastModified();
                 urlConnection.disconnect();
             } catch (Exception e) {
-                Log.e(this.getClass().getName(), e.getMessage());
             }
             return lastModified;
         }
@@ -189,7 +186,6 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     editor.putLong(LAST_MODIFIED_PREFERENCE, onlineLastModified);
                     editor.apply();
                 } catch (Exception e) {
-                    Log.e(this.getClass().getName(), e.getMessage());
                     entries = new ArrayList<>();
                 }
             } else {
