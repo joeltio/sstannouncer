@@ -1,7 +1,7 @@
 # sstannouncer [![Build Status](https://travis-ci.org/MoonCheesez/sstannouncer.svg?branch=master)](https://travis-ci.org/MoonCheesez/sstannouncer)
 Never miss an announcement again.
 
-I sure we all had those painful moments,
+I'm sure we all had those painful moments,
 it was all so subtle, so quiet, so easy to miss.
 "Huh?" "What?" "When was this announcement was given?"
 Then it hits you that you missed that critical announcement,
