@@ -138,14 +138,13 @@ public class AndroidServiceAdaptor extends Service
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
+        try
+        {
+            Thread.sleep(1000 * 5);
+        }catch(Exception exp){}
 
         if(intent != null && intent.hasExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER) == true)
         {
-            //Service Connect
-            try {
-                Thread.sleep(1000 * 5);
-            }
-            catch(InterruptedException e){};
             Messenger remoteMessenger = intent.
                     getParcelableExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER);
 

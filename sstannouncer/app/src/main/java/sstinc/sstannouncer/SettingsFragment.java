@@ -24,9 +24,9 @@ public class SettingsFragment extends PreferenceFragment
         addPreferencesFromResource(R.xml.pref_data_usage);
     }
 
-    private void setRefreshRate(int refreshRateInMillis) {
-        // frequency in milliseconds
-        double frequency = 1 / refreshRateInMillis;
+    private void setRefreshRate(int refreshRate) {
+        double frequency = 1.0 / refreshRate;
+
         String eventFrequencyString = getResources().getString(
                 R.string.event_resource_service_change_frequency);
         FeedFragment.eventController.raise(new Event(eventFrequencyString, new Date(),
@@ -36,15 +36,14 @@ public class SettingsFragment extends PreferenceFragment
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (s.equals(getResources().getString(R.string.pref_refresh_rate))) {
-            int refreshRateMilliseconds = Integer.parseInt(sharedPreferences.getString(
-                    getResources().getString(R.string.pref_refresh_rate), ""))*1000;
+            int refreshRate = Integer.parseInt(sharedPreferences.getString(
+                    getResources().getString(R.string.pref_refresh_rate), ""));
 
             if (FeedFragment.eventController == null) {
                 FeedFragment.eventController = new EventController();
             }
-            if (refreshRateMilliseconds == 0) {
-                // frequency in milliseconds
-                setRefreshRate(refreshRateMilliseconds);
+            if (refreshRate != 0) {
+                setRefreshRate(refreshRate);
             } else {
                 setRefreshRate(-1);
             }

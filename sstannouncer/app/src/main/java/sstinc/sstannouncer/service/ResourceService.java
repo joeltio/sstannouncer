@@ -1,5 +1,7 @@
 package sstinc.sstannouncer.service;
 
+import android.util.Log;
+
 import java.util.Date;
 
 import sstinc.sstannouncer.event.EventHandler;
@@ -28,6 +30,7 @@ public class ResourceService extends Service
 
     private String serviceThreadName;
     private volatile boolean serviceThreadStop;
+    private volatile boolean serviceThreadPause;
     private volatile Thread serviceThread;
 
     private EventController boundEventControl;
@@ -56,6 +59,7 @@ public class ResourceService extends Service
         this.status = 0;
         this.serviceThreadName = "ResourceService/" + resource.getURL();
         this.serviceThreadStop = false;
+        this.serviceThreadPause = false;
         this.frequency = 1.0;
     }
 
@@ -112,12 +116,21 @@ public class ResourceService extends Service
     {
         final ResourceService resourceService = this;
         this.boundEventControl = eventController;
-        this.boundEventControl.listen(this.toString(), this.getFrequencyChangeEvent().getData(),
+        this.boundEventControl.listen(this.toString(),
+                this.getFrequencyChangeEvent().getIdentifier(),
                 new EventHandler() {
                     @Override
                     public void handle(Event event) {
-                        double changeFrequency = Double.parseDouble(event.toString());
-                        resourceService.setFrequency(changeFrequency);
+                        Log.d("Resource Service", event.getData());
+                        double changeFrequency = Double.parseDouble(event.getData());
+                        if(changeFrequency == -1.0)
+                        {
+                            resourceService.serviceThreadPause = true;
+                        }
+                        else
+                        {
+                            resourceService.setFrequency(changeFrequency);
+                        }
                     }
                 });
     }
@@ -208,6 +221,8 @@ public class ResourceService extends Service
     {
         while(this.serviceThreadStop == false)
         {
+            while(this.serviceThreadPause == true){} //Pause
+
             Date previousTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
                     this.resource.getTimeStamp();
 

@@ -24,11 +24,9 @@ import sstinc.sstannouncer.event.EventHandler;
  * The adaptor only functions after the <code>localMessenger</code> and
  * <code>remoteMessenger</code> has been set to enable communication between Android Event
  * Adaptors.
- * The state of being connected is defined by the method <cod>connected()</cod>
  *
  * @see Event
  * @see EventController
- * @see AndroidEventAdaptor#connected()
  * @see android.os.Messenger
  */
 public class AndroidEventAdaptor {
@@ -107,20 +105,6 @@ public class AndroidEventAdaptor {
                 adaptor.sendEvent(event);
             }
         });
-    }
-
-
-    /**
-     * Determines if the Adaptor is connected.
-     * Determines if the Adaptor is connected and able to transmit and retrieve events;
-     * Requires at most 10 secs to determine if the Adaptor is connected.
-     * Triggers disconnect if ping is not successful.
-     *
-     * @return Returns true if the Adaptor is connected, false otherwise.
-     */
-    public boolean connected()
-    {
-        return this.pingResult;
     }
 
     /**
@@ -206,19 +190,15 @@ public class AndroidEventAdaptor {
     private void sendEvent(Event event)
     {
         if(this.deliveredEvent == null || this.deliveredEvent.equals(event) == false) {
-            if(this.connected() == true)
-            {
-                Message eventMessage = new Message();
-                eventMessage.what = AndroidEventAdaptor.MESSAGE_SEND_EVENT;
-                Bundle messageData = new Bundle();
-                messageData.putString(AndroidEventAdaptor.MESSAGE_DATA_EVENT, event.toString());
-                eventMessage.setData(messageData);
+            Message eventMessage = new Message();
+            eventMessage.what = AndroidEventAdaptor.MESSAGE_SEND_EVENT;
+            Bundle messageData = new Bundle();
+            messageData.putString(AndroidEventAdaptor.MESSAGE_DATA_EVENT, event.toString());
+            eventMessage.setData(messageData);
 
-                try {
-                    this.remoteMessenger.send(eventMessage);
-                } catch (RemoteException exp) {
-
-                }
+            try {
+                this.remoteMessenger.send(eventMessage);
+            } catch (RemoteException exp) {
             }
         }
     }
