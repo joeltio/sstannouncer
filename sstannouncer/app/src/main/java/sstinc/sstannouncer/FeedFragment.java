@@ -38,7 +38,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
     private static final String FEED_FRAGMENT_PREFERENCE = "feed_fragment_preference";
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
     private fetchNewFeed fetchFeedAsync;
-    private EventController eventController;
+    public static EventController eventController = null;
     private AndroidEventAdaptor androidEventAdaptor;
 
     @Override
@@ -48,8 +48,10 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
         getListView().setOnItemClickListener(this);
         if (savedInstanceState == null) {
-            this.eventController = new EventController();
-            this.androidEventAdaptor = new AndroidEventAdaptor(this.eventController);
+            if (FeedFragment.eventController == null) {
+                FeedFragment.eventController = new EventController();
+            }
+            this.androidEventAdaptor = new AndroidEventAdaptor(FeedFragment.eventController);
 
             // Connect to service
             Intent connectIntent = new Intent(getActivity(), AndroidServiceAdaptor.class);
