@@ -43,7 +43,18 @@ public class EntryActivity extends AppCompatActivity {
 
         title.setText(this.entryShown.getTitle());
         author.setText(this.entryShown.getAuthorName());
-        content.loadData(this.entryShown.getContent(), "text/html; charset=utf-8", "utf-8");
+        String addedCss = "<style>img{display: inline;height: auto;max-width: 100%}</style>";
+        String addedJs = "<script>" +
+                "document.addEventListener('DOMContentLoaded', function(event) {" +
+                "    var imgs = document.getElementsByTagName('img');" +
+                "    for (var i=0; i<imgs.length; i++) {" +
+                "        console.log(imgs[i].parentElement.style.marginLeft);" +
+                "        imgs[i].parentElement.style.marginLeft = '0px';" +
+                "    }" +
+                "});" +
+                "</script>";
+        content.loadData(addedCss + addedJs +
+                this.entryShown.getContent(), "text/html; charset=utf-8", "utf-8");
 
         content.getSettings().setJavaScriptEnabled(true);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
