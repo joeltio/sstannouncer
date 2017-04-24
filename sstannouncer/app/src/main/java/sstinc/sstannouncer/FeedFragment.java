@@ -37,6 +37,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
     private static final String FEED_FRAGMENT_PREFERENCE = "feed_fragment_preference";
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
+    private fetchNewFeed fetchFeedAsync;
     private EventController eventController;
     private AndroidEventAdaptor androidEventAdaptor;
 
@@ -84,7 +85,8 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     }
                 }
             });
-            new fetchNewFeed(true).execute();
+            this.fetchFeedAsync = new fetchNewFeed(true);
+            this.fetchFeedAsync.execute();
         }
     }
 
@@ -115,12 +117,21 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    new fetchNewFeed().execute();
+                    fetchFeedAsync = new fetchNewFeed();
+                    fetchFeedAsync.execute();
                 }
             }
         );
 
         return mSwipeRefreshLayout;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (fetchFeedAsync != null) {
+            fetchFeedAsync.cancel(true);
+        }
     }
 
     @Override
