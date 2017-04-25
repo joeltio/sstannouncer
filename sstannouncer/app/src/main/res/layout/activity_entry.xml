@@ -26,6 +26,7 @@
 
             <TextView
                 android:id="@+id/entry_by_text"
+                android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
