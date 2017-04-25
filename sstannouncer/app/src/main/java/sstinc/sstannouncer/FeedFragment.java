@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -35,7 +36,6 @@ import sstinc.sstannouncer.resource.Resource;
 public class FeedFragment extends ListFragment implements AdapterView.OnItemClickListener {
     public FeedFragment() {}
 
-    private static final String FEED_FRAGMENT_PREFERENCE = "feed_fragment_preference";
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
     private fetchNewFeed fetchFeedAsync;
     public static EventController eventController = null;
@@ -65,15 +65,15 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 @Override
                 public void handle(Event event) {
                     Resource resource = new Resource(event.getData());
-                    ArrayList<Entry> entries = new ArrayList<Entry>();
+                    ArrayList<Entry> entries;
                     try {
                         XML xml = new XML(resource.getData());
                         Feed feed = RSSParser.parse(xml);
 
                         entries = feed.getEntries();
 
-                        SharedPreferences preferences = getActivity().getSharedPreferences(
-                                FEED_FRAGMENT_PREFERENCE, Context.MODE_PRIVATE);
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                                getActivity());
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putLong(LAST_MODIFIED_PREFERENCE, resource.getTimeStamp().getTime());
                         editor.apply();
@@ -172,8 +172,8 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         @Override
         protected ArrayList<Entry> doInBackground(Void... voids) {
             ArrayList<Entry> entries;
-            SharedPreferences preferences = getActivity().getSharedPreferences(
-                    FEED_FRAGMENT_PREFERENCE, Context.MODE_PRIVATE);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                    getActivity());
             long localLastModified = preferences.getLong(LAST_MODIFIED_PREFERENCE, 0);
             long onlineLastModified = fetchLastModified();
             boolean feedHasBeenModified = localLastModified != onlineLastModified;
