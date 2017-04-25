@@ -2,6 +2,8 @@ package sstinc.sstannouncer;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.sst.anouncements.Feed.XML;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -9,9 +11,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import sstinc.sstannouncer.Feed.XML;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class XMLTest {
@@ -81,7 +84,6 @@ public class XMLTest {
             xml.fetch("http://studentsblog.sst.edu.sg/feeds/posts/default");
             ArrayList<XML> entries = xml.xpathMultipleNodes("/feed/entry");
             assertEquals(25, entries.size());
-            fail("This needs to be checked if it is always 25.");
 
             for (XML entry : entries) {
                 String publishedDate = entry.xpathString("/entry/published/text()");

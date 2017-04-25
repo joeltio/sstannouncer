@@ -1,21 +1,18 @@
 package sstinc.sstannouncer;
 
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
+import com.sst.anouncements.resource.HTTPResourceAcquirer;
+import com.sst.anouncements.resource.Resource;
+import com.sst.anouncements.resource.ResourceAcquirer;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-import sstinc.sstannouncer.resource.HTTPResourceAcquirer;
-import sstinc.sstannouncer.resource.Resource;
-import sstinc.sstannouncer.resource.ResourceAcquirer;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class ResourceSystemTest

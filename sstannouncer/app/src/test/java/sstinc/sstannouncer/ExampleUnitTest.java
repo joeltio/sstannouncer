@@ -1,4 +1,4 @@
-package sstinc.sstannouncer;
+package sstannouncer;
 
 import org.junit.Test;
 

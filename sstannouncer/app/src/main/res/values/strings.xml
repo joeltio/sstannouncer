@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SST Announcer</string>
+    <string name="app_name">Announcer</string>
 
     <string name="toolbar_all">All Posts</string>
     <string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>
@@ -20,15 +20,18 @@
     <string name="nav_all_posts">All Posts</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Data Usage settings -->
-    <string name="pref_header_general">Data Usage</string>
+    <string name="pref_header_general">Settings</string>
     <string name="pref_show_images">show_images</string>
-    <string name="pref_title_show_images">Download Images</string>
-    <string name="pref_description_show_images">Automatically download images when loading each post</string>
+    <string name="pref_title_show_images">Display Images</string>
+    <string name="pref_description_show_images">
+        Display images when viewing entries.
+    </string>
 
     <string name="pref_refresh_rate">refresh_rate</string>
     <string name="pref_title_refresh_rate">Set Refresh Rate</string>
-    <string name="pref_description_refresh_rate">Set how often Announcer checks for new posts</string>
+    <string name="pref_description_refresh_rate">
+        Change how often Announcer checks for new entries.
+    </string>
 
     <string-array name="pref_refresh_rate_array">
         <item>Never</item>

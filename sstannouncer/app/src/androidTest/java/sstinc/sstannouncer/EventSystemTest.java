@@ -2,17 +2,19 @@ package sstinc.sstannouncer;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.sst.anouncements.android.AndroidEventAdaptor;
+import com.sst.anouncements.event.Event;
+import com.sst.anouncements.event.EventController;
+import com.sst.anouncements.event.EventHandler;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
 
-import sstinc.sstannouncer.android.AndroidEventAdaptor;
-import sstinc.sstannouncer.event.Event;
-import sstinc.sstannouncer.event.EventController;
-import sstinc.sstannouncer.event.EventHandler;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class EventSystemTest
@@ -72,7 +74,6 @@ public class EventSystemTest
 
         //Connection Adaptors
         localEventAdaptor.connect(remoteEventAdaptor.getLocalMessenger());
-        assertTrue(localEventAdaptor.connected());
 
         //Transmission of Event
         localEventController.listen(this.toString(), "test.event", new EventHandler() {

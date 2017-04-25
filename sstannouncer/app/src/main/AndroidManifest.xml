@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="sstinc.sstannouncer">
+    package="com.sst.anouncements">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.sst.anouncements.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,17 +21,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EntryActivity"></activity>
+        <activity android:name="com.sst.anouncements.EntryActivity"></activity>
 
         <!-- Service Boot -->
-        <receiver android:name=".android.AndroidServiceBoot">
+        <receiver android:name="com.sst.anouncements.android.AndroidServiceBoot">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <!-- Resource Service -->
         <service
-            android:name=".android.AndroidServiceAdaptor"
+            android:name="com.sst.anouncements.android.AndroidServiceAdaptor"
             android:process=":res_service"
             >
         </service>

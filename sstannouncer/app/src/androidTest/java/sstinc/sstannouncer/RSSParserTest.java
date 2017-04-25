@@ -2,6 +2,11 @@ package sstinc.sstannouncer;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.sst.anouncements.Feed.Entry;
+import com.sst.anouncements.Feed.Feed;
+import com.sst.anouncements.Feed.RSSParser;
+import com.sst.anouncements.Feed.XML;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -10,13 +15,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import sstinc.sstannouncer.Feed.Entry;
-import sstinc.sstannouncer.Feed.Feed;
-import sstinc.sstannouncer.Feed.RSSParser;
-import sstinc.sstannouncer.Feed.XML;
-
 import static junit.framework.Assert.fail;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class RSSParserTest {
