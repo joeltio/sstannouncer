@@ -16,9 +16,9 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class Entry implements Parcelable {
-    private String id, author, bloggerLink, title, content;
-    private Date publishDate, lastUpdated;
-    private ArrayList<String> categories;
+    private final String id, author, bloggerLink, title, content;
+    private final Date publishDate, lastUpdated;
+    private final ArrayList<String> categories;
 
     private Date bloggerDateStringToDate(String dateString) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss.SSSz",

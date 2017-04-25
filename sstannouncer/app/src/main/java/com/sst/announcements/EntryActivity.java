@@ -15,7 +15,7 @@ import com.sst.announcements.Feed.Entry;
 
 public class EntryActivity extends AppCompatActivity {
 
-    public static String ENTRY_EXTRA = "com.sst.announcements.EntryActivity.ENTRY_EXTRA";
+    public static final String ENTRY_EXTRA = "com.sst.announcements.EntryActivity.ENTRY_EXTRA";
 
     private Entry entryShown;
 

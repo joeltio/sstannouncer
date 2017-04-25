@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Feed {
-    private Date lastChanged;
-    private ArrayList<String> categories;
-    private ArrayList<Entry> entries;
+    private final Date lastChanged;
+    private final ArrayList<String> categories;
+    private final ArrayList<Entry> entries;
 
     public Feed(Date lastChanged, ArrayList<String> categories, ArrayList<Entry> entries) {
         this.lastChanged = lastChanged;
