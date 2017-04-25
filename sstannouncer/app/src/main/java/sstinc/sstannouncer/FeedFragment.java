@@ -65,7 +65,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 @Override
                 public void handle(Event event) {
                     Resource resource = new Resource(event.getData());
-                    ArrayList<Entry> entries;
+                    ArrayList<Entry> entries = new ArrayList<Entry>();
                     try {
                         XML xml = new XML(resource.getData());
                         Feed feed = RSSParser.parse(xml);
