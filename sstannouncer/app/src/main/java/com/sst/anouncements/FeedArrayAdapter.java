@@ -64,7 +64,8 @@ public class FeedArrayAdapter extends ArrayAdapter<Entry> {
             viewHolder.date_textView.setText(Entry.toShortDate(entry.getPublished()));
         } catch (ParseException e) {
             Log.e(this.getClass().getName(), e.getMessage());
-            viewHolder.date_textView.setText("ERROR");
+            viewHolder.date_textView.setText(
+                    parent.getResources().getString(R.string.date_textView_error));
         }
         return convertView;
     }
