@@ -56,7 +56,7 @@ public class EntryActivity extends AppCompatActivity {
         content.getSettings().setJavaScriptEnabled(true);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean showImages = preferences.getBoolean(
-                getResources().getString(R.string.pref_show_images), false);
+                getResources().getString(R.string.pref_show_images), true);
         content.getSettings().setLoadsImagesAutomatically(showImages);
 
         published.setText(Entry.toShortDate(this.entryShown.getPublished()));
