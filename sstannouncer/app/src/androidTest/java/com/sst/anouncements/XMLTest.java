@@ -1,4 +1,4 @@
-package sstinc.sstannouncer;
+package com.sst.anouncements;
 
 import android.support.test.runner.AndroidJUnit4;
 

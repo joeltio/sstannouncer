@@ -1,4 +1,4 @@
-package sstannouncer;
+package com.sst.anouncements;
 
 import org.junit.Test;
 
