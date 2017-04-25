@@ -20,7 +20,7 @@ public class SettingsFragment extends PreferenceFragment
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                 getActivity());
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        addPreferencesFromResource(R.xml.pref_setting);
+        addPreferencesFromResource(R.xml.pref_data_usage);
     }
 
     private void setRefreshRate(int refreshRate) {
