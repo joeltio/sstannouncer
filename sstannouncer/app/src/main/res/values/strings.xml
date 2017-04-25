@@ -2,8 +2,7 @@
     <string name="app_name">SST Announcer</string>
 
     <string name="toolbar_all">All Posts</string>
-    <!--<string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>-->
-    <string name="blog_rss_url">http://test-sst.blogspot.sg/feeds/posts/default</string>
+    <string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>
     <string name="entry_by_text">by</string>
     <string name="open_in_browser">Open in browser</string>
 
