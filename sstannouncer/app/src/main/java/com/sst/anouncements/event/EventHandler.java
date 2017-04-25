@@ -11,6 +11,6 @@ public interface EventHandler {
      *
      * @param event The event that triggered the handler.
      */
-    public void handle(Event event);
+    void handle(Event event);
 }
 

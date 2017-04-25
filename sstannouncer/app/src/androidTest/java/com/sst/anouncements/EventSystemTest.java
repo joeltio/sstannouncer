@@ -92,7 +92,7 @@ public class EventSystemTest
         try
         {
             Thread.sleep(1); //Event Processing Must be done within 1ms
-        }catch(InterruptedException exp){};
+        }catch(InterruptedException exp){}
 
         assertTrue(eventStatus);
 

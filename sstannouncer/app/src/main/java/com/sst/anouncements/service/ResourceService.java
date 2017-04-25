@@ -89,8 +89,7 @@ public class ResourceService extends Service
     {
         if(this.serviceThread == null) return false;
         Thread.State serviceThreadState = serviceThread.getState();
-        if(serviceThreadState == Thread.State.RUNNABLE) return true;
-        else return false;
+        return serviceThreadState == Thread.State.RUNNABLE;
     }
 
     /**
@@ -243,7 +242,7 @@ public class ResourceService extends Service
 
             //Frequency Control
             double delay = 1.0/this.frequency;
-            double delayMillis = (double) delay * 1000;
+            double delayMillis = delay * 1000;
             try {
                 Thread.sleep((long)delayMillis);
             }

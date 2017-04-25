@@ -69,7 +69,7 @@ public class FeedNotificationAdaptor {
 
                     return true; //Filter
                 }
-            }, (Collection<Object>)feedEntries);
+            }, feedEntries);
 
             this.lastModified = feed.getLastChanged();
 

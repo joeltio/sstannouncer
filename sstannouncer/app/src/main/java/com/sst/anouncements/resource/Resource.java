@@ -98,14 +98,10 @@ public class Resource {
         if (obj.getClass() != this.getClass()) return false;
 
         Resource otherObject = (Resource) obj;
-        if (otherObject.getURL().equals(this.getURL()) &&
+        return otherObject.getURL().equals(this.getURL()) &&
                 otherObject.getTimeStamp().equals(this.getTimeStamp()) &&
-                otherObject.getData().equals(this.getData()))
-        {
-            return true;
-        }
+                otherObject.getData().equals(this.getData());
 
-        return false;
     }
 
     //Serialise Resource

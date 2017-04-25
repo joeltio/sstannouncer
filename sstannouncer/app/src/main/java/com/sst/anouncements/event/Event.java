@@ -77,11 +77,7 @@ public class Event {
         if(obj.getClass() != this.getClass()) return false;
 
         Event otherObject = (Event)obj;
-        if(otherObject.getIdentifier().equals(this.getIdentifier()))
-        {
-            return true;
-        }
-        return false;
+        return otherObject.getIdentifier().equals(this.getIdentifier());
 
     }
 

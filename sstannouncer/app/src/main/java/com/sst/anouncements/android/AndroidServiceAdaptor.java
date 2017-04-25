@@ -68,7 +68,7 @@ public class AndroidServiceAdaptor extends Service
         Date timeStamp = null;
         try {
             timeStamp = dateFormatter.parse(stringTimeStamp);
-        }catch(Exception exp){};
+        }catch(Exception exp){}
         //Storage - Remove on REDESIGN
 
         this.eventController = new EventController();

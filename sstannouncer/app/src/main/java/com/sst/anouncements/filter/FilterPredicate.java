@@ -15,5 +15,5 @@ public interface FilterPredicate {
      *
      * @return Returns true if the object should be filtered, false otherwise.
      */
-    public boolean filter(Object object);
+    boolean filter(Object object);
 }
