@@ -1,11 +1,8 @@
 <resources>
     <string name="app_name">Announcer</string>
-
-    <string name="toolbar_all">All Posts</string>
     <string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>
-    <string name="entry_by_text">by</string>
-    <string name="open_in_browser">Open in browser</string>
 
+    <!-- Service -->
     <string name="event_resource_changed_blog">
         event_resourcechanged_http://studentsblog.sst.edu.sg/feeds/posts/default
     </string>
@@ -13,13 +10,19 @@
         service.resource.set.frequency
     </string>
 
+    <!-- Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- Feed and Entries-->
+    <string name="toolbar_all">All Posts</string>
+    <string name="entry_by_text">by</string>
+    <string name="open_in_browser">Open in browser</string>
+
+    <!-- Settings -->
     <string name="toolbar_settings">Settings</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_all_posts">All Posts</string>
-    <string name="title_activity_settings">Settings</string>
 
     <string name="pref_header_general">Data Usage</string>
     <string name="pref_show_images">show_images</string>
