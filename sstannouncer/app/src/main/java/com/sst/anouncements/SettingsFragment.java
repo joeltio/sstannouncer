@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 
 import com.sst.anouncements.event.Event;
 import com.sst.anouncements.event.EventController;
@@ -16,6 +18,11 @@ public class SettingsFragment extends PreferenceFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        ActionBar toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (toolbar != null) {
+            toolbar.setTitle(getResources().getString(R.string.toolbar_settings));
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                 getActivity());
