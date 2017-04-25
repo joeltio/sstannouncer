@@ -18,7 +18,6 @@
     <string name="toolbar_all">All Posts</string>
     <string name="entry_by_text">by</string>
     <string name="open_in_browser">Open in browser</string>
-    <string name="date_textView_error">ERROR</string>
 
     <!-- Settings -->
     <string name="toolbar_settings">Settings</string>

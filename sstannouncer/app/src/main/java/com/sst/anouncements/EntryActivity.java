@@ -6,15 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.sst.anouncements.Feed.Entry;
-
-import java.text.ParseException;
 
 public class EntryActivity extends AppCompatActivity {
 
@@ -62,11 +59,7 @@ public class EntryActivity extends AppCompatActivity {
                 getResources().getString(R.string.pref_show_images), false);
         content.getSettings().setLoadsImagesAutomatically(showImages);
 
-        try {
-            published.setText(Entry.toShortDate(this.entryShown.getPublished()));
-        } catch (ParseException e) {
-            Log.e(this.getClass().getName(), e.getMessage());
-        }
+        published.setText(Entry.toShortDate(this.entryShown.getPublished()));
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.sst.anouncements;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.sst.anouncements.Feed.Entry;
 
-import java.text.ParseException;
 import java.util.List;
 
 public class FeedArrayAdapter extends ArrayAdapter<Entry> {
@@ -60,13 +58,7 @@ public class FeedArrayAdapter extends ArrayAdapter<Entry> {
             viewHolder.description_textView.setText(entry.makeFilteredContent());
         }
 
-        try {
-            viewHolder.date_textView.setText(Entry.toShortDate(entry.getPublished()));
-        } catch (ParseException e) {
-            Log.e(this.getClass().getName(), e.getMessage());
-            viewHolder.date_textView.setText(
-                    parent.getResources().getString(R.string.date_textView_error));
-        }
+        viewHolder.date_textView.setText(Entry.toShortDate(entry.getPublished()));
         return convertView;
     }
 }

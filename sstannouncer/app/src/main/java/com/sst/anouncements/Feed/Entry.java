@@ -83,7 +83,7 @@ public class Entry implements Parcelable {
         return content;
     }
 
-    public static String toShortDate(Date date) throws ParseException {
+    public static String toShortDate(Date date) {
         Date now = new Date();
 
         Calendar dateCalendar = new GregorianCalendar();
