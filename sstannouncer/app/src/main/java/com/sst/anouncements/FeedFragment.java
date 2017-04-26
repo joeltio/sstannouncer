@@ -129,6 +129,9 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
         if (fetchFeedAsync != null) {
             fetchFeedAsync.cancel(true);
         }
