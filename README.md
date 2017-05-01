@@ -1,4 +1,4 @@
-# sstannouncer [![Build Status](https://travis-ci.org/MoonCheesez/sstannouncer.svg?branch=master)](https://travis-ci.org/MoonCheesez/sstannouncer)
+# sstannouncer [![Build Status](https://travis-ci.org/joeltio/sstannouncer.svg?branch=master)](https://travis-ci.org/joeltio/sstannouncer)
 Never miss an announcement again.
 
 I'm sure we all had those painful moments,
