@@ -1,17 +1,17 @@
 package com.sst.anouncements.android;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Bundle;
 import android.os.RemoteException;
-
-import java.lang.ref.WeakReference;
 
 import com.sst.anouncements.event.Event;
 import com.sst.anouncements.event.EventController;
 import com.sst.anouncements.event.EventHandler;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Android Event Adaptor
@@ -189,16 +189,18 @@ public class AndroidEventAdaptor {
 
     private void sendEvent(Event event)
     {
-        if(this.deliveredEvent == null || this.deliveredEvent.equals(event) == false) {
-            Message eventMessage = new Message();
-            eventMessage.what = AndroidEventAdaptor.MESSAGE_SEND_EVENT;
-            Bundle messageData = new Bundle();
-            messageData.putString(AndroidEventAdaptor.MESSAGE_DATA_EVENT, event.toString());
-            eventMessage.setData(messageData);
+        if(this.remoteMessenger != null) {
+            if (this.deliveredEvent == null || this.deliveredEvent.equals(event) == false) {
+                Message eventMessage = new Message();
+                eventMessage.what = AndroidEventAdaptor.MESSAGE_SEND_EVENT;
+                Bundle messageData = new Bundle();
+                messageData.putString(AndroidEventAdaptor.MESSAGE_DATA_EVENT, event.toString());
+                eventMessage.setData(messageData);
 
-            try {
-                this.remoteMessenger.send(eventMessage);
-            } catch (RemoteException exp) {
+                try {
+                    this.remoteMessenger.send(eventMessage);
+                } catch (RemoteException exp) {
+                }
             }
         }
     }
