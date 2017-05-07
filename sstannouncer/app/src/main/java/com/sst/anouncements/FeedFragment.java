@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,9 +42,26 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
     private static final String NEWEST_ENTRY_DATE_PREFERENCE = "newest_entry";
-    private fetchNewFeed fetchFeedAsync;
+
     public static EventController eventController = null;
     private AndroidEventAdaptor androidEventAdaptor;
+
+    private fetchNewFeed fetchFeedAsync;
+    private DrawerLayout drawerLayout;
+    private DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {}
+        @Override
+        public void onDrawerOpened(View drawerView) {}
+        @Override
+        public void onDrawerStateChanged(int newState) {}
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            fetchFeedAsync.execute();
+            drawerLayout.removeDrawerListener(this);
+        }
+    };
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -88,8 +107,15 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     }
                 }
             });
-            this.fetchFeedAsync = new fetchNewFeed();
-            this.fetchFeedAsync.execute();
+
+            fetchFeedAsync = new fetchNewFeed();
+
+            this.drawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+            if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                this.drawerLayout.addDrawerListener(this.drawerListener);
+            } else {
+                this.fetchFeedAsync.execute();
+            }
         }
     }
 
@@ -138,6 +164,8 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         if (fetchFeedAsync != null) {
             fetchFeedAsync.cancel(true);
         }
+
+        this.drawerLayout.removeDrawerListener(this.drawerListener);
     }
 
     @Override
