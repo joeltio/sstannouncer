@@ -208,6 +208,12 @@ public class DbAdapter {
         return entries;
     }
 
+    public void deleteEntry(String entryId) {
+        SQLdb.delete(CATEGORIES_TABLE, CATEGORIES_TABLE_COL_ENTRY_ID + " = " + entryId, null);
+        SQLdb.delete(BLOGGER_LINKS_TABLE, BLOGGER_LINKS_TABLE_COL_ENTRY_ID + " = " + entryId, null);
+        SQLdb.delete(ENTRIES_TABLE, ENTRIES_TABLE_COL_ID + " = " + entryId, null);
+    }
+
     private static class DbHelper extends SQLiteOpenHelper {
         private DbHelper(Context ctx) {
             super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
