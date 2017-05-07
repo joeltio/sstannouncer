@@ -30,7 +30,7 @@ public class DbAdapter {
      * +----+-------------+
      */
 
-    private static final String DATABASE_NAME = "";
+    private static final String DATABASE_NAME = "announcer.db";
     private static final int DATABASE_VERSION = 1;
 
     // Entries table
@@ -63,13 +63,9 @@ public class DbAdapter {
     private static final String CATEGORIES_TABLE_COL_ENTRY_ID = "entry_id";
     private static final String CATEGORIES_TABLE_COL_CATEGORY = "category";
 
-    private String[] CATEGORIES_TABLE_COLUMNS = {
-            CATEGORIES_TABLE_COL_ENTRY_ID, CATEGORIES_TABLE_COL_CATEGORY
-    };
-
     private static final String CATEGORIES_TABLE_CREATE = "CREATE TABLE " + CATEGORIES_TABLE + "("
-            + CATEGORIES_TABLE_COL_ENTRY_ID + " TEXT NOT NULL,"
-            + CATEGORIES_TABLE_COL_CATEGORY + " TEXT NOT NULL,"
+            + CATEGORIES_TABLE_COL_ENTRY_ID + " TEXT NOT NULL, "
+            + CATEGORIES_TABLE_COL_CATEGORY + " TEXT NOT NULL, "
             + "FOREIGN KEY(" + CATEGORIES_TABLE_COL_ENTRY_ID + ") REFERENCES " + ENTRIES_TABLE + "("
             + ENTRIES_TABLE_COL_ID + ")"
             + ");";
@@ -79,13 +75,9 @@ public class DbAdapter {
     private static final String BLOGGER_LINKS_TABLE_COL_ENTRY_ID = "entry_id";
     private static final String BLOGGER_LINKS_TABLE_COL_BLOGGERLINK = "bloggerLink";
 
-    private String[] BLOGGER_LINKS_TABLE_COLUMNS = {
-            BLOGGER_LINKS_TABLE_COL_ENTRY_ID, BLOGGER_LINKS_TABLE_COL_BLOGGERLINK
-    };
-
     private static final String BLOGGER_LINKS_TABLE_CREATE = "CREATE TABLE " + BLOGGER_LINKS_TABLE + "("
             + BLOGGER_LINKS_TABLE_COL_ENTRY_ID + " TEXT NOT NULL, "
-            + BLOGGER_LINKS_TABLE_COL_BLOGGERLINK + " TEXT NOT NULL UNIQUE,"
+            + BLOGGER_LINKS_TABLE_COL_BLOGGERLINK + " TEXT NOT NULL UNIQUE, "
             + "FOREIGN KEY(" + BLOGGER_LINKS_TABLE_COL_ENTRY_ID + ") REFERENCES " + BLOGGER_LINKS_TABLE + "("
             + ENTRIES_TABLE_COL_ID + ")"
             + ");";
@@ -99,8 +91,8 @@ public class DbAdapter {
     }
 
     public DbAdapter open() throws android.database.SQLException {
-        dbHelper = new DbHelper(context);
-        SQLdb = dbHelper.getWritableDatabase();
+        this.dbHelper = new DbHelper(this.context);
+        this.SQLdb = this.dbHelper.getWritableDatabase();
         return this;
     }
 
@@ -137,12 +129,13 @@ public class DbAdapter {
     }
 
     private ArrayList<String> getCategories(String entryId) {
-        Cursor cursor = SQLdb.query(CATEGORIES_TABLE, CATEGORIES_TABLE_COLUMNS,
-                "?=?", new String[] {CATEGORIES_TABLE_COL_ENTRY_ID, entryId}, null, null, null);
+        Cursor cursor = SQLdb.query(CATEGORIES_TABLE,
+                new String[] {CATEGORIES_TABLE_COL_CATEGORY},
+                CATEGORIES_TABLE_COL_ENTRY_ID + "=?", new String[] {entryId}, null, null, null);
 
         ArrayList<String> categories = new ArrayList<>();
         for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
-            categories.add(cursor.getString(1));
+            categories.add(cursor.getString(0));
         }
 
         cursor.close();
@@ -151,11 +144,12 @@ public class DbAdapter {
     }
 
     private String getBloggerLink(String entryId) {
-        Cursor cursor = SQLdb.query(BLOGGER_LINKS_TABLE, BLOGGER_LINKS_TABLE_COLUMNS,
-                "?=?", new String[] {BLOGGER_LINKS_TABLE_COL_ENTRY_ID, entryId}, null, null, null);
+        Cursor cursor = SQLdb.query(BLOGGER_LINKS_TABLE,
+                new String[] {BLOGGER_LINKS_TABLE_COL_BLOGGERLINK},
+                BLOGGER_LINKS_TABLE_COL_ENTRY_ID + "=?", new String[] {entryId}, null, null, null);
         cursor.moveToFirst();
 
-        String bloggerLink = cursor.getString(1);
+        String bloggerLink = cursor.getString(0);
 
         cursor.close();
 
@@ -164,7 +158,7 @@ public class DbAdapter {
 
     public Entry getEntry(String entryId) {
         Cursor cursor = SQLdb.query(ENTRIES_TABLE, ENTRIES_TABLE_COLUMNS,
-                "?=?", new String[] {ENTRIES_TABLE_COL_ID, entryId}, null, null, null);
+                ENTRIES_TABLE_COL_ID + "=?", new String[] {entryId}, null, null, null);
         cursor.moveToFirst();
 
         String authorName = cursor.getString(1);
@@ -209,20 +203,20 @@ public class DbAdapter {
     }
 
     private void deleteCategories(String entryId) {
-        SQLdb.delete(CATEGORIES_TABLE, "?=?",
-                new String[] {CATEGORIES_TABLE_COL_ENTRY_ID, entryId});
+        SQLdb.delete(CATEGORIES_TABLE, CATEGORIES_TABLE_COL_ENTRY_ID + "=?",
+                new String[] {entryId});
     }
 
     private void deleteBloggerLink(String entryId) {
-        SQLdb.delete(BLOGGER_LINKS_TABLE, "?=?",
-                new String[] {BLOGGER_LINKS_TABLE_COL_ENTRY_ID, entryId});
+        SQLdb.delete(BLOGGER_LINKS_TABLE, BLOGGER_LINKS_TABLE_COL_ENTRY_ID + "=?",
+                new String[] {entryId});
     }
 
     public void deleteEntry(String entryId) {
         deleteCategories(entryId);
         deleteBloggerLink(entryId);
-        SQLdb.delete(ENTRIES_TABLE, "?=?",
-                new String[] {ENTRIES_TABLE_COL_ID, entryId});
+        SQLdb.delete(ENTRIES_TABLE, ENTRIES_TABLE_COL_ID + "=?",
+                new String[] {entryId});
     }
 
     public void deleteEntries(Date publishedBefore) {
@@ -245,6 +239,12 @@ public class DbAdapter {
             deleteBloggerLink(entryId);
         }
         SQLdb.delete(ENTRIES_TABLE, "?<?", whereArgs);
+    }
+
+    public void deleteAll() {
+        SQLdb.delete(CATEGORIES_TABLE, "1", null);
+        SQLdb.delete(BLOGGER_LINKS_TABLE, "1", null);
+        SQLdb.delete(ENTRIES_TABLE, "1", null);
     }
 
     private static class DbHelper extends SQLiteOpenHelper {
