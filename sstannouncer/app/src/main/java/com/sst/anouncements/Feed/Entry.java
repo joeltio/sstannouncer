@@ -48,6 +48,20 @@ public class Entry implements Parcelable {
         this.title = title;
         this.content = content;
     }
+
+    public Entry(String id, Date publishDate, Date lastUpdated,
+                 ArrayList<String> categories, String author, String bloggerLink,
+                 String title, String content) {
+        this.id = id;
+        this.publishDate = publishDate;
+        this.lastUpdated = lastUpdated;
+        this.categories = categories;
+        this.author = author;
+        this.bloggerLink = bloggerLink;
+        this.title = title;
+        this.content = content;
+    }
+
     public String getId() {
         return this.id;
     }
