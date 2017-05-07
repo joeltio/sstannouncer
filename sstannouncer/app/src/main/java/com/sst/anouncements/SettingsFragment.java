@@ -41,7 +41,7 @@ public class SettingsFragment extends PreferenceFragment
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals(getResources().getString(R.string.pref_refresh_rate))) {
+        if (isAdded() && s.equals(getResources().getString(R.string.pref_refresh_rate))) {
             int refreshRate = Integer.parseInt(sharedPreferences.getString(
                     getResources().getString(R.string.pref_refresh_rate), ""));
 
