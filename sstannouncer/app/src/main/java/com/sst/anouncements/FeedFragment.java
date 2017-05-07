@@ -43,6 +43,8 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
     private static final String NEWEST_ENTRY_DATE_PREFERENCE = "newest_entry";
 
+    private SharedPreferences preferences;
+
     public static EventController eventController = null;
     private AndroidEventAdaptor androidEventAdaptor;
 
@@ -63,10 +65,64 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         }
     };
 
+    private long getLastModified(long defaultValue) {
+        return this.preferences.getLong(LAST_MODIFIED_PREFERENCE, defaultValue);
+    }
+
+    private long getNewestEntryDate(long defaultValue) {
+        return this.preferences.getLong(NEWEST_ENTRY_DATE_PREFERENCE, defaultValue);
+    }
+
+    private void setLastModified(long newValue) {
+        SharedPreferences.Editor editor = this.preferences.edit();
+        editor.putLong(LAST_MODIFIED_PREFERENCE, newValue);
+        editor.apply();
+    }
+
+    private void setNewestEntryDate(long newValue) {
+        SharedPreferences.Editor editor = this.preferences.edit();
+        editor.putLong(NEWEST_ENTRY_DATE_PREFERENCE, newValue);
+        editor.apply();
+    }
+
+
+    private void updateEntries(ArrayList<Entry> entries) {
+        DbAdapter dbAdapter = new DbAdapter(getActivity());
+        dbAdapter.open();
+
+        Date oldestEntryPublished = entries.get(entries.size()-1).getPublished();
+        dbAdapter.deleteEntries(oldestEntryPublished);
+
+        long newestEntryDateMillis = getNewestEntryDate(-1);
+        if (newestEntryDateMillis != -1) {
+            Date newestEntryDate = new Date(newestEntryDateMillis);
+            for (int i=entries.size()-1; i>=0; i--) {
+                Entry entry = entries.get(i);
+
+                if (entry.getPublished().after(newestEntryDate)) {
+                    dbAdapter.insertEntry(entry);
+                }
+            }
+        } else {
+            dbAdapter.deleteAll();
+            for (Entry entry : entries) {
+                dbAdapter.insertEntry(entry);
+            }
+        }
+
+        dbAdapter.close();
+
+        newestEntryDateMillis = entries.get(entries.size()-1).getPublished().getTime();
+        setNewestEntryDate(newestEntryDateMillis);
+    }
+
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
+
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         getListView().setOnItemClickListener(this);
         if (savedInstanceState == null) {
@@ -87,18 +143,16 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 @Override
                 public void handle(Event event) {
                     Resource resource = new Resource(event.getData());
-                    ArrayList<Entry> entries = new ArrayList<Entry>();
+                    ArrayList<Entry> entries;
                     try {
                         XML xml = new XML(resource.getData());
                         Feed feed = RSSParser.parse(xml);
 
                         entries = feed.getEntries();
 
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
-                                getActivity());
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putLong(LAST_MODIFIED_PREFERENCE, resource.getTimeStamp().getTime());
-                        editor.apply();
+                        updateEntries(entries);
+
+                        setLastModified(resource.getTimeStamp().getTime());
                     } catch (Exception e) {
                     }
 
@@ -203,9 +257,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         @Override
         protected ArrayList<Entry> doInBackground(Void... voids) {
             ArrayList<Entry> entries;
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
-                    getActivity());
-            long localLastModified = preferences.getLong(LAST_MODIFIED_PREFERENCE, 0);
+            long localLastModified = getLastModified(0);
             long onlineLastModified = fetchLastModified();
             boolean feedHasBeenModified = localLastModified != onlineLastModified;
 
@@ -216,39 +268,9 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     Feed feed = RSSParser.parse(xml);
                     entries = feed.getEntries();
 
-                    DbAdapter dbAdapter = new DbAdapter(getActivity());
-                    dbAdapter.open();
+                    updateEntries(entries);
 
-                    Date oldestEntryPublished = entries.get(entries.size()-1).getPublished();
-                    dbAdapter.deleteEntries(oldestEntryPublished);
-
-                    long newestEntryDateMillis = preferences.getLong(
-                            NEWEST_ENTRY_DATE_PREFERENCE, -1);
-                    if (newestEntryDateMillis != -1) {
-                        Date newestEntryDate = new Date(newestEntryDateMillis);
-                        for (int i=entries.size()-1; i>=0; i--) {
-                            Entry entry = entries.get(i);
-
-                            if (entry.getPublished().after(newestEntryDate)) {
-                                dbAdapter.insertEntry(entry);
-                            }
-                        }
-                    } else {
-                        dbAdapter.deleteAll();
-                        for (Entry entry : entries) {
-                            dbAdapter.insertEntry(entry);
-                        }
-                    }
-
-                    dbAdapter.close();
-
-                    SharedPreferences.Editor editor = preferences.edit();
-
-                    newestEntryDateMillis = entries.get(entries.size()-1).getPublished().getTime();
-                    editor.putLong(NEWEST_ENTRY_DATE_PREFERENCE, newestEntryDateMillis);
-
-                    editor.putLong(LAST_MODIFIED_PREFERENCE, onlineLastModified);
-                    editor.apply();
+                    setLastModified(onlineLastModified);
                 } catch (Exception e) {
                     entries = new ArrayList<>();
                 }
