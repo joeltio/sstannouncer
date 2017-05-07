@@ -182,6 +182,32 @@ public class DbAdapter {
                 title, content);
     }
 
+    public ArrayList<Entry> getAllEntries() {
+        Cursor cursor = SQLdb.query(ENTRIES_TABLE, ENTRIES_TABLE_COLUMNS,
+                null, null, null, null, null);
+
+        ArrayList<Entry> entries = new ArrayList<>();
+        for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
+            String id = cursor.getString(0);
+            String authorName = cursor.getString(1);
+            String title = cursor.getString(2);
+            String content = cursor.getString(3);
+            Date publishDate = new Date(cursor.getLong(4));
+            Date lastUpdated = new Date(cursor.getLong(5));
+
+            ArrayList<String> categories = getCategories(id);
+            String bloggerLink = getBloggerLink(id);
+
+            entries.add(new Entry(id, publishDate, lastUpdated, categories, authorName, bloggerLink,
+                    title, content));
+        }
+
+        cursor.close();
+
+        // Entries are NOT sorted
+        return entries;
+    }
+
     private static class DbHelper extends SQLiteOpenHelper {
         private DbHelper(Context ctx) {
             super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
