@@ -138,7 +138,7 @@ public class DbAdapter {
 
     private ArrayList<String> getCategories(String entryId) {
         Cursor cursor = SQLdb.query(CATEGORIES_TABLE, CATEGORIES_TABLE_COLUMNS,
-                CATEGORIES_TABLE_COL_ENTRY_ID + " = " + entryId, null, null, null, null);
+                "?=?", new String[] {CATEGORIES_TABLE_COL_ENTRY_ID, entryId}, null, null, null);
 
         ArrayList<String> categories = new ArrayList<>();
         for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
@@ -152,7 +152,7 @@ public class DbAdapter {
 
     private String getBloggerLink(String entryId) {
         Cursor cursor = SQLdb.query(BLOGGER_LINKS_TABLE, BLOGGER_LINKS_TABLE_COLUMNS,
-                BLOGGER_LINKS_TABLE_COL_ENTRY_ID + " = " +  entryId, null, null, null, null);
+                "?=?", new String[] {BLOGGER_LINKS_TABLE_COL_ENTRY_ID, entryId}, null, null, null);
         cursor.moveToFirst();
 
         String bloggerLink = cursor.getString(1);
@@ -164,7 +164,7 @@ public class DbAdapter {
 
     public Entry getEntry(String entryId) {
         Cursor cursor = SQLdb.query(ENTRIES_TABLE, ENTRIES_TABLE_COLUMNS,
-                ENTRIES_TABLE_COL_ID + " = " + entryId, null, null, null, null);
+                "?=?", new String[] {ENTRIES_TABLE_COL_ID, entryId}, null, null, null);
         cursor.moveToFirst();
 
         String authorName = cursor.getString(1);
@@ -209,9 +209,12 @@ public class DbAdapter {
     }
 
     public void deleteEntry(String entryId) {
-        SQLdb.delete(CATEGORIES_TABLE, CATEGORIES_TABLE_COL_ENTRY_ID + " = " + entryId, null);
-        SQLdb.delete(BLOGGER_LINKS_TABLE, BLOGGER_LINKS_TABLE_COL_ENTRY_ID + " = " + entryId, null);
-        SQLdb.delete(ENTRIES_TABLE, ENTRIES_TABLE_COL_ID + " = " + entryId, null);
+        SQLdb.delete(CATEGORIES_TABLE, "?=?",
+                new String[] {CATEGORIES_TABLE_COL_ENTRY_ID, entryId});
+        SQLdb.delete(BLOGGER_LINKS_TABLE, "?=?",
+                new String[] {BLOGGER_LINKS_TABLE_COL_ENTRY_ID, entryId});
+        SQLdb.delete(ENTRIES_TABLE, "?=?",
+                new String[] {ENTRIES_TABLE_COL_ID, entryId});
     }
 
     private static class DbHelper extends SQLiteOpenHelper {
