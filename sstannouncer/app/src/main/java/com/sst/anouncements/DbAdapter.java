@@ -208,13 +208,43 @@ public class DbAdapter {
         return entries;
     }
 
-    public void deleteEntry(String entryId) {
+    private void deleteCategories(String entryId) {
         SQLdb.delete(CATEGORIES_TABLE, "?=?",
                 new String[] {CATEGORIES_TABLE_COL_ENTRY_ID, entryId});
+    }
+
+    private void deleteBloggerLink(String entryId) {
         SQLdb.delete(BLOGGER_LINKS_TABLE, "?=?",
                 new String[] {BLOGGER_LINKS_TABLE_COL_ENTRY_ID, entryId});
+    }
+
+    public void deleteEntry(String entryId) {
+        deleteCategories(entryId);
+        deleteBloggerLink(entryId);
         SQLdb.delete(ENTRIES_TABLE, "?=?",
                 new String[] {ENTRIES_TABLE_COL_ID, entryId});
+    }
+
+    public void deleteEntries(Date publishedBefore) {
+        long publishedBeforeMillis = publishedBefore.getTime();
+
+        String[] whereArgs = new String[] {ENTRIES_TABLE_COL_PUBLISHDATE,
+                String.valueOf(publishedBeforeMillis)};
+        Cursor cursor = SQLdb.query(ENTRIES_TABLE, new String[] {ENTRIES_TABLE_COL_ID},
+                "?<?", whereArgs, null, null, null);
+
+        ArrayList<String> entriesToDeleteIds = new ArrayList<>();
+        for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
+            entriesToDeleteIds.add(cursor.getString(0));
+        }
+
+        cursor.close();
+
+        for (String entryId : entriesToDeleteIds) {
+            deleteCategories(entryId);
+            deleteBloggerLink(entryId);
+        }
+        SQLdb.delete(ENTRIES_TABLE, "?<?", whereArgs);
     }
 
     private static class DbHelper extends SQLiteOpenHelper {
