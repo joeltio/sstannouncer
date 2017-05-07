@@ -1,17 +1,10 @@
 package com.sst.anouncements.android;
 
-//**** REMOVE ON NOTIFICATION REDESIGN
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-
-import com.sst.anouncements.EntryActivity;
-import com.sst.anouncements.Feed.Entry;
-import com.sst.anouncements.R;
 
 /**
  * Android notification Adaptor
@@ -23,64 +16,82 @@ public class AndroidNotificationAdaptor
 {
     private Context context;
     private NotificationManager notificationManager;
+
     private Notification notification;
-    private int notifcationID;
+    private boolean notificationAutoCancel;
+    private int notificationIconID;
 
     /**
-     * Android Notification Adaptor Adaptor
+     * Android Notification Adaptor Constructor
+     * Creates a new Android Notification Adaptor for the given Android <code>context</code>.
+     * The context would be used to send the notification to the user.
+     * The  <code>notificationIcon</code> is the resource defines the small notification icon to
+     * show the user when displaying the  notification.
      *
-     * Creates a new Android Notification Adaptor for the given context.
-     *
-     * @param context The context to use.
+     * @param context The context to use to send notifications
+     * @param notificationIcon The resource ID of the icon to use in the notification.
      */
-    public AndroidNotificationAdaptor(Context context)
+    public AndroidNotificationAdaptor(Context context, int notificationIcon)
     {
         this.context = context;
         this.notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        this.notificationIconID = notificationIcon;
+        this.notificationAutoCancel = true;
     }
 
-    /**
-     * Build a new Notification.
-     * Build a new Notification for the given title, content and target.
-     * Target defines the object to start when the user interacts with the notification.
-     * Overwrites the previous build and all its data.
-     *
-     * @param ID An user specified unique identifier that identifies the notification
-     * @param title The title of the notification.
-     * @param content The content of the notification.
-     */
-    public void build(int ID, String title, String content, Entry entry)
-    {
-        this.notifcationID = ID;
 
-        NotificationCompat.Builder builder = null;
-        builder = new NotificationCompat.Builder(this.context);
+    /**
+     * Create a new Notification.
+     * Create a new Notification for the passed title and content.
+     * The small icon that would be used for the notification is defined by the resource ID passed
+     * to the Constructor, or set using <code>setNotificationIcon()</code>
+     * Whether the notification would be dismissed automatically when the user interacts with it is
+     * defined by <code>setNotificationAutoCancel()</code>, or by default true.
+     *
+     * @param title
+     * @param content
+     *
+     * @see AndroidNotificationAdaptor#setNotificationAutoCancel(boolean)
+     * @see AndroidNotificationAdaptor#setNotificationIconID(int)
+     */
+    public void create(String title, String content)
+    {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context);
         builder.setContentTitle(title);
         builder.setContentText(content);
+        builder.setSmallIcon(this.notificationIconID);
+        builder.setAutoCancel(this.notificationAutoCancel);
 
-        Intent targetIntent = new Intent(this.context, EntryActivity.class);
-        targetIntent.putExtra(EntryActivity.ENTRY_EXTRA, entry);
-        PendingIntent pendingTargetIntent =
-                PendingIntent.getActivity(this.context,
-                        this.notifcationID,
-                        targetIntent,
-                        0);
-        builder.setContentIntent(pendingTargetIntent);
-        builder.setSmallIcon(R.drawable.notifcation_icon);
-        builder.setAutoCancel(true);
-
-        this.notification = builder.build();
+        this.notification =  builder.build();
     }
 
     /**
-     * Display the Notification
-     * Display the Notification that has been built by <code>build()</code> method.
-     * If notification has never been built, no notification would be displayed.
+     * Display the Notification.
+     * Display the Notification created by <code>create()</code> to the user.
+     * Fails if notification was never created by <code>create()</code>.
      *
+     * @param id An ID to identify the notification.
+     * @return Returns false if displaying the notification failed, else returns true.
+     *
+     * @see AndroidNotificationAdaptor#create(String, String)
      */
-    public void display()
+    public boolean display(int id)
     {
-        this.notificationManager.notify(this.notifcationID, this.notification);
+        if(this.notification != null)
+        {
+            this.notificationManager.notify(id, this.notification);
+            return true;
+        }
+        return false;
+    }
+
+    public void setNotificationAutoCancel(boolean notificationAutoCancel) {
+        this.notificationAutoCancel = notificationAutoCancel;
+    }
+
+    public void setNotificationIconID(int notificationIconID) {
+        this.notificationIconID = notificationIconID;
     }
 }
