@@ -22,28 +22,33 @@ import java.util.Date;
 
 public class ResourceService extends Service
 {
-    private Event resourceChangedEvent;
-    private Event frequencyChangeEvent;
+    //Event
+    private static Event resourceChangedEvent =
+            new Event("service.resource.change", new Date(0), "");
+    private static Event frequencyChangeEvent =
+            new Event("service.resource.set.threadFrequency", new Date(0), "");
+    private EventController boundEventControl;
 
-    private double frequency;
 
+    //Resource
     private ResourceAcquirer acquirer;
     private Resource resource;
     private int status;
 
-    private String serviceThreadName;
-    private volatile boolean serviceThreadStop;
-    private volatile boolean serviceThreadPause;
-    private volatile Thread serviceThread;
+    //Service Thread
+    private String threadName;
+    private volatile boolean threadStop;
+    private volatile boolean threadPause;
+    private volatile Thread thread;
+    private double threadFrequency;
 
-    private EventController boundEventControl;
 
 
     /**
      * Constructor for ResourceService
      * Creates a new resource service that would maintain the resource passed by the caller.
      * The resource maintains the resource using the methodology provided by the ResourceAcquirer.
-     * The <code>frequency</code> defines the frequency of the service to check for new updates to
+     * The <code>threadFrequency</code> defines the threadFrequency of the service to check for new updates to
      * resource.
      *
      * @param resource The resource to maintain.
@@ -55,15 +60,12 @@ public class ResourceService extends Service
     {
         this.resource = resource;
         this.acquirer = acquirer;
-        this.resourceChangedEvent = new Event(String.format("service.resource.changed ",
-                this.resource.getURL()), new Date(0), "");
-        this.frequencyChangeEvent = new Event("service.resource.set.frequency", new Date(0), "");
 
         this.status = 0;
-        this.serviceThreadName = "ResourceService/" + resource.getURL();
-        this.serviceThreadStop = false;
-        this.serviceThreadPause = false;
-        this.frequency = 1.0;
+        this.threadName = "ResourceService/" + resource.getURL();
+        this.threadStop = false;
+        this.threadPause = false;
+        this.threadFrequency = 1.0;
     }
 
 
@@ -94,16 +96,16 @@ public class ResourceService extends Service
 
     /**
      * Change the Frequency of the Resource Service.
-     * Change the frequency that the Resource Service checks for changes to the resource.
-     * Changes to the frequency would only take effect on the next run of the service.
-     * The frequency best accuracy be 1/1000 Hz.
+     * Change the threadFrequency that the Resource Service checks for changes to the resource.
+     * Changes to the threadFrequency would only take effect on the next run of the service.
+     * The threadFrequency best accuracy be 1/1000 Hz.
      *
-     * @param frequency Frequency to check for changes to the resource in Hertz (Hz)
+     * @param threadFrequency Frequency to check for changes to the resource in Hertz (Hz)
      *
      */
-    public void setFrequency(double frequency)
+    public void setFrequency(double threadFrequency)
     {
-        this.frequency = frequency;
+        this.threadFrequency = threadFrequency;
     }
 
     /**
@@ -126,7 +128,7 @@ public class ResourceService extends Service
                         double changeFrequency = Double.parseDouble(event.getData());
                         if(changeFrequency == -1.0)
                         {
-                            resourceService.serviceThreadPause = true;
+                            resourceService.threadPause = true;
                         }
                         else
                         {
@@ -152,19 +154,18 @@ public class ResourceService extends Service
      * The Resource Service would raise this event when the resource is changed.
      * The event data field would the changed resource that is encoded in a string format defined by
      * <code>Resource.toString()</code>.
-     * By default the event identifier is defined as "service.resource.changed", where (URL)
-     * is the resource URL.
+     * By default the event identifier is defined as "service.resource.changed"
      *
      * @see Resource#toString()
      */
-    public Event getResourceChangedEvent()
+    public static Event getResourceChangedEvent()
     {
-        return this.resourceChangedEvent;
+        return ResourceService.resourceChangedEvent;
     }
 
     /**
      * Set Resource Changed Event
-     * Change the event raised by the Resource Service when the resource changes.
+     * Change the event raised by the All Resource Services when the resource changes.
      * The event would be raise with the data field overwritten with the changed resource encoded
      * is a string format defined by <code>Resource.toString()</code> and the time stamp overwritten
      * with the time that the resource was updated.
@@ -174,15 +175,15 @@ public class ResourceService extends Service
      * @param event The event to change the current Resource Changed Event.
      *
      */
-    public void setResourceChangedEvent(Event event)
+    public static void setResourceChangedEvent(Event event)
     {
-        this.resourceChangedEvent = event;
+        ResourceService.resourceChangedEvent = event;
     }
 
     /**
      * Get Frequency Change Event
      * The resource service listens for this event, on event raise, the resource service would
-     * set the resource service frequency defined by the string representation of the frequency
+     * set the resource service threadFrequency defined by the string representation of the threadFrequency
      * in the event's data field. The string representation is defined by Double.toString().
      *
      * @return The event raise to change the resource service resource.
@@ -196,16 +197,16 @@ public class ResourceService extends Service
     {
         if(this.isAlive() == true )  this.kill();
 
-        this.serviceThreadStop = false;
-        this.serviceThread = new Thread(this, this.serviceThreadName);
-        this.serviceThread.start();
+        this.threadStop = false;
+        this.thread = new Thread(this, this.threadName);
+        this.thread.start();
     }
 
     public void stop()
     {
         if(this.isAlive() == true)
         {
-            this.serviceThreadStop = true;
+            this.threadStop = true;
         }
     }
 
@@ -213,16 +214,16 @@ public class ResourceService extends Service
     {
         if(this.isAlive() == true)
         {
-            this.serviceThread.interrupt();
+            this.thread.interrupt();
         }
     }
 
     //Service Thread
     public void run()
     {
-        while(this.serviceThreadStop == false)
+        while(this.threadStop == false)
         {
-            while(this.serviceThreadPause == true){} //Pause
+            while(this.threadPause == true){} //Pause
 
             Date previousTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
                     this.resource.getTimeStamp();
@@ -241,8 +242,8 @@ public class ResourceService extends Service
             }
 
             //Frequency Control
-            double delay = 1.0/this.frequency;
-            double delayMillis = delay * 1000;
+            double delay = 1.0/this.threadFrequency;
+            double delayMillis = (double) delay * 1000.0;
             try {
                 Thread.sleep((long)delayMillis);
             }

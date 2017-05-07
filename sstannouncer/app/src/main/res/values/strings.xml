@@ -4,7 +4,7 @@
 
     <!-- Service -->
     <string name="event_resource_changed_blog">
-        event_resourcechanged_http://studentsblog.sst.edu.sg/feeds/posts/default
+        service.resource.changed
     </string>
     <string name="event_resource_service_change_frequency">
         service.resource.set.frequency
