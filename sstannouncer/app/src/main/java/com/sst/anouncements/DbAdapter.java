@@ -1,9 +1,12 @@
 package com.sst.anouncements;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.sst.anouncements.Feed.Entry;
 
 public class DbAdapter {
     /**
@@ -27,28 +30,28 @@ public class DbAdapter {
     private static final int DATABASE_VERSION = 1;
 
     // Entries table
-    private static final String ENTRY_TABLE = "entries";
-    private static final String ENTRY_TABLE_COL_ID = "id";
-    private static final String ENTRY_TABLE_COL_AUTHOR = "author";
-    private static final String ENTRY_TABLE_COL_TITLE = "title";
-    private static final String ENTRY_TABLE_COL_CONTENT = "content";
-    private static final String ENTRY_TABLE_COL_PUBLISHDATE = "publishDate";
-    private static final String ENTRY_TABLE_COL_LASTUPDATED = "lastUpdated";
+    private static final String ENTRIES_TABLE = "entries";
+    private static final String ENTRIES_TABLE_COL_ID = "id";
+    private static final String ENTRIES_TABLE_COL_AUTHOR = "author";
+    private static final String ENTRIES_TABLE_COL_TITLE = "title";
+    private static final String ENTRIES_TABLE_COL_CONTENT = "content";
+    private static final String ENTRIES_TABLE_COL_PUBLISHDATE = "publishDate";
+    private static final String ENTRIES_TABLE_COL_LASTUPDATED = "lastUpdated";
 
-    private String[] ENTRY_TABLE_COLUMNS = {
-            ENTRY_TABLE_COL_ID, ENTRY_TABLE_COL_AUTHOR, ENTRY_TABLE_COL_TITLE,
-            ENTRY_TABLE_COL_CONTENT, ENTRY_TABLE_COL_PUBLISHDATE, ENTRY_TABLE_COL_LASTUPDATED
+    private String[] ENTRIES_TABLE_COLUMNS = {
+            ENTRIES_TABLE_COL_ID, ENTRIES_TABLE_COL_AUTHOR, ENTRIES_TABLE_COL_TITLE,
+            ENTRIES_TABLE_COL_CONTENT, ENTRIES_TABLE_COL_PUBLISHDATE, ENTRIES_TABLE_COL_LASTUPDATED
     };
 
-    private static final String ENTRY_TABLE_CREATE = "CREATE TABLE " + ENTRY_TABLE + "("
-            + ENTRY_TABLE_COL_ID + " TEXT NOT NULL PRIMARY KEY, "
-            + ENTRY_TABLE_COL_AUTHOR + " TEXT NOT NULL, "
-            + ENTRY_TABLE_COL_TITLE + " TEXT NOT NULL, "
-            + ENTRY_TABLE_COL_CONTENT + " TEXT NOT NULL, "
-            + ENTRY_TABLE_COL_PUBLISHDATE + " INTEGER NOT NULL, "
-            + ENTRY_TABLE_COL_LASTUPDATED + " INTEGER NOT NULL, "
-            + "CONSTRAINT PUBLISHDATE_IS_DATE CHECK(date(" + ENTRY_TABLE_COL_PUBLISHDATE + ") IS NOT NULL),"
-            + "CONSTRAINT LASTUPDATED_IS_DATE CHECK(date(" + ENTRY_TABLE_COL_LASTUPDATED + ") IS NOT NULL)"
+    private static final String ENTRIES_TABLE_CREATE = "CREATE TABLE " + ENTRIES_TABLE + "("
+            + ENTRIES_TABLE_COL_ID + " TEXT NOT NULL PRIMARY KEY, "
+            + ENTRIES_TABLE_COL_AUTHOR + " TEXT NOT NULL, "
+            + ENTRIES_TABLE_COL_TITLE + " TEXT NOT NULL, "
+            + ENTRIES_TABLE_COL_CONTENT + " TEXT NOT NULL, "
+            + ENTRIES_TABLE_COL_PUBLISHDATE + " INTEGER NOT NULL, "
+            + ENTRIES_TABLE_COL_LASTUPDATED + " INTEGER NOT NULL, "
+            + "CONSTRAINT PUBLISHDATE_IS_DATE CHECK(date(" + ENTRIES_TABLE_COL_PUBLISHDATE + ") IS NOT NULL),"
+            + "CONSTRAINT LASTUPDATED_IS_DATE CHECK(date(" + ENTRIES_TABLE_COL_LASTUPDATED + ") IS NOT NULL)"
             + ");";
 
     // Categories table
@@ -63,24 +66,24 @@ public class DbAdapter {
     private static final String CATEGORIES_TABLE_CREATE = "CREATE TABLE " + CATEGORIES_TABLE + "("
             + CATEGORIES_TABLE_COL_ENTRY_ID + " TEXT NOT NULL,"
             + CATEGORIES_TABLE_COL_CATEGORY + " TEXT NOT NULL,"
-            + "FOREIGN KEY(" + CATEGORIES_TABLE_COL_ENTRY_ID + ") REFERENCES " + ENTRY_TABLE + "("
-            + ENTRY_TABLE_COL_ID + ")"
+            + "FOREIGN KEY(" + CATEGORIES_TABLE_COL_ENTRY_ID + ") REFERENCES " + ENTRIES_TABLE + "("
+            + ENTRIES_TABLE_COL_ID + ")"
             + ");";
 
     // blogger_links table
-    private static final String BLOGGER_LINK_TABLE = "blogger_links";
-    private static final String BLOGGER_LINK_TABLE_COL_ENTRY_ID = "entry_id";
-    private static final String BLOGGER_LINK_TABLE_COL_BLOGGERLINK = "bloggerLink";
+    private static final String BLOGGER_LINKS_TABLE = "blogger_links";
+    private static final String BLOGGER_LINKS_TABLE_COL_ENTRY_ID = "entry_id";
+    private static final String BLOGGER_LINKS_TABLE_COL_BLOGGERLINK = "bloggerLink";
 
-    private String[] BLOGGER_LINK_TABLE_COLUMNS = {
-            BLOGGER_LINK_TABLE_COL_ENTRY_ID, BLOGGER_LINK_TABLE_COL_BLOGGERLINK
+    private String[] BLOGGER_LINKS_TABLE_COLUMNS = {
+            BLOGGER_LINKS_TABLE_COL_ENTRY_ID, BLOGGER_LINKS_TABLE_COL_BLOGGERLINK
     };
 
-    private static final String BLOGGER_LINK_TABLE_CREATE = "CREATE TABLE " + BLOGGER_LINK_TABLE + "("
-            + BLOGGER_LINK_TABLE_COL_ENTRY_ID + " TEXT NOT NULL, "
-            + BLOGGER_LINK_TABLE_COL_BLOGGERLINK + " TEXT NOT NULL,"
-            + "FOREIGN KEY(" + BLOGGER_LINK_TABLE_COL_ENTRY_ID + ") REFERENCES " + BLOGGER_LINK_TABLE + "("
-            + ENTRY_TABLE_COL_ID + ")"
+    private static final String BLOGGER_LINKS_TABLE_CREATE = "CREATE TABLE " + BLOGGER_LINKS_TABLE + "("
+            + BLOGGER_LINKS_TABLE_COL_ENTRY_ID + " TEXT NOT NULL, "
+            + BLOGGER_LINKS_TABLE_COL_BLOGGERLINK + " TEXT NOT NULL,"
+            + "FOREIGN KEY(" + BLOGGER_LINKS_TABLE_COL_ENTRY_ID + ") REFERENCES " + BLOGGER_LINKS_TABLE + "("
+            + ENTRIES_TABLE_COL_ID + ")"
             + ");";
 
     private SQLiteDatabase SQLdb;
@@ -101,6 +104,34 @@ public class DbAdapter {
         dbHelper.close();
     }
 
+    public void insertEntry(Entry entry) {
+        String entryId = entry.getId();
+
+        // entries table
+        ContentValues entriesTableValues = new ContentValues();
+        entriesTableValues.put(ENTRIES_TABLE_COL_ID, entryId);
+        entriesTableValues.put(ENTRIES_TABLE_COL_AUTHOR, entry.getAuthorName());
+        entriesTableValues.put(ENTRIES_TABLE_COL_TITLE, entry.getTitle());
+        entriesTableValues.put(ENTRIES_TABLE_COL_CONTENT, entry.getContent());
+        entriesTableValues.put(ENTRIES_TABLE_COL_PUBLISHDATE, entry.getPublished().getTime());
+        entriesTableValues.put(ENTRIES_TABLE_COL_LASTUPDATED, entry.getLastUpdated().getTime());
+        SQLdb.insert(ENTRIES_TABLE, null, entriesTableValues);
+
+        // categories table
+        for (String category : entry.getCategories()) {
+            ContentValues categoriesTableValues = new ContentValues();
+            categoriesTableValues.put(CATEGORIES_TABLE_COL_ENTRY_ID, entryId);
+            categoriesTableValues.put(CATEGORIES_TABLE_COL_CATEGORY, category);
+            SQLdb.insert(CATEGORIES_TABLE, null, categoriesTableValues);
+        }
+
+        // blogger_links table
+        ContentValues blogger_linksTableValues = new ContentValues();
+        blogger_linksTableValues.put(BLOGGER_LINKS_TABLE_COL_ENTRY_ID, entryId);
+        blogger_linksTableValues.put(BLOGGER_LINKS_TABLE_COL_BLOGGERLINK, entry.getBloggerLink());
+        SQLdb.insert(BLOGGER_LINKS_TABLE, null, blogger_linksTableValues);
+    }
+
     private static class DbHelper extends SQLiteOpenHelper {
         private DbHelper(Context ctx) {
             super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
@@ -108,9 +139,9 @@ public class DbAdapter {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(ENTRY_TABLE_CREATE);
+            db.execSQL(ENTRIES_TABLE_CREATE);
             db.execSQL(CATEGORIES_TABLE_CREATE);
-            db.execSQL(BLOGGER_LINK_TABLE_CREATE);
+            db.execSQL(BLOGGER_LINKS_TABLE_CREATE);
         }
 
         @Override
@@ -118,9 +149,9 @@ public class DbAdapter {
             Log.w(DbHelper.class.getName(),
                     "Updating database version from version " + oldVersion +
                             " to version " + newVersion + ". This will destroy all data.");
-            db.execSQL("DROP TABLE IF EXISTS " + ENTRY_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + ENTRIES_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + CATEGORIES_TABLE);
-            db.execSQL("DROP TABLE IF EXISTS " + BLOGGER_LINK_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + BLOGGER_LINKS_TABLE);
             onCreate(db);
         }
     }
