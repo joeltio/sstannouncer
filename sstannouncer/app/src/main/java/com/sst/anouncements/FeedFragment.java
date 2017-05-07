@@ -188,7 +188,37 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     Feed feed = RSSParser.parse(xml);
                     entries = feed.getEntries();
 
+                    DbAdapter dbAdapter = new DbAdapter(getActivity());
+                    dbAdapter.open();
+
+                    Date oldestEntryPublished = entries.get(entries.size()-1).getPublished();
+                    dbAdapter.deleteEntries(oldestEntryPublished);
+
+                    long newestEntryDateMillis = preferences.getLong(
+                            NEWEST_ENTRY_DATE_PREFERENCE, -1);
+                    if (newestEntryDateMillis != -1) {
+                        Date newestEntryDate = new Date(newestEntryDateMillis);
+                        for (int i=entries.size()-1; i>=0; i--) {
+                            Entry entry = entries.get(i);
+
+                            if (entry.getPublished().after(newestEntryDate)) {
+                                dbAdapter.insertEntry(entry);
+                            }
+                        }
+                    } else {
+                        dbAdapter.deleteAll();
+                        for (Entry entry : entries) {
+                            dbAdapter.insertEntry(entry);
+                        }
+                    }
+
+                    dbAdapter.close();
+
                     SharedPreferences.Editor editor = preferences.edit();
+
+                    newestEntryDateMillis = entries.get(entries.size()-1).getPublished().getTime();
+                    editor.putLong(NEWEST_ENTRY_DATE_PREFERENCE, newestEntryDateMillis);
+
                     editor.putLong(LAST_MODIFIED_PREFERENCE, onlineLastModified);
                     editor.apply();
                 } catch (Exception e) {
@@ -221,36 +251,6 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
             if (mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-            if (!entries.isEmpty()) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                        getActivity());
-                long newestEntryDateMillis = sharedPreferences.getLong(NEWEST_ENTRY_DATE_PREFERENCE, -1);
-
-                DbAdapter dbAdapter = new DbAdapter(getActivity());
-                dbAdapter.open();
-
-                Date oldestEntryPublished = entries.get(entries.size()-1).getPublished();
-                dbAdapter.deleteEntries(oldestEntryPublished);
-
-                if (newestEntryDateMillis != -1) {
-                    Date newestEntryDate = new Date(newestEntryDateMillis);
-                    for (int i=entries.size()-1; i>=0; i--) {
-                        Entry entry = entries.get(i);
-
-                        if (entry.getPublished().after(newestEntryDate)) {
-                            dbAdapter.insertEntry(entry);
-                        }
-                    }
-                } else {
-                    dbAdapter.deleteAll();
-                    for (Entry entry : entries) {
-                        dbAdapter.insertEntry(entry);
-                    }
-                }
-
-                dbAdapter.close();
             }
         }
     }
