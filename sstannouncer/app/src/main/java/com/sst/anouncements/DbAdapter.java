@@ -2,11 +2,15 @@ package com.sst.anouncements;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.sst.anouncements.Feed.Entry;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 public class DbAdapter {
     /**
@@ -81,7 +85,7 @@ public class DbAdapter {
 
     private static final String BLOGGER_LINKS_TABLE_CREATE = "CREATE TABLE " + BLOGGER_LINKS_TABLE + "("
             + BLOGGER_LINKS_TABLE_COL_ENTRY_ID + " TEXT NOT NULL, "
-            + BLOGGER_LINKS_TABLE_COL_BLOGGERLINK + " TEXT NOT NULL,"
+            + BLOGGER_LINKS_TABLE_COL_BLOGGERLINK + " TEXT NOT NULL UNIQUE,"
             + "FOREIGN KEY(" + BLOGGER_LINKS_TABLE_COL_ENTRY_ID + ") REFERENCES " + BLOGGER_LINKS_TABLE + "("
             + ENTRIES_TABLE_COL_ID + ")"
             + ");";
@@ -130,6 +134,52 @@ public class DbAdapter {
         blogger_linksTableValues.put(BLOGGER_LINKS_TABLE_COL_ENTRY_ID, entryId);
         blogger_linksTableValues.put(BLOGGER_LINKS_TABLE_COL_BLOGGERLINK, entry.getBloggerLink());
         SQLdb.insert(BLOGGER_LINKS_TABLE, null, blogger_linksTableValues);
+    }
+
+    private ArrayList<String> getCategories(String entryId) {
+        Cursor cursor = SQLdb.query(CATEGORIES_TABLE, CATEGORIES_TABLE_COLUMNS,
+                CATEGORIES_TABLE_COL_ENTRY_ID + " = " + entryId, null, null, null, null);
+
+        ArrayList<String> categories = new ArrayList<>();
+        for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
+            categories.add(cursor.getString(1));
+        }
+
+        cursor.close();
+
+        return categories;
+    }
+
+    private String getBloggerLink(String entryId) {
+        Cursor cursor = SQLdb.query(BLOGGER_LINKS_TABLE, BLOGGER_LINKS_TABLE_COLUMNS,
+                BLOGGER_LINKS_TABLE_COL_ENTRY_ID + " = " +  entryId, null, null, null, null);
+        cursor.moveToFirst();
+
+        String bloggerLink = cursor.getString(1);
+
+        cursor.close();
+
+        return bloggerLink;
+    }
+
+    public Entry getEntry(String entryId) {
+        Cursor cursor = SQLdb.query(ENTRIES_TABLE, ENTRIES_TABLE_COLUMNS,
+                ENTRIES_TABLE_COL_ID + " = " + entryId, null, null, null, null);
+        cursor.moveToFirst();
+
+        String authorName = cursor.getString(1);
+        String title = cursor.getString(2);
+        String content = cursor.getString(3);
+        Date publishDate = new Date(cursor.getLong(4));
+        Date lastUpdated = new Date(cursor.getLong(5));
+
+        cursor.close();
+
+        ArrayList<String> categories = getCategories(entryId);
+        String bloggerLink = getBloggerLink(entryId);
+
+        return new Entry(entryId, publishDate, lastUpdated, categories, authorName, bloggerLink,
+                title, content);
     }
 
     private static class DbHelper extends SQLiteOpenHelper {
