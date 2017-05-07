@@ -32,11 +32,14 @@ import com.sst.anouncements.resource.Resource;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 public class FeedFragment extends ListFragment implements AdapterView.OnItemClickListener {
     public FeedFragment() {}
 
     private static final String LAST_MODIFIED_PREFERENCE = "last_modified";
+    private static final String NEWEST_ENTRY_DATE_PREFERENCE = "newest_entry";
     private fetchNewFeed fetchFeedAsync;
     public static EventController eventController = null;
     private AndroidEventAdaptor androidEventAdaptor;
@@ -85,7 +88,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                     }
                 }
             });
-            this.fetchFeedAsync = new fetchNewFeed(true);
+            this.fetchFeedAsync = new fetchNewFeed();
             this.fetchFeedAsync.execute();
         }
     }
@@ -201,11 +204,53 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         @Override
         protected void onPostExecute(ArrayList<Entry> entries) {
             super.onPostExecute(entries);
+
             if (!entries.isEmpty()) {
                 setListAdapter(new FeedArrayAdapter(getActivity(), entries));
+            } else {
+                DbAdapter dbAdapter = new DbAdapter(getActivity());
+                dbAdapter.open();
+
+                ArrayList<Entry> databaseEntries = dbAdapter.getAllEntries();
+                Collections.reverse(databaseEntries);
+
+                dbAdapter.close();
+
+                setListAdapter(new FeedArrayAdapter(getActivity(), databaseEntries));
             }
+
             if (mSwipeRefreshLayout.isRefreshing()) {
                 mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            if (!entries.isEmpty()) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                        getActivity());
+                long newestEntryDateMillis = sharedPreferences.getLong(NEWEST_ENTRY_DATE_PREFERENCE, -1);
+
+                DbAdapter dbAdapter = new DbAdapter(getActivity());
+                dbAdapter.open();
+
+                Date oldestEntryPublished = entries.get(entries.size()-1).getPublished();
+                dbAdapter.deleteEntries(oldestEntryPublished);
+
+                if (newestEntryDateMillis != -1) {
+                    Date newestEntryDate = new Date(newestEntryDateMillis);
+                    for (int i=entries.size()-1; i>=0; i--) {
+                        Entry entry = entries.get(i);
+
+                        if (entry.getPublished().after(newestEntryDate)) {
+                            dbAdapter.insertEntry(entry);
+                        }
+                    }
+                } else {
+                    dbAdapter.deleteAll();
+                    for (Entry entry : entries) {
+                        dbAdapter.insertEntry(entry);
+                    }
+                }
+
+                dbAdapter.close();
             }
         }
     }
