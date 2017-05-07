@@ -59,6 +59,20 @@ public class Event {
         this.data = slicedEvent[2];
     }
 
+    /**
+     * Event Copy Constructor.
+     * Constructs a new event that is a copy, as defined by <code>equals()</code>, to the passed
+     * event.
+     * @param event The event to copy.
+     */
+    public Event(Event event)
+    {
+        this.identifier = event.getIdentifier();
+        this.timeStamp = event.getTimeStamp();
+        this.data = event.getData();
+    }
+
+
 
     public String getIdentifier() {
         return identifier;
