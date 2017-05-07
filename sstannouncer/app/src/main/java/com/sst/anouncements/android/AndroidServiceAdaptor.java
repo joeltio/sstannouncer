@@ -7,16 +7,10 @@ import android.os.IBinder;
 import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.sst.anouncements.Feed.Feed;
-import com.sst.anouncements.Feed.FeedNotificationAdaptor;
-import com.sst.anouncements.Feed.RSSParser;
-import com.sst.anouncements.Feed.XML;
 import com.sst.anouncements.R;
 import com.sst.anouncements.event.Event;
 import com.sst.anouncements.event.EventController;
-import com.sst.anouncements.event.EventHandler;
 import com.sst.anouncements.resource.HTTPResourceAcquirer;
 import com.sst.anouncements.resource.Resource;
 import com.sst.anouncements.resource.ResourceAcquirer;
@@ -58,7 +52,6 @@ public class AndroidServiceAdaptor extends Service
     public void onCreate() {
         super.onCreate();
 
-        //Storage - Remove on REDESIGN
         final SharedPreferences settings =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         final SharedPreferences.Editor  settingsEditor = settings.edit();
@@ -68,8 +61,7 @@ public class AndroidServiceAdaptor extends Service
         Date timeStamp = null;
         try {
             timeStamp = dateFormatter.parse(stringTimeStamp);
-        }catch(Exception exp){}
-        //Storage - Remove on REDESIGN
+        }catch(Exception exp){};
 
         this.eventController = new EventController();
         this.androidEventAdaptor = new AndroidEventAdaptor(this.eventController);
@@ -82,38 +74,6 @@ public class AndroidServiceAdaptor extends Service
                 Event(getString(R.string.event_resource_changed_blog), null, null));
         this.resourceService.bind(this.eventController);
         this.resourceService.setFrequency(0.1 / 6); //Check Every Minute
-
-        //NOTIFICATION ~ REMOVE ON REDESIGN, TIGHTLY COUPLED CODE>>>
-        this.eventController.listen(this.toString(), this.resourceService.getResourceChangedEvent().getIdentifier(),
-                new EventHandler() {
-                    @Override
-                    public void handle(Event event) {
-                        Resource resource = new Resource(event.getData());
-                        AndroidNotificationAdaptor notificationAdaptor =
-                                new AndroidNotificationAdaptor(getApplicationContext());
-                        XML rss = null;
-                        Feed feed = null;
-
-                        //Storage - remove on redesign
-                        settingsEditor.putString("resource.timestamp", dateFormatter.format(resource.getTimeStamp()));
-                        settingsEditor.apply();
-
-                        try
-                        {
-                            rss = new XML(resource.getData());
-                            feed = RSSParser.parse(rss);
-                        }catch (Exception exp)
-                        {
-                            return;
-                        }
-
-                        FeedNotificationAdaptor feedNotificationAdaptor =
-                                new FeedNotificationAdaptor(feed, "Student Blog", notificationAdaptor);
-                        feedNotificationAdaptor.changeFeed(feed);
-                    }
-                });
-        //NOTIFICATION ~ REMOVE ON REDESIGN
-
     }
 
     /**
