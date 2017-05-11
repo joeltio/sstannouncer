@@ -9,15 +9,13 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.sst.anouncements.R;
-import com.sst.anouncements.event.Event;
 import com.sst.anouncements.event.EventController;
+import com.sst.anouncements.event.FeedEventInterpreter;
+import com.sst.anouncements.event.ResourceEventInterpreter;
 import com.sst.anouncements.resource.HTTPResourceAcquirer;
 import com.sst.anouncements.resource.Resource;
-import com.sst.anouncements.resource.ResourceAcquirer;
 import com.sst.anouncements.service.ResourceService;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -41,39 +39,56 @@ public class AndroidServiceAdaptor extends Service
             "sstinc.com.sst.anouncements.service.start_up.intent.extra.boot";
     public static final String INTENT_EXTRA_REMOTE_MESSENGER =
         "sstinc.com.sst.anouncements.service.connect.extra.remote_messenger";
+    public static final String RESOURCE_INTERPRETER_STATE = "resource_interpreter.state";
     public static final String LOG_TAG = "sstannouncer.resservice";
 
+    //Event
     private EventController eventController;
     private AndroidEventAdaptor androidEventAdaptor;
-    private Resource resource;
+    private ResourceEventInterpreter resourceEventInterpreter;
+    private FeedEventInterpreter feedEventInterpreter;
+
+    //Service
     private ResourceService resourceService;
+
+    //Notification
+    private AndroidNotificationAdaptor androidNotificationAdaptor;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        try
+        {
+            Thread.sleep(1000 * 5);
+        }catch(Exception exp){};
+
         final SharedPreferences settings =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        final SharedPreferences.Editor  settingsEditor = settings.edit();
-        final DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        String stringTimeStamp = dateFormatter.format(new Date(0));
-        stringTimeStamp = settings.getString("resource.timestamp", stringTimeStamp);
-        Date timeStamp = null;
-        try {
-            timeStamp = dateFormatter.parse(stringTimeStamp);
-        }catch(Exception exp){};
+
+        String interpeterState =
+                settings.getString(this.RESOURCE_INTERPRETER_STATE, "");
 
         this.eventController = new EventController();
         this.androidEventAdaptor = new AndroidEventAdaptor(this.eventController);
-        this.resource = new
-                Resource(getString(R.string.blog_rss_url), timeStamp, null);
-        ResourceAcquirer resourceAcquirer = new HTTPResourceAcquirer();
+        this.androidNotificationAdaptor =
+                new AndroidNotificationAdaptor(this, R.drawable.notifcation_icon);
+        this.resourceEventInterpreter =
+                new ResourceEventInterpreter(this.eventController, interpeterState);
+        this.feedEventInterpreter =
+                new FeedEventInterpreter(this.eventController, this.androidNotificationAdaptor);
 
-        this.resourceService = new ResourceService(this.resource, resourceAcquirer);
-        this.resourceService.setResourceChangedEvent(new
-                Event(getString(R.string.event_resource_changed_blog), null, null));
+        String resourceURL = getString(R.string.blog_rss_url);
+        Resource resource = new Resource(resourceURL, new Date(0), "");
+        Resource previousResource = this.resourceEventInterpreter.getResourceState(resource);
+        if(previousResource != null) resource = previousResource;
+
+        this.resourceService = new ResourceService(resource, new HTTPResourceAcquirer());
+
         this.resourceService.bind(this.eventController);
         this.resourceService.setFrequency(0.1 / 6); //Check Every Minute
+
+        this.resourceService.start();
     }
 
     /**
@@ -118,7 +133,16 @@ public class AndroidServiceAdaptor extends Service
     public void onDestroy() {
         super.onDestroy();
 
+        final SharedPreferences settings =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final SharedPreferences.Editor  settingsEditor = settings.edit();
+
         this.resourceService.stop();
         this.androidEventAdaptor.disconnect();
+
+        settingsEditor.putString(this.RESOURCE_INTERPRETER_STATE,
+                this.resourceEventInterpreter.getState());
+        settingsEditor.apply();
     }
+
 }
