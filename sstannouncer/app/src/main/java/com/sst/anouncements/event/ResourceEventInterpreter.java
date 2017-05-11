@@ -6,6 +6,10 @@ import com.sst.anouncements.Feed.XML;
 import com.sst.anouncements.resource.Resource;
 import com.sst.anouncements.service.ResourceService;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +19,7 @@ import java.util.Map;
  *
  * Interprets the types of resources, triggering the necessary actions to handle the resource event.
 */
-public class ResourceEventInterpreter implements EventHandler
-{
+public class ResourceEventInterpreter implements EventHandler {
     public static String RESOURCE_TYPE_FEED = "resource.type.feed";
     public static String RESOURCE_TYPE_UNKNOWN = "resource.type.unknown";
 
@@ -31,21 +34,12 @@ public class ResourceEventInterpreter implements EventHandler
      * events on the event controller.
      *
      * @param eventController The event controller to bind to.
-     * @param state Internal Resource interpreter state, pass null to create a stateless object.
-     *
+     * @param state           The internal state used to initialise the interpreter
      */
-    public ResourceEventInterpreter(EventController eventController, Map<String, String> state)
-    {
+    public ResourceEventInterpreter(EventController eventController, String state) {
         this.resourceChangedEvent = ResourceService.getResourceChangedEvent();
         this.bind(eventController);
-        if(state != null)
-        {
-            this.resourceMap = new HashMap<String, Resource>();
-            for(String key : state.keySet())
-            {
-                this.resourceMap.put(key, new Resource(state.get(key)));
-            }
-        }
+        this.readState(state);
     }
 
     /**
@@ -55,11 +49,11 @@ public class ResourceEventInterpreter implements EventHandler
      * If currently bound to a event controller, the method unbind as defined by
      * <code>unBind()</code> from the current event controller and bind to the passed event
      * Controller.
+     *
      * @param eventController The event controller to bind to.
      */
-    public void bind(EventController eventController)
-    {
-        if(this.eventController != null) this.unBind();
+    public void bind(EventController eventController) {
+        if (this.eventController != null) this.unBind();
         this.eventController = eventController;
         this.eventController.
                 listen(this.toString(), this.resourceChangedEvent.getIdentifier(), this);
@@ -78,6 +72,31 @@ public class ResourceEventInterpreter implements EventHandler
         }
     }
 
+    /**
+     * Retrieve Interpreter State
+     * Retrieve the internal interpreter state that may be used to initalise the interpreter by
+     * passing the state to the constructor.
+     *
+     * @return The interpreter state.
+     */
+    public String getState()
+    {
+        return this.writeState();
+    }
+
+    /**
+     * Retrieve Resource State
+     * Retrieve interpreter resource internal state.
+     *
+     * @param resource The resource to retrieve the state for.
+     *
+     * @return Returns the resource internal state, returns null if internal state not present.
+     */
+    public Resource getResourceState(Resource resource)
+    {
+        return this.resourceMap.get(resource.getURL());
+    }
+
 
     @Override
     public void handle(Event event) {
@@ -86,24 +105,6 @@ public class ResourceEventInterpreter implements EventHandler
             this.handleResourceChanged(event);
         }
     }
-
-    /**
-     * Get Interpreter State
-     * Retrieve the internal interpreter state that can be used to reinitialize the object.
-     *
-     * @return The interpreter state.
-     */
-    public Map<String, String> getState()
-    {
-        Map<String, String> state = new HashMap<String, String>();
-        for(String key : this.resourceMap.keySet())
-        {
-            state.put(key, this.resourceMap.get(key).toString());
-        }
-
-        return state;
-    }
-
 
     //Private Utility Methods
     private void handleResourceChanged(Event event)
@@ -146,10 +147,11 @@ public class ResourceEventInterpreter implements EventHandler
         if(this.eventController != null)
         {
             Resource resource = new Resource(event.getData());
-            Date previousTimeStamp = this.resourceMap.get(resource.getURL()).getTimeStamp();
-            if(previousTimeStamp == null)
+            Resource previousResource = this.resourceMap.get(resource.getURL());
+            Date previousTimeStamp = new Date(0);
+            if(previousResource != null)
             {
-                previousTimeStamp = new Date(0);
+                previousTimeStamp = previousResource.getTimeStamp();
             }
 
             Event feedChanged =
@@ -161,4 +163,51 @@ public class ResourceEventInterpreter implements EventHandler
         }
     }
 
+    private void readState(String state)
+    {
+        this.resourceMap = new HashMap<String, Resource>();
+
+        if(state != null && state.length() > 0)
+        {
+            Map<String, String> mapState = new HashMap<String, String>();
+            try {
+                byte stateBytes[] = state.getBytes();
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(stateBytes);
+                ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+                mapState = (Map<String, String>) objectInputStream.readObject();
+            } catch (Exception e) {
+            }
+
+            this.resourceMap = new HashMap<String, Resource>();
+            for(String key : mapState.keySet())
+            {
+                this.resourceMap.put(key, new Resource(mapState.get(key)));
+            }
+
+        }
+    }
+
+
+    private String writeState()
+    {
+        Map<String, String> mapState = new HashMap<String, String >();
+        for(String key : this.resourceMap.keySet())
+        {
+            mapState.put(key, this.resourceMap.get(key).toString());
+        }
+
+        String state;
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
+            outputStream.writeObject(mapState);
+            outputStream.flush();
+            state = outputStream.toString();
+        } catch (Exception e) {
+            return "";
+        }
+
+        return state;
+
+    }
 }
