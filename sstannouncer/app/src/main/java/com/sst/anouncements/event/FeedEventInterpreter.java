@@ -95,7 +95,14 @@ public class FeedEventInterpreter implements EventHandler {
     @Override
     public void handle(Event event)
     {
+        if(event.getIdentifier().equals(this.getFeedChangedEvent().getIdentifier()))
+        {
+            this.handleFeedChanged(event);
+        }
+        else
+        {
 
+        }
     }
 
     //Private Utility Methods
