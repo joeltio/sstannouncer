@@ -125,7 +125,7 @@ public class AndroidServiceAdaptor extends Service
         try
         {
             FileOutputStream stateFileOut =
-                    this.openFileOutput(this.FILENAME_STATE, 0);
+                    this.openFileOutput(FILENAME_STATE, 0);
             stateFileOut.write(resourceEventInterpreter.getState().getBytes());
 
         }catch(Exception exp){}
@@ -154,7 +154,7 @@ public class AndroidServiceAdaptor extends Service
         String interpreterState = "";
         try
         {
-            FileInputStream stateFileIn = this.openFileInput(this.FILENAME_STATE);
+            FileInputStream stateFileIn = this.openFileInput(FILENAME_STATE);
             byte[] stateBytes = new byte[stateFileIn.available()];
             stateFileIn.read(stateBytes);
             interpreterState = new String(stateBytes);
@@ -174,7 +174,7 @@ public class AndroidServiceAdaptor extends Service
                         try
                         {
                             FileOutputStream stateFileOut =
-                                    serviceAdaptor.openFileOutput(serviceAdaptor.FILENAME_STATE, 0);
+                                    serviceAdaptor.openFileOutput(FILENAME_STATE, 0);
                             stateFileOut.write(event.getData().getBytes());
 
                         }catch(Exception exp){}
