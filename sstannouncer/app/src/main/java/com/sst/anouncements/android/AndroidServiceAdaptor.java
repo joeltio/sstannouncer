@@ -9,12 +9,11 @@ import android.support.annotation.Nullable;
 import com.sst.anouncements.R;
 import com.sst.anouncements.event.Event;
 import com.sst.anouncements.event.EventController;
+import com.sst.anouncements.event.EventHandler;
 import com.sst.anouncements.event.FeedEventInterpreter;
 import com.sst.anouncements.event.ResourceEventInterpreter;
-import com.sst.anouncements.event.EventHandler;
 import com.sst.anouncements.resource.HTTPResourceAcquirer;
 import com.sst.anouncements.resource.Resource;
-import com.sst.anouncements.resource.ResourceAcquirer;
 import com.sst.anouncements.service.ResourceService;
 
 import java.io.FileInputStream;
@@ -74,13 +73,20 @@ public class AndroidServiceAdaptor extends Service
 
         this.setupResourceService();
         this.resourceService.start();
-        Resource resource= new
-                Resource(getString(R.string.blog_rss_url), new Date(0), null);
-        ResourceAcquirer resourceAcquirer = new HTTPResourceAcquirer();
 
-        this.resourceService = new ResourceService(resource, resourceAcquirer);
-        this.resourceService.setResourceChangedEvent(new
-                Event(getString(R.string.event_resource_changed_blog), null, null));
+        String resourceURL = getString(R.string.blog_rss_url);
+        Resource previousResource = this.resourceEventInterpreter.getResourceState(
+                new Resource(resourceURL, new Date(0), ""));
+        Resource resource = new Resource(resourceURL, new Date(0), "");
+        if(previousResource != null)
+        {
+            resource =  new Resource(resourceURL, previousResource.getTimeStamp(),
+                    previousResource.getData());
+        }
+
+        this.resourceService = new ResourceService(resource, new HTTPResourceAcquirer());
+        ResourceService.setResourceChangedEvent(
+                new Event(getString(R.string.event_resource_changed_blog), null, null));
         this.resourceService.bind(this.eventController);
         this.resourceService.setFrequency(0.1 / 6); //Check Every Minute
     }
@@ -125,7 +131,9 @@ public class AndroidServiceAdaptor extends Service
         try
         {
             FileOutputStream stateFileOut =
-                    this.openFileOutput(FILENAME_STATE, 0);
+                    this.openFileOutput(this.FILENAME_STATE, 0);
+            this.openFileOutput(FILENAME_STATE, 0);
+            this.openFileOutput(this.FILENAME_STATE, 0);
             stateFileOut.write(resourceEventInterpreter.getState().getBytes());
 
         }catch(Exception exp){}

@@ -57,7 +57,8 @@ public class ResourceEventInterpreter implements EventHandler {
         if (this.eventController != null) this.unBind();
         this.eventController = eventController;
         this.eventController.
-                listen(this.toString(), ResourceService.getResourceChangedEvent().getIdentifier(), this);
+                listen(this.toString(), ResourceService.getResourceChangedEvent().getIdentifier(),
+                        this);
     }
 
     /**
@@ -136,10 +137,14 @@ public class ResourceEventInterpreter implements EventHandler {
 
         }
 
+        Resource previousResource = this.getResourceState(resource);
+        Date previousTimeStamp = (previousResource != null) ? previousResource.getTimeStamp()
+                : new Date();
+
         this.resourceMap.put(resource.getURL(),
                 new Resource(resource.getURL(), resource.getTimeStamp(), ""));
         this.eventController.raise(new Event(ResourceEventInterpreter.INTERPRETER_STATE_CHANGED,
-                new Date(), this.getState()));
+                previousTimeStamp, this.getState()));
     }
 
     private String interpretResource(Resource resource)
@@ -195,7 +200,6 @@ public class ResourceEventInterpreter implements EventHandler {
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
                 mapState = (Map<String, String>) objectInputStream.readObject();
             } catch (Exception e) {
-                this.resourceMap = new HashMap<String, Resource>();
             }
 
             this.resourceMap = new HashMap<String, Resource>();

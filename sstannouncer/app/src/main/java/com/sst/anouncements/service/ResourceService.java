@@ -24,7 +24,7 @@ public class ResourceService extends Service
 {
     //Event
     private static Event resourceChangedEvent =
-            new Event("service.resource.change", new Date(0), "");
+            new Event("service.resource.changed", new Date(0), "");
     private static Event frequencyChangeEvent =
             new Event("service.resource.set.threadFrequency", new Date(0), "");
     private EventController boundEventControl;
