@@ -14,6 +14,7 @@ import com.sst.anouncements.event.ResourceEventInterpreter;
 import com.sst.anouncements.event.EventHandler;
 import com.sst.anouncements.resource.HTTPResourceAcquirer;
 import com.sst.anouncements.resource.Resource;
+import com.sst.anouncements.resource.ResourceAcquirer;
 import com.sst.anouncements.service.ResourceService;
 
 import java.io.FileInputStream;
@@ -73,6 +74,15 @@ public class AndroidServiceAdaptor extends Service
 
         this.setupResourceService();
         this.resourceService.start();
+        Resource resource= new
+                Resource(getString(R.string.blog_rss_url), new Date(0), null);
+        ResourceAcquirer resourceAcquirer = new HTTPResourceAcquirer();
+
+        this.resourceService = new ResourceService(resource, resourceAcquirer);
+        this.resourceService.setResourceChangedEvent(new
+                Event(getString(R.string.event_resource_changed_blog), null, null));
+        this.resourceService.bind(this.eventController);
+        this.resourceService.setFrequency(0.1 / 6); //Check Every Minute
     }
 
     /**
