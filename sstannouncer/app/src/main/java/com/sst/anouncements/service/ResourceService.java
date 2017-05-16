@@ -89,8 +89,8 @@ public class ResourceService extends Service
      */
     public boolean isAlive()
     {
-        if(this.serviceThread == null) return false;
-        Thread.State serviceThreadState = serviceThread.getState();
+        if(this.thread == null) return false;
+        Thread.State serviceThreadState = this.thread.getState();
         return serviceThreadState == Thread.State.RUNNABLE;
     }
 
