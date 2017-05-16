@@ -18,10 +18,11 @@ import java.util.Map;
  * Resource Event Interpreter.
  *
  * Interprets the types of resources, triggering the necessary actions to handle the resource event.
-*/
+ */
 public class ResourceEventInterpreter implements EventHandler {
     public static String RESOURCE_TYPE_FEED = "resource.type.feed";
     public static String RESOURCE_TYPE_UNKNOWN = "resource.type.unknown";
+    private static String INTERPRETER_STATE_CHANGED ="resource.event.interpreter.state.change";
 
     private Event resourceChangedEvent;
     private EventController eventController;
@@ -56,7 +57,7 @@ public class ResourceEventInterpreter implements EventHandler {
         if (this.eventController != null) this.unBind();
         this.eventController = eventController;
         this.eventController.
-                listen(this.toString(), this.resourceChangedEvent.getIdentifier(), this);
+                listen(this.toString(), ResourceService.getResourceChangedEvent().getIdentifier(), this);
     }
 
     /**
@@ -70,6 +71,20 @@ public class ResourceEventInterpreter implements EventHandler {
                     this.resourceChangedEvent.getIdentifier());
             this.eventController = null;
         }
+    }
+
+    /**
+     * Retrieve State Changed Event
+     * Retrieve the event that would be raised in the bound event controller when the object state
+     * changes.
+     * Listen for this event for changes in object state.
+     * The changed object state would be stored in the events data field.
+     *
+     * @return Returns the state event
+     */
+    public static Event getStateChangeEvent()
+    {
+        return new Event(ResourceEventInterpreter.INTERPRETER_STATE_CHANGED, new Date(0), "");
     }
 
     /**
@@ -121,7 +136,10 @@ public class ResourceEventInterpreter implements EventHandler {
 
         }
 
-        this.resourceMap.put(resource.getURL(), resource);
+        this.resourceMap.put(resource.getURL(),
+                new Resource(resource.getURL(), resource.getTimeStamp(), ""));
+        this.eventController.raise(new Event(ResourceEventInterpreter.INTERPRETER_STATE_CHANGED,
+                new Date(), this.getState()));
     }
 
     private String interpretResource(Resource resource)
@@ -148,7 +166,10 @@ public class ResourceEventInterpreter implements EventHandler {
         {
             Resource resource = new Resource(event.getData());
             Resource previousResource = this.resourceMap.get(resource.getURL());
-            Date previousTimeStamp = new Date(0);
+
+            //Determine the Previous Time Stamp.
+            //Prevents the notifications from entries before the app was first run.
+            Date previousTimeStamp = new Date();
             if(previousResource != null)
             {
                 previousTimeStamp = previousResource.getTimeStamp();
@@ -165,17 +186,16 @@ public class ResourceEventInterpreter implements EventHandler {
 
     private void readState(String state)
     {
-        this.resourceMap = new HashMap<String, Resource>();
-
         if(state != null && state.length() > 0)
         {
             Map<String, String> mapState = new HashMap<String, String>();
             try {
-                byte stateBytes[] = state.getBytes();
+                byte stateBytes[] = state.getBytes("ISO-8859-1");
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(stateBytes);
                 ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
                 mapState = (Map<String, String>) objectInputStream.readObject();
             } catch (Exception e) {
+                this.resourceMap = new HashMap<String, Resource>();
             }
 
             this.resourceMap = new HashMap<String, Resource>();
@@ -184,6 +204,11 @@ public class ResourceEventInterpreter implements EventHandler {
                 this.resourceMap.put(key, new Resource(mapState.get(key)));
             }
 
+
+        }
+        else
+        {
+            this.resourceMap = new HashMap<String, Resource>();
         }
     }
 
@@ -191,23 +216,23 @@ public class ResourceEventInterpreter implements EventHandler {
     private String writeState()
     {
         Map<String, String> mapState = new HashMap<String, String >();
+
         for(String key : this.resourceMap.keySet())
         {
+            String resourceString = this.resourceMap.get(key).toString();
             mapState.put(key, this.resourceMap.get(key).toString());
         }
 
-        String state;
+        String state = "";
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
             outputStream.writeObject(mapState);
             outputStream.flush();
-            state = outputStream.toString();
+            state = new String(byteArrayOutputStream.toString("ISO-8859-1"));
         } catch (Exception e) {
-            return "";
         }
 
         return state;
-
     }
 }
