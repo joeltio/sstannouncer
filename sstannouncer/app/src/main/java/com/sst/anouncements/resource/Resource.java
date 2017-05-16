@@ -44,6 +44,7 @@ public class Resource {
         String []slicedResource = resource.split(this.delim);
 
         this.URL = slicedResource[0];
+
         try
         {
             this.timeStamp = dateFormatter.parse(slicedResource[1]);
@@ -53,7 +54,16 @@ public class Resource {
         {
             this.timeStamp = new Date();
         }
-        this.data = slicedResource[2];
+
+        if(slicedResource.length > 2) { //Check for Optional Data Field
+            //Data Field Present
+            this.data = slicedResource[2];
+        }
+        else
+        {
+            //Data Field Absent
+            this.data = "";
+        }
     }
 
     //Resource Metadata
