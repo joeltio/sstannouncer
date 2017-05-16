@@ -3,8 +3,13 @@ package com.sst.anouncements.android;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
+
+import com.sst.anouncements.EntryActivity;
 
 /**
  * Android notification Adaptor
@@ -56,13 +61,20 @@ public class AndroidNotificationAdaptor
      * @see AndroidNotificationAdaptor#setNotificationAutoCancel(boolean)
      * @see AndroidNotificationAdaptor#setNotificationIconID(int)
      */
-    public void create(String title, String content)
+    public void create(String title, String content, String extraIdentifier, Parcelable extra)
     {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context);
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setSmallIcon(this.notificationIconID);
         builder.setAutoCancel(this.notificationAutoCancel);
+
+        Intent notificationIntent = new Intent(this.context, EntryActivity.class);
+        notificationIntent.putExtra(extraIdentifier, extra);
+        PendingIntent contentIntent = PendingIntent.getActivity(this.context,
+                0, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(contentIntent);
 
         this.notification =  builder.build();
     }

@@ -1,6 +1,7 @@
 package com.sst.anouncements.event;
 
 
+import com.sst.anouncements.EntryActivity;
 import com.sst.anouncements.Feed.Entry;
 import com.sst.anouncements.Feed.Feed;
 import com.sst.anouncements.Feed.RSSParser;
@@ -171,11 +172,14 @@ public class FeedEventInterpreter implements EventHandler {
     {
         for(Entry entry : changedEntries)
         {
-            String title = "New Entry on Students Blog";
+            //@TODO: Remove hardcoded notification title
+
+            String title = "New Post on Student's Blog";
             String content = entry.getTitle();
             int notificationID = (int)entry.getLastUpdated().getTime();
 
-            this.notificationAdaptor.create(title, content);
+            this.notificationAdaptor.setNotificationAutoCancel(true);
+            this.notificationAdaptor.create(title, content, EntryActivity.ENTRY_EXTRA, entry);
             this.notificationAdaptor.display(notificationID);
         }
     }
