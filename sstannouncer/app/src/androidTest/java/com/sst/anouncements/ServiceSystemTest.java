@@ -2,7 +2,6 @@ package com.sst.anouncements;
 
 
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
 import com.sst.anouncements.event.Event;
 import com.sst.anouncements.event.EventController;

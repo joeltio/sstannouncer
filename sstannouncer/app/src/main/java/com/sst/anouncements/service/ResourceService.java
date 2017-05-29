@@ -2,7 +2,6 @@ package com.sst.anouncements.service;
 
 
 
-import android.util.Log;
 
 import com.sst.anouncements.event.Event;
 import com.sst.anouncements.event.EventController;
