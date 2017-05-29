@@ -87,7 +87,7 @@ public class AndroidNotificationAdaptor
      * @param id An ID to identify the notification.
      * @return Returns false if displaying the notification failed, else returns true.
      *
-     * @see AndroidNotificationAdaptor#create(String, String)
+     * @see AndroidNotificationAdaptor#create(String, String, String, Parcelable)
      */
     public boolean display(int id)
     {
