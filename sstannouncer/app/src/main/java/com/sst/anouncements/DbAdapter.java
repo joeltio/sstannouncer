@@ -42,7 +42,7 @@ public class DbAdapter {
     private static final String ENTRIES_TABLE_COL_PUBLISHDATE = "publishDate";
     private static final String ENTRIES_TABLE_COL_LASTUPDATED = "lastUpdated";
 
-    private String[] ENTRIES_TABLE_COLUMNS = {
+    private static final String[] ENTRIES_TABLE_COLUMNS = {
             ENTRIES_TABLE_COL_ID, ENTRIES_TABLE_COL_AUTHOR, ENTRIES_TABLE_COL_TITLE,
             ENTRIES_TABLE_COL_CONTENT, ENTRIES_TABLE_COL_PUBLISHDATE, ENTRIES_TABLE_COL_LASTUPDATED
     };

@@ -49,7 +49,7 @@ public class ServiceSystemTest {
         eventStatus = false;
 
         resourceService.bind(testEventController);
-        resourceService.setResourceChangedEvent(testEvent);
+        ResourceService.setResourceChangedEvent(testEvent);
         resourceService.setFrequency(0.5);
         testEventController.listen(this.toString(), testEvent.getIdentifier(), new EventHandler() {
             @Override

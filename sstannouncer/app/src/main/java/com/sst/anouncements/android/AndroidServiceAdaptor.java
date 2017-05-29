@@ -131,7 +131,7 @@ public class AndroidServiceAdaptor extends Service
         try
         {
             FileOutputStream stateFileOut =
-                    this.openFileOutput(this.FILENAME_STATE, 0);
+                    this.openFileOutput(AndroidServiceAdaptor.FILENAME_STATE, 0);
             stateFileOut.write(resourceEventInterpreter.getState().getBytes());
 
         }catch(Exception exp){}

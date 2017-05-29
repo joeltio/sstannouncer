@@ -190,7 +190,7 @@ public class ResourceService extends Service
      */
     public Event getFrequencyChangeEvent()
     {
-        return this.frequencyChangeEvent;
+        return ResourceService.frequencyChangeEvent;
     }
 
     public void start()

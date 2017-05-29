@@ -60,7 +60,7 @@ public class FeedEventInterpreter implements EventHandler {
         if(this.eventController != null) this.unBind();
         this.eventController = eventController;
         this.eventController.
-                listen(this.toString(), this.feedChangedEvent.getIdentifier(), this);
+                listen(this.toString(), FeedEventInterpreter.feedChangedEvent.getIdentifier(), this);
     }
 
     /**
@@ -73,7 +73,7 @@ public class FeedEventInterpreter implements EventHandler {
         if(this.eventController != null)
         {
             this.eventController.unlisten(this.toString(),
-                    this.feedChangedEvent.getIdentifier());
+                    FeedEventInterpreter.feedChangedEvent.getIdentifier());
             this.eventController = null;
         }
     }
@@ -96,7 +96,7 @@ public class FeedEventInterpreter implements EventHandler {
     @Override
     public void handle(Event event)
     {
-        if(event.getIdentifier().equals(this.getFeedChangedEvent().getIdentifier()))
+        if(event.getIdentifier().equals(FeedEventInterpreter.getFeedChangedEvent().getIdentifier()))
         {
             this.handleFeedChanged(event);
         }

@@ -128,7 +128,7 @@ public class ResourceEventInterpreter implements EventHandler {
         Resource resource = new Resource(event.getData());
         String resourceType = this.interpretResource(resource);
 
-        if(resourceType.equals(this.RESOURCE_TYPE_FEED))
+        if(resourceType.equals(ResourceEventInterpreter.RESOURCE_TYPE_FEED))
         {
             this.raiseFeedChanged(event);
         }
@@ -159,8 +159,8 @@ public class ResourceEventInterpreter implements EventHandler {
         };
 
 
-        if(typeFeed == true) return this.RESOURCE_TYPE_FEED;
-        else return this.RESOURCE_TYPE_UNKNOWN;
+        if(typeFeed == true) return ResourceEventInterpreter.RESOURCE_TYPE_FEED;
+        else return ResourceEventInterpreter.RESOURCE_TYPE_UNKNOWN;
     }
 
     private void raiseFeedChanged(Event event)
