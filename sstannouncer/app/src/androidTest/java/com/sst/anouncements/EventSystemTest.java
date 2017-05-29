@@ -101,7 +101,7 @@ public class EventSystemTest
         try
         {
             Thread.sleep(10); //Event Processing Must be done within 10ms
-        }catch(InterruptedException exp){};
+        }catch(InterruptedException exp){}
 
         assertTrue(eventStatus);
 
@@ -147,7 +147,7 @@ public class EventSystemTest
         try
         {
             Thread.sleep(10); //Event Processing must be done in 10ms
-        }catch(InterruptedException exp){};
+        }catch(InterruptedException exp){}
 
         assertTrue(eventStatus);
 
@@ -185,6 +185,6 @@ public class EventSystemTest
         {
             Log.d("TFeedEventInterpreter", "Check for notification in notification drawer.");
             Thread.sleep(1000 * 5); //Delay to show the lack in notification.
-        }catch(InterruptedException exp){};
+        }catch(InterruptedException exp){}
     }
 }

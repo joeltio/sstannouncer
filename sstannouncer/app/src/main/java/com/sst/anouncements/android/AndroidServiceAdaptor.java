@@ -105,7 +105,7 @@ public class AndroidServiceAdaptor extends Service
         super.onStartCommand(intent, flags, startId);
 
         //Connect with Main App Process
-        if(intent != null && intent.hasExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER) == true)
+        if(intent != null && intent.hasExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER))
         {
             Messenger remoteMessenger = intent.
                     getParcelableExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER);

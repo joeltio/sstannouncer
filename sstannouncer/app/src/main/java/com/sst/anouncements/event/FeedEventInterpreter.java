@@ -127,7 +127,7 @@ public class FeedEventInterpreter implements EventHandler {
         }catch(Exception exp){
             //Failed to Parse Feed
             return;
-        };
+        }
 
 
         //Filter Entries Entries
@@ -139,14 +139,7 @@ public class FeedEventInterpreter implements EventHandler {
             public boolean filter(Object object) {
                 Entry entry = (Entry) object;
 
-                if(entry.getLastUpdated().after(previousTimeStamp))
-                {
-                    return false; //Keep
-                }
-                else
-                {
-                    return true; //Filter
-                }
+                return !entry.getLastUpdated().after(previousTimeStamp);
             }
         }, filterFeed);
 

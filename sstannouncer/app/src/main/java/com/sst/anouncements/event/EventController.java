@@ -109,7 +109,6 @@ public class EventController {
             handler.handle(event);
         }
 
-        return;
     }
 
     //Private Utility Methods

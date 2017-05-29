@@ -194,7 +194,7 @@ public class ResourceService extends Service
 
     public void start()
     {
-        if(this.isAlive() == true )  this.kill();
+        if(this.isAlive())  this.kill();
 
         this.threadStop = false;
         this.thread = new Thread(this, this.threadName);
@@ -203,7 +203,7 @@ public class ResourceService extends Service
 
     public void stop()
     {
-        if(this.isAlive() == true)
+        if(this.isAlive())
         {
             this.threadStop = true;
         }
@@ -211,7 +211,7 @@ public class ResourceService extends Service
 
     public void kill()
     {
-        if(this.isAlive() == true)
+        if(this.isAlive())
         {
             this.thread.interrupt();
         }
@@ -220,9 +220,9 @@ public class ResourceService extends Service
     //Service Thread
     public void run()
     {
-        while(this.threadStop == false)
+        while(this.threadStop)
         {
-            while(this.threadPause == true){} //Pause
+            while(this.threadPause){} //Pause
 
             Date previousTimeStamp  = (this.resource.getTimeStamp() == null) ? new Date(0) :
                     this.resource.getTimeStamp();

@@ -54,7 +54,7 @@ public class Filter{
         for(Object object : feedList)
         {
             boolean shouldFilter = this.predicate.filter(object);
-            if(shouldFilter == true)
+            if(shouldFilter)
             {
                 filterList.remove(object);
             }

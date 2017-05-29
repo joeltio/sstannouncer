@@ -156,10 +156,10 @@ public class ResourceEventInterpreter implements EventHandler {
             Feed feed = RSSParser.parse(resourceXML);
         }catch(Exception exp){
             typeFeed = false;
-        };
+        }
 
 
-        if(typeFeed == true) return ResourceEventInterpreter.RESOURCE_TYPE_FEED;
+        if(typeFeed) return ResourceEventInterpreter.RESOURCE_TYPE_FEED;
         else return ResourceEventInterpreter.RESOURCE_TYPE_UNKNOWN;
     }
 
