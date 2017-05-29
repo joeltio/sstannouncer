@@ -3,6 +3,7 @@ package com.sst.anouncements.resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Defines a resource.
@@ -40,7 +41,7 @@ public class Resource {
      */
     public Resource(String resource)
     {
-        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
         String []slicedResource = resource.split(this.delim);
 
         this.URL = slicedResource[0];
@@ -118,7 +119,7 @@ public class Resource {
     @Override
     public String toString()
     {
-        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
 
         return String.format("%s%s%s%s%s", this.getURL(), this.delim,
                 dateFormatter.format(this.timeStamp),

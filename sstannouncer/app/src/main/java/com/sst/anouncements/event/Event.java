@@ -3,6 +3,7 @@ package com.sst.anouncements.event;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * An Event.
@@ -43,7 +44,7 @@ public class Event {
      */
     public Event(String event)
     {
-        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
         String []slicedEvent = event.split(this.delim);
 
         this.identifier = slicedEvent[0];
@@ -99,7 +100,7 @@ public class Event {
     @Override
     public String toString()
     {
-        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
 
         return String.format("%s%s%s%s%s", this.getIdentifier(), this.delim,
                 dateFormatter.format(this.getTimeStamp()), this.delim,
