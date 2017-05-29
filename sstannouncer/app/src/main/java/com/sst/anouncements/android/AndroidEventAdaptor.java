@@ -34,7 +34,7 @@ public class AndroidEventAdaptor {
      * Message Handler
      * Message Handler for use with Messenger for inter process communication.
      */
-    public class MessageHandler extends Handler {
+    public static class MessageHandler extends Handler {
         private WeakReference<AndroidEventAdaptor> eventAdaptor;
 
         /**
