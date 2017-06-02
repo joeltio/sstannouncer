@@ -112,7 +112,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
         dbAdapter.close();
 
-        newestEntryDateMillis = entries.get(entries.size()-1).getPublished().getTime();
+        newestEntryDateMillis = entries.get(0).getPublished().getTime();
         setNewestEntryDate(newestEntryDateMillis);
     }
 
