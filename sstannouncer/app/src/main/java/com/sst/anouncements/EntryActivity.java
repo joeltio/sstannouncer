@@ -18,6 +18,7 @@ public class EntryActivity extends AppCompatActivity {
     public static final String ENTRY_EXTRA = "com.sst.anouncements.EntryActivity.ENTRY_EXTRA";
 
     private Entry entryShown;
+    private WebView content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class EntryActivity extends AppCompatActivity {
 
         TextView title = (TextView) findViewById(R.id.entry_title);
         TextView author = (TextView) findViewById(R.id.entry_author);
-        WebView content = (WebView) findViewById(R.id.entry_content);
+        this.content = (WebView) findViewById(R.id.entry_content);
         TextView published = (TextView) findViewById(R.id.entry_published);
 
         title.setText(this.entryShown.getTitle());
@@ -50,14 +51,14 @@ public class EntryActivity extends AppCompatActivity {
                 "    }" +
                 "});" +
                 "</script>";
-        content.loadData(addedCss + addedJs +
+        this.content.loadData(addedCss + addedJs +
                 this.entryShown.getContent(), "text/html; charset=utf-8", "utf-8");
 
-        content.getSettings().setJavaScriptEnabled(true);
+        this.content.getSettings().setJavaScriptEnabled(true);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean showImages = preferences.getBoolean(
                 getResources().getString(R.string.pref_show_images), true);
-        content.getSettings().setLoadsImagesAutomatically(showImages);
+        this.content.getSettings().setLoadsImagesAutomatically(showImages);
 
         published.setText(Entry.toShortDate(this.entryShown.getPublished()));
     }
@@ -80,5 +81,11 @@ public class EntryActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.content.clearFocus();
+        super.onBackPressed();
     }
 }

@@ -34,7 +34,6 @@ import com.sst.anouncements.resource.Resource;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 public class FeedFragment extends ListFragment implements AdapterView.OnItemClickListener {
@@ -112,7 +111,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
         dbAdapter.close();
 
-        newestEntryDateMillis = entries.get(entries.size()-1).getPublished().getTime();
+        newestEntryDateMillis = entries.get(0).getPublished().getTime();
         setNewestEntryDate(newestEntryDateMillis);
     }
 
@@ -202,7 +201,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    fetchFeedAsync = new fetchNewFeed();
+                    fetchFeedAsync = new fetchNewFeed(true);
                     fetchFeedAsync.execute();
                 }
             }
@@ -296,7 +295,6 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 dbAdapter.open();
 
                 ArrayList<Entry> databaseEntries = dbAdapter.getAllEntries();
-                Collections.reverse(databaseEntries);
 
                 dbAdapter.close();
 
