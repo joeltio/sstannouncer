@@ -201,7 +201,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
             new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    fetchFeedAsync = new fetchNewFeed();
+                    fetchFeedAsync = new fetchNewFeed(true);
                     fetchFeedAsync.execute();
                 }
             }
