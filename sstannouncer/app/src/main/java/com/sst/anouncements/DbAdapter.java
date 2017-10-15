@@ -178,7 +178,7 @@ public class DbAdapter {
 
     public ArrayList<Entry> getAllEntries() {
         Cursor cursor = SQLdb.query(ENTRIES_TABLE, ENTRIES_TABLE_COLUMNS,
-                null, null, null, null, null);
+                null, null, null, null, ENTRIES_TABLE_COL_PUBLISHDATE);
 
         ArrayList<Entry> entries = new ArrayList<>();
         for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
@@ -198,7 +198,6 @@ public class DbAdapter {
 
         cursor.close();
 
-        // Entries are NOT sorted
         return entries;
     }
 
