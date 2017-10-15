@@ -221,10 +221,9 @@ public class DbAdapter {
     public void deleteEntries(Date publishedBefore) {
         long publishedBeforeMillis = publishedBefore.getTime();
 
-        String[] whereArgs = new String[] {ENTRIES_TABLE_COL_PUBLISHDATE,
-                String.valueOf(publishedBeforeMillis)};
+        String[] whereArgs = new String[] {String.valueOf(publishedBeforeMillis)};
         Cursor cursor = SQLdb.query(ENTRIES_TABLE, new String[] {ENTRIES_TABLE_COL_ID},
-                "?<?", whereArgs, null, null, null);
+                ENTRIES_TABLE_COL_PUBLISHDATE + "<?", whereArgs, null, null, null);
 
         ArrayList<String> entriesToDeleteIds = new ArrayList<>();
         for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
@@ -236,8 +235,8 @@ public class DbAdapter {
         for (String entryId : entriesToDeleteIds) {
             deleteCategories(entryId);
             deleteBloggerLink(entryId);
+            deleteEntry(entryId);
         }
-        SQLdb.delete(ENTRIES_TABLE, "?<?", whereArgs);
     }
 
     public void deleteAll() {
