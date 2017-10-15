@@ -31,7 +31,7 @@ public class DbAdapter {
      */
 
     private static final String DATABASE_NAME = "announcer.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Entries table
     private static final String ENTRIES_TABLE = "entries";
