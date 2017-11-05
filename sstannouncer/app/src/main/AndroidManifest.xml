@@ -24,15 +24,15 @@
         <activity android:name="com.sst.anouncements.EntryActivity" />
 
         <!-- Service Boot -->
-        <receiver android:name="com.sst.anouncements.android.AndroidServiceBoot">
+        <receiver android:name="com.sst.anouncements.Bootloader">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <!-- Resource Service -->
         <service
-            android:name="com.sst.anouncements.android.AndroidServiceAdaptor"
-            android:process=":res_service"
+            android:name="com.sst.anouncements.UpdateService"
+            android:process=":srv_update"
             >
         </service>
     </application>
