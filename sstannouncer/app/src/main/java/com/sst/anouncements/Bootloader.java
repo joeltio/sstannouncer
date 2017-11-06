@@ -8,7 +8,7 @@ import android.util.Log;
 //Service Bootloader
 //Start Service on Device Boot
 public class Bootloader extends BroadcastReceiver {
-    private static String TAG = "Bootloader"l;
+    private static String TAG = "Bootloader";
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -156,4 +156,29 @@ public class Entry implements Parcelable {
             return new Entry[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj.getClass() == Entry.class)
+        {
+            Entry otherEntry = (Entry)obj;
+
+            if(!this.id.equals(otherEntry.id)) return false;
+            if(!this.author.equals(otherEntry.author)) return false;
+            if(!this.title.equals(otherEntry.title)) return false;
+            if(!this.content.equals(otherEntry.content)) return false;
+            if(!this.publishDate.equals(otherEntry.publishDate)) return false;
+            if(!this.lastUpdated.equals(otherEntry.lastUpdated)) return false;
+
+            for(String category : this.categories)
+            {
+                if(!otherEntry.categories.contains(category)) return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }

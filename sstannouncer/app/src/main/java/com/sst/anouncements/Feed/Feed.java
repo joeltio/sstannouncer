@@ -5,6 +5,7 @@ import android.util.Xml;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Feed {
     private static String TAG = "Feed";
@@ -37,17 +38,33 @@ public class Feed {
     //Feed Equal Method
     @Override
     public boolean equals(Object obj) {
-        if(obj != this && obj.getClass() == Feed.class)
+        if(obj == this) return true;
+        if(obj.getClass() == Feed.class)
         {
             Feed otherFeed = (Feed)obj;
             if(!this.lastChanged.equals(otherFeed.lastChanged)) return false;
-            for(int i = 0; i < this.categories.size(); i ++)
+
+            //Check Categories
+            for(String category : this.categories)
             {
-                if(!this.categories.get(i).equals(otherFeed.categories.get(i))) return false;
+                if(!otherFeed.categories.contains(category)) return false;
             }
-            for(int i = 0; i < this.entries.size(); i ++)
+
+            //Check Entries
+            boolean found = false;
+            for(Entry entry : this.entries)
             {
-                if(!this.entries.get(i).equals(otherFeed.entries.get(i))) return false;
+                found = false;
+                for(Entry otherEntry : otherFeed.entries)
+                {
+                    if(entry.equals(otherEntry)))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if(!found) return false;
             }
 
             return true;
@@ -63,6 +80,27 @@ public class Feed {
 
         if(this.lastChanged.after(feed.lastChanged)) return 1;
         return -1;
+    }
+
+    public ArrayList<Entry> diffEntry(Feed otherFeed)
+    {
+        ArrayList<Entry> diff = new ArrayList<>();
+        boolean found = false;
+        for(Entry entry : this.entries)
+        {
+            found = false;
+            for(Entry otherEntry : otherFeed.entries)
+            {
+                if(entry.equals(otherEntry))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) diff.add(entry);
+        }
+
+        return diff;
     }
 
     public ArrayList<String> getCategories() {
