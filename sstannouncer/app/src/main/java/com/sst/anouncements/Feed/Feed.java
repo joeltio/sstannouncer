@@ -108,4 +108,8 @@ public class Feed {
     public ArrayList<Entry> getEntries() {
         return this.entries;
     }
+
+    public Date getLastChanged() {
+        return lastChanged;
+    }
 }

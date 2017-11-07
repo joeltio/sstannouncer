@@ -1,8 +1,10 @@
 package com.sst.anouncements;
 
 import android.app.ListFragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,12 +26,6 @@ import com.sst.anouncements.Feed.Entry;
 import com.sst.anouncements.Feed.Feed;
 import com.sst.anouncements.Feed.RSSParser;
 import com.sst.anouncements.Feed.XML;
-import com.sst.anouncements.android.AndroidEventAdaptor;
-import com.sst.anouncements.android.AndroidServiceAdaptor;
-import com.sst.anouncements.event.Event;
-import com.sst.anouncements.event.EventController;
-import com.sst.anouncements.event.EventHandler;
-import com.sst.anouncements.resource.Resource;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -44,8 +40,8 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
     private SharedPreferences preferences;
 
-    public static EventController eventController = null;
-    private AndroidEventAdaptor androidEventAdaptor;
+    private BroadcastReceiver receiver;
+
 
     private fetchNewFeed fetchFeedAsync;
     private DrawerLayout drawerLayout;
@@ -124,44 +120,8 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         getListView().setOnItemClickListener(this);
+
         if (savedInstanceState == null) {
-            if (FeedFragment.eventController == null) {
-                FeedFragment.eventController = new EventController();
-            }
-            this.androidEventAdaptor = new AndroidEventAdaptor(FeedFragment.eventController);
-
-            // Connect to service
-            Intent connectIntent = new Intent(getActivity(), AndroidServiceAdaptor.class);
-            connectIntent.putExtra(AndroidServiceAdaptor.INTENT_EXTRA_REMOTE_MESSENGER,
-                    this.androidEventAdaptor.getLocalMessenger());
-            getActivity().startService(connectIntent);
-
-            eventController.listen(this.toString(),
-                    getResources().getString(R.string.event_resource_changed_blog),
-                    new EventHandler() {
-                @Override
-                public void handle(Event event) {
-                    Resource resource = new Resource(event.getData());
-                    ArrayList<Entry> entries;
-                    try {
-                        XML xml = new XML(resource.getData());
-                        Feed feed = RSSParser.parse(xml);
-
-                        entries = feed.getEntries();
-
-                        updateEntries(entries);
-
-                        setLastModified(resource.getTimeStamp().getTime());
-                    } catch (Exception e) {
-                        Log.e(this.getClass().getName(), e.getMessage());
-                        entries = new ArrayList<>();
-                    }
-
-                    if (!entries.isEmpty()) {
-                        setListAdapter(new FeedArrayAdapter(getActivity(), entries));
-                    }
-                }
-            });
 
             fetchFeedAsync = new fetchNewFeed();
 
@@ -172,6 +132,28 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
                 this.fetchFeedAsync.execute();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Setup Intent Callback for Feed Updates from Service
+        this.receiver =  new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                fetchFeedAsync = new fetchNewFeed(true);
+                fetchFeedAsync.execute();
+            }
+        };
+        IntentFilter filter = new IntentFilter(UpdateService.ACTION_UPDATE);
+        getActivity().registerReceiver(this.receiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getActivity().unregisterReceiver(this.receiver);
     }
 
     private SwipeRefreshLayout mSwipeRefreshLayout;

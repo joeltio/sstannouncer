@@ -18,6 +18,8 @@ public class UpdateService extends Service implements Runnable
 {
     public static String TAG = "UpdateService";
     public static String STORAGE_NAME = "update_service";
+
+    public static String ACTION_UPDATE = "com.sst.anouncements.action.update_feed";
     public static String EXTRA_FREQUENCY_DELAY = "UpdateService.frequency";
 
     //Service Parameters
@@ -91,7 +93,7 @@ public class UpdateService extends Service implements Runnable
                 if(this.updateNotifier.isUpdate(feed))
                 {
                     this.updateNotifier.update(feed); //Send Notification to user
-
+                    this.sendBroadcast(new Intent(UpdateService.ACTION_UPDATE));
                 }
             }catch(HTTPFetchMethod.FetchException e) {
                 Log.e(UpdateService.TAG, "Resource Fetch via HTTP Failed:" + e.what(), e);
