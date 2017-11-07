@@ -1,11 +1,9 @@
 package com.sst.anouncements.Feed;
 
 import android.util.Log;
-import android.util.Xml;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Feed {
     private static String TAG = "Feed";
@@ -27,7 +25,7 @@ public class Feed {
             XML xml = new XML(rss);
             Feed feed = RSSParser.parse(xml);
 
-            return Feed
+            return feed;
         } catch (Exception e) {
             Log.e(Feed.TAG, e.getLocalizedMessage());
         }
@@ -57,7 +55,7 @@ public class Feed {
                 found = false;
                 for(Entry otherEntry : otherFeed.entries)
                 {
-                    if(entry.equals(otherEntry)))
+                    if(entry.equals(otherEntry))
                     {
                         found = true;
                         break;

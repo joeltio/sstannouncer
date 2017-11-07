@@ -2,13 +2,9 @@
     <string name="app_name">Announcer</string>
     <string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>
 
-    <!-- Service -->
-    <string name="event_resource_changed_blog">
-        service.resource.changed
-    </string>
-    <string name="event_resource_service_change_frequency">
-        service.resource.set.frequency
-    </string>
+
+    <!-- Notification -->
+    <string name="notification_title_feed_update">New Post on Blog.</string>
 
     <!-- Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

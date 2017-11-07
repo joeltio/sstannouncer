@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-sdk android:maxSdkVersion="25"/>
+    <uses-sdk android:maxSdkVersion="26"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/announcer"
@@ -29,9 +29,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <!-- Resource Service -->
+        <!-- Update Service -->
         <service
             android:name="com.sst.anouncements.UpdateService"
+            android:exported="false"
             android:process=":srv_update"
             >
         </service>
