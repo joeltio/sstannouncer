@@ -25,7 +25,7 @@ import java.util.ArrayList;
 //NOTE: Object is a state dependent and henceforth NOT thread safe.
 public class FeedUpdateNotification {
     private static String TAG = "FeedUpdateNotification";
-    private static String storageName = "com_sst.announer_notification_state";
+    private static String storageName = "com_sst.announcer_notification_state";
     private static String storageFeedKey= "Feed";
 
     private Feed previousFeed;
@@ -65,11 +65,18 @@ public class FeedUpdateNotification {
         return new FeedUpdateNotification(feedState, context);
     }
 
+    //Determines whether the new feed is newever
+    public boolean isUpdate(Feed newFeed)
+    {
+        if(newFeed.compareTo(this.previousFeed) == 1) return true;
+        else return false;
+    }
+
     //Notifies users about changes to new feed compared to the stored internal previous feed object
     //Would not do anything if the feed has not changed respect to the previous feed
     public void update(Feed newFeed)
     {
-        if(newFeed.compareTo(this.previousFeed) == 1) //Updated Feed
+        if(this.isUpdate(newFeed))
         {
             ArrayList<Entry> diff = newFeed.diffEntry(this.previousFeed);
             for(Entry entry : diff)
