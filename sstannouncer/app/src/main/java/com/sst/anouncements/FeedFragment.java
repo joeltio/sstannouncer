@@ -141,8 +141,14 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         this.receiver =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                fetchFeedAsync = new fetchNewFeed(true);
-                fetchFeedAsync.execute();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        fetchFeedAsync = new fetchNewFeed(true);
+                        fetchFeedAsync.execute();
+                    }
+                });
             }
         };
         IntentFilter filter = new IntentFilter(UpdateService.ACTION_UPDATE);

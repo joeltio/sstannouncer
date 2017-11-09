@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity
             navigationView.setCheckedItem(0);
             navigationView.getMenu().getItem(0).setChecked(true);
         }
+
+        UpdateService.schedule(this, 0);
     }
 
     @Override
