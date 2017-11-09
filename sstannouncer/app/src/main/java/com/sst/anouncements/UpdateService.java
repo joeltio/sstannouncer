@@ -18,6 +18,7 @@ import com.firebase.jobdispatcher.Trigger;
 import com.sst.anouncements.Feed.Feed;
 
 import java.text.ParseException;
+import java.util.Date;
 
 //Update Service
 //Polls for updates to resource.
@@ -78,12 +79,13 @@ public class UpdateService extends JobService implements Runnable
 
         //Thread Work
         try {
-            String resource = this.fetchMethod.getResource(this.resourceURL);
-            Feed feed = Feed.parse(resource);
-            if(feed == null) throw new ParseException("", 0);
-
-            if(this.updateNotifier.isUpdate(feed))
+            Date lastModified = this.fetchMethod.getModified(this.resourceURL);
+            if(this.updateNotifier.isUpdate(lastModified))
             {
+                String resource = this.fetchMethod.getResource(this.resourceURL);
+                Feed feed = Feed.parse(resource);
+                if(feed == null) throw new ParseException("", 0);
+
                 this.updateNotifier.update(feed); //Send Notification to user
                 this.sendBroadcast(new Intent(UpdateService.ACTION_UPDATE));
             }
@@ -97,8 +99,11 @@ public class UpdateService extends JobService implements Runnable
     }
 
     //Schedules Job for frequency delay, if frequency delay is zero, would read delay from storage
+    //If frequency delay is -1, would never run service.
     public static void schedule(Context context, int frequencyDelay)
     {
+        if(frequencyDelay == -1) return;
+
         //Determine Delay
         int delay = 0;
         if(frequencyDelay == 0) {
@@ -106,7 +111,7 @@ public class UpdateService extends JobService implements Runnable
                     context.getSharedPreferences(UpdateService.STORAGE_NAME, 0);
             delay = preferences.getInt(UpdateService.EXTRA_FREQUENCY_DELAY, 60); //Default : 1min
         }
-        if(frequencyDelay != 0)
+        if(frequencyDelay > 0)
         {
             delay = frequencyDelay;
             SharedPreferences preferences =
@@ -122,13 +127,12 @@ public class UpdateService extends JobService implements Runnable
                 .setService(UpdateService.class)
                 .setTag(UpdateService.TAG)
                 .setReplaceCurrent(true)
-                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 .setRecurring(true)
                 .setLifetime(Lifetime.FOREVER)
-                .setTrigger(Trigger.executionWindow(delay, delay+ delay- 1))
+                .setTrigger(Trigger.executionWindow(delay, (int)Math.round(delay * 1.5)))
                 .setConstraints(Constraint.ON_ANY_NETWORK | Constraint.DEVICE_IDLE)
                 .build();
         dispatcher.mustSchedule(myJob);
-
     }
 }

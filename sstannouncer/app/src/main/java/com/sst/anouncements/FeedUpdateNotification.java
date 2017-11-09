@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 import com.sst.anouncements.Feed.Entry;
 import com.sst.anouncements.Feed.Feed;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 
 //Feed Update Notification
@@ -31,6 +31,7 @@ public class FeedUpdateNotification {
     private Feed previousFeed;
     private Context context;
     private NotificationCompat.Builder builder;
+    private String channelID;
 
     private FeedUpdateNotification(Feed previousFeed, Context context)
     {
@@ -38,20 +39,24 @@ public class FeedUpdateNotification {
         this.context = context;
 
         //Setup Notification Channel (Android 26 and Above
-        String channelID = "com.sst.anouncements";
+        this.channelID = "com.sst.anouncements";
         if(Build.VERSION.SDK_INT >= 26)
         {
-            NotificationChannel channel = new NotificationChannel(channelID, "Announcer",
+            NotificationChannel channel = new NotificationChannel(this.channelID, "Announcer",
                     NotificationManager.IMPORTANCE_DEFAULT);
             channel.enableVibration(true);
             channel.setShowBadge(true);
             channel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager =
+                    (NotificationManager)this.context.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channel);
         }
 
         //Setup Default Configuration for Notifications
-        this.builder = new NotificationCompat.Builder(this.context, channelID);
+        this.builder = new NotificationCompat.Builder(this.context, this.channelID);
         this.builder.setAutoCancel(true);
         this.builder.setBadgeIconType(R.drawable.notifcation_icon);
+        this.builder.setSmallIcon(R.drawable.notifcation_icon);
 
     }
 
@@ -65,10 +70,10 @@ public class FeedUpdateNotification {
         return new FeedUpdateNotification(feedState, context);
     }
 
-    //Determines whether the new feed is newever
-    public boolean isUpdate(Feed newFeed)
+    //Determines whether the new feed is Newer
+    public boolean isUpdate(Date feedDate)
     {
-        if(newFeed.compareTo(this.previousFeed) == 1) return true;
+        if(feedDate.compareTo(this.previousFeed.getLastChanged()) == 1) return true;
         else return false;
     }
 
@@ -76,12 +81,16 @@ public class FeedUpdateNotification {
     //Would not do anything if the feed has not changed respect to the previous feed
     public void update(Feed newFeed)
     {
-        if(this.isUpdate(newFeed))
+        if(this.isUpdate(newFeed.getLastChanged()))
         {
-            ArrayList<Entry> diff = newFeed.diffEntry(this.previousFeed);
-            for(Entry entry : diff)
+            //Check to prevent notification spam on first launch of app.
+            if(this.previousFeed.getLastChanged().compareTo(new Date(0)) != 0)
             {
-                this.notify(entry);
+                ArrayList<Entry> diff = newFeed.diffEntry(this.previousFeed);
+                for(Entry entry : diff)
+                {
+                    this.notify(entry);
+                }
             }
 
             this.previousFeed = newFeed;
@@ -94,17 +103,17 @@ public class FeedUpdateNotification {
     {
         //Setup Notification Intent
         Intent intent = new Intent(this.context, EntryActivity.class);
-        intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(EntryActivity.ENTRY_EXTRA, entry);
-        intent.setFlags(Intent.FLAG_FROM_BACKGROUND);
         PendingIntent pendingIntent = PendingIntent.getActivity(this.context,0, intent,
-                0);
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Setup
         this.builder.setContentIntent(pendingIntent);
-        this.builder.setContentTitle(this.context.getString(R.string.notification_title_feed_update));
-        this.builder.setContentText(entry.getTitle());
-        this.builder.setSubText(entry.getContent());
+        this.builder.setContentTitle(entry.getTitle());
+        this.builder.setContentText(this.context.getString(R.string.notification_title_blog_update));
+        this.builder.setSubText(this.context.getString(R.string.notification_subtitle_blog_update));
+
+        if(Build.VERSION.SDK_INT >= 26) this.builder.setChannelId(this.channelID);
 
         //Send Notification to User
         NotificationManager manager =
@@ -112,8 +121,8 @@ public class FeedUpdateNotification {
         Notification notification = this.builder.build();
         String tag =
                 (entry.getTitle() == null) ? entry.getLastUpdated().toString() : entry.getTitle();
-        if(notification != null){
-            manager.notify(tag, 0, notification);
+        if(notification != null && manager != null){
+                manager.notify(tag, 0, notification);
         }else{
             Log.e(FeedUpdateNotification.TAG,
                     "Failed to deploy notification.: Notification Builder returned null");

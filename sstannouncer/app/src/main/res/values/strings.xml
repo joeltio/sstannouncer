@@ -4,7 +4,8 @@
 
 
     <!-- Notification -->
-    <string name="notification_title_feed_update">New Post on Blog.</string>
+    <string name="notification_subtitle_blog_update">New Post on Blog</string>
+    <string name="notification_title_blog_update">SST Students Blog</string>
 
     <!-- Navigation Drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
