@@ -40,7 +40,7 @@ public class Feed {
         if(obj.getClass() == Feed.class)
         {
             Feed otherFeed = (Feed)obj;
-            if(!this.lastChanged.equals(otherFeed.lastChanged)) return false;
+            if(this.compareTo(otherFeed) != 0) return false;
 
             //Check Categories
             for(String category : this.categories)
@@ -71,13 +71,11 @@ public class Feed {
     }
 
     // Compares Feeds with each other
+    // Precision: Down to the minute.
     // Return: 0 - Equal, 1 - Greater, -1 - Less Than
     public int compareTo(Feed feed)
     {
-        if(this.equals(feed)) return 0;
-
-        if(this.lastChanged.after(feed.lastChanged)) return 1;
-        return -1;
+        return this.lastChanged.compareTo(feed.lastChanged);
     }
 
     public ArrayList<Entry> diffEntry(Feed otherFeed)
