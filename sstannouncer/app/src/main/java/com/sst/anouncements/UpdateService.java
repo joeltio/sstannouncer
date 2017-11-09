@@ -1,34 +1,41 @@
 package com.sst.anouncements;
 
-import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.IBinder;
 import android.os.Process;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.JobParameters;
+import com.firebase.jobdispatcher.JobService;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.sst.anouncements.Feed.Feed;
 
 import java.text.ParseException;
 
 //Update Service
 //Polls for updates to resource.
-public class UpdateService extends Service implements Runnable
+public class UpdateService extends JobService implements Runnable
 {
     public static String TAG = "UpdateService";
     public static String STORAGE_NAME = "update_service";
+    public static int jobID = 1;
 
     public static String ACTION_UPDATE = "com.sst.anouncements.action.update_feed";
     public static String EXTRA_FREQUENCY_DELAY = "UpdateService.frequency";
 
     //Service Parameters
     private String resourceURL;
+    private JobParameters parameters;
 
     //Service Worker
     private Thread worker;
-    private boolean runFlag;
-    private int frequencyDelay; //Delay in Seconds
 
     //Utility Objects
     private HTTPFetchMethod fetchMethod;
@@ -36,45 +43,31 @@ public class UpdateService extends Service implements Runnable
 
     //Service Lifecycle
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        this.resourceURL = this.getString(R.string.blog_rss_url);
-
-        this.worker = new Thread(this);
-        this.runFlag = false;
-        this.frequencyDelay = 60; //Default Delay: 1 minute
-        this.fetchMethod = new HTTPFetchMethod();
-        this.updateNotifier = FeedUpdateNotification.stateInstance(this);
-
-        this.readState();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
-        this.writeState();
     }
 
     //Service Callbacks
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        //Parse Command
-        this.frequencyDelay = intent.getIntExtra(UpdateService.EXTRA_FREQUENCY_DELAY,
-                this.frequencyDelay);
+    public boolean onStartJob(JobParameters jobParameters) {
+        this.parameters = jobParameters;
+        this.resourceURL = this.getString(R.string.blog_rss_url);
+
+        this.worker = new Thread(this);
+        this.fetchMethod = new HTTPFetchMethod();
+        this.updateNotifier = FeedUpdateNotification.stateInstance(this);
+
 
         //Start Thread
         if(!this.worker.isAlive()) this.worker.start();
-
-        return START_REDELIVER_INTENT;
+        return true;
     }
 
-
-    //Service Binding not supported
-    @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public boolean onStopJob(JobParameters job) {
+        this.worker.interrupt();
+
+        return false;
     }
 
     //Service Runnable
@@ -83,48 +76,59 @@ public class UpdateService extends Service implements Runnable
         //Thread Setup
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-        //Thread Loop
-        while(this.runFlag) {
-            try {
-                String resource = this.fetchMethod.getResource(this.resourceURL);
-                Feed feed = Feed.parse(resource);
-                if(feed == null) throw new ParseException("", 0);
+        //Thread Work
+        try {
+            String resource = this.fetchMethod.getResource(this.resourceURL);
+            Feed feed = Feed.parse(resource);
+            if(feed == null) throw new ParseException("", 0);
 
-                if(this.updateNotifier.isUpdate(feed))
-                {
-                    this.updateNotifier.update(feed); //Send Notification to user
-                    this.sendBroadcast(new Intent(UpdateService.ACTION_UPDATE));
-                }
-            }catch(HTTPFetchMethod.FetchException e) {
-                Log.e(UpdateService.TAG, "Resource Fetch via HTTP Failed:" + e.what(), e);
-            }catch (ParseException e) {
-                Log.e(UpdateService.TAG, "Parsing of Resource Failed");
+            if(this.updateNotifier.isUpdate(feed))
+            {
+                this.updateNotifier.update(feed); //Send Notification to user
+                this.sendBroadcast(new Intent(UpdateService.ACTION_UPDATE));
             }
-
-            //Frequency Delay
-            try {
-                Thread.sleep((long) frequencyDelay * 1000);
-            } catch (InterruptedException e) {
-                this.runFlag = false;
-                Log.e(UpdateService.TAG, "Worker Threaded Interrupted ", e);
-            }
+        }catch(HTTPFetchMethod.FetchException e) {
+            Log.e(UpdateService.TAG, "Resource Fetch via HTTP Failed:" + e.what(), e);
+        }catch (ParseException e) {
+            Log.e(UpdateService.TAG, "Parsing of Resource Failed");
         }
+
+        this.jobFinished(this.parameters, Thread.currentThread().isInterrupted());
     }
 
-    //Persistence Methods
-    private void writeState()
+    //Schedules Job for frequency delay, if frequency delay is zero, would read delay from storage
+    public static void schedule(Context context, int frequencyDelay)
     {
-        SharedPreferences preferences =
-                this.getSharedPreferences(UpdateService.STORAGE_NAME, 0);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(UpdateService.EXTRA_FREQUENCY_DELAY, this.frequencyDelay);
-        editor.apply();
-    }
+        //Determine Delay
+        int delay = 0;
+        if(frequencyDelay == 0) {
+            SharedPreferences preferences =
+                    context.getSharedPreferences(UpdateService.STORAGE_NAME, 0);
+            delay = preferences.getInt(UpdateService.EXTRA_FREQUENCY_DELAY, 60); //Default : 1min
+        }
+        if(frequencyDelay != 0)
+        {
+            delay = frequencyDelay;
+            SharedPreferences preferences =
+                    context.getSharedPreferences(UpdateService.STORAGE_NAME, 0);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt(UpdateService.EXTRA_FREQUENCY_DELAY, frequencyDelay);
+            editor.apply();
+        }
 
-    private void readState()
-    {
-        SharedPreferences preferences =
-                this.getSharedPreferences(UpdateService.STORAGE_NAME, 0 );
-        this.frequencyDelay = preferences.getInt(UpdateService.EXTRA_FREQUENCY_DELAY, 60);
+        //Schedule Job
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        Job myJob = dispatcher.newJobBuilder()
+                .setService(UpdateService.class)
+                .setTag(UpdateService.TAG)
+                .setReplaceCurrent(true)
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .setRecurring(true)
+                .setLifetime(Lifetime.FOREVER)
+                .setTrigger(Trigger.executionWindow(delay, delay+ delay- 1))
+                .setConstraints(Constraint.ON_ANY_NETWORK | Constraint.DEVICE_IDLE)
+                .build();
+        dispatcher.mustSchedule(myJob);
+
     }
 }

@@ -13,9 +13,8 @@ public class Bootloader extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            Intent serviceIntent = new Intent(context, UpdateService.class);
-            Log.d(Bootloader.TAG, "Starting Update Service ...");
-            context.startService(serviceIntent);
+            Log.d(Bootloader.TAG, "Scheduling Update Service ...");
+            UpdateService.schedule(context, 0);
         }
     }
 }

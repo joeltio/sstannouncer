@@ -28,6 +28,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:design:26.1.0'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.firebase:firebase-jobdispatcher:0.8.4'
     testCompile 'junit:junit:4.12'
 
 }

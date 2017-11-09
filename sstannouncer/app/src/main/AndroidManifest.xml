@@ -33,8 +33,10 @@
         <service
             android:name="com.sst.anouncements.UpdateService"
             android:exported="false"
-            android:process=":srv_update"
             >
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
         </service>
     </application>
 

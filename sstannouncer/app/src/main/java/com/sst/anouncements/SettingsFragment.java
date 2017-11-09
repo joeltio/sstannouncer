@@ -1,6 +1,5 @@
 package com.sst.anouncements;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -27,9 +26,7 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setRefreshRate(int refreshRate) {
-        Intent frequencyIntent = new Intent(getActivity(), UpdateService.class);
-        frequencyIntent.putExtra(UpdateService.EXTRA_FREQUENCY_DELAY,  refreshRate);
-        getActivity().startService(frequencyIntent);
+        UpdateService.schedule(getActivity(), refreshRate);
     }
 
     @Override
