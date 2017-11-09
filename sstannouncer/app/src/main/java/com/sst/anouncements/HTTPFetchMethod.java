@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Date;
 
 //HTTP Fetching Methodology
 //Fetches Resources via HTTP
@@ -55,6 +56,39 @@ public class HTTPFetchMethod {
         @Override
         public String getLocalizedMessage() {
             return this.getMessage();
+        }
+    }
+
+    public Date getModified(String location) throws FetchException
+    {
+        if (!this.testConnection()) throw new FetchException(FetchException.ID_NO_CONNECTION);
+
+        try {
+            URL url = new URL(location);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD");
+            connection.setConnectTimeout(2000);
+            connection.setInstanceFollowRedirects(true);
+
+            int response =  connection.getResponseCode();
+
+            if (response == 404) throw new FetchException(FetchException.ID_NOT_FOUND);
+            if (response == 401 || response == 403)
+                throw new FetchException(FetchException.ID_FORBIDDEN);
+            if (response == 503) throw new FetchException(FetchException.ID_TIMEOUT);
+            if (response != 200) throw new FetchException(-1); //Unknown Error
+
+            Date lastModified = new Date(connection.getLastModified());
+            connection.disconnect();
+
+            return lastModified;
+
+        } catch (SocketTimeoutException e) {
+            throw new FetchException(FetchException.ID_TIMEOUT);
+        } catch (MalformedURLException e) {
+            throw new FetchException(FetchException.ID_NOT_FOUND);
+        } catch (IOException e) {
+            throw new FetchException(FetchException.ID_NO_CONNECTION);
         }
     }
 
