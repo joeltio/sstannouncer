@@ -84,7 +84,7 @@ public class FeedUpdateNotification {
         if(this.isUpdate(newFeed.getLastChanged()))
         {
             //Check to prevent notification spam on first launch of app.
-            if(this.previousFeed.getLastChanged().compareTo(new Date(0)) != 0)
+            if(this.previousFeed.getLastChanged().compareTo(new Date(0)) > 0)
             {
                 ArrayList<Entry> diff = newFeed.diffEntry(this.previousFeed);
                 for(Entry entry : diff)
