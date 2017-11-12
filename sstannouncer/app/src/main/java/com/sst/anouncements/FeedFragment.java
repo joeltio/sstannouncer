@@ -207,8 +207,9 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
         if (fetchFeedAsync != null) {
             fetchFeedAsync.cancel(true);
         }
-
-        this.drawerLayout.removeDrawerListener(this.drawerListener);
+        if(this.drawerLayout != null && this.drawerListener != null) {
+            this.drawerLayout.removeDrawerListener(this.drawerListener);
+        }
     }
 
     @Override
