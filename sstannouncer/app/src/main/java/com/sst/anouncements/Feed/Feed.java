@@ -3,6 +3,8 @@ package com.sst.anouncements.Feed;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 public class Feed {
@@ -12,10 +14,13 @@ public class Feed {
     private final ArrayList<String> categories;
     private final ArrayList<Entry> entries;
 
+    private boolean entriesSorted;
+
     public Feed(Date lastChanged, ArrayList<String> categories, ArrayList<Entry> entries) {
         this.lastChanged = lastChanged;
         this.categories = categories;
         this.entries = entries;
+        this.entriesSorted = false;
     }
 
     //Create Feed from Parsing RSS
@@ -81,22 +86,44 @@ public class Feed {
     public ArrayList<Entry> diffEntry(Feed otherFeed)
     {
         ArrayList<Entry> diff = new ArrayList<>();
-        boolean found = false;
-        for(Entry entry : this.entries)
+        if(this.compareTo(otherFeed) != 0)
         {
-            found = false;
-            for(Entry otherEntry : otherFeed.entries)
-            {
-                if(entry.equals(otherEntry))
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if(!found) diff.add(entry);
-        }
+            this.sortEntries();
+            otherFeed.sortEntries();
 
+            boolean found = false;
+            for(Entry entry: this.entries)
+            {
+                found = true;
+                for(Entry otherEntry: otherFeed.entries)
+                {
+                    int result = entry.compareTo(otherEntry);
+                    if(result == -1)
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if(found) diff.add(entry);
+            }
+        }
         return diff;
+    }
+
+    private void sortEntries()
+    {
+        if(!this.entriesSorted)
+        {
+            //Sorted Based on Last Updated, Earliest First
+            Collections.sort(this.entries, new Comparator<Entry>() {
+                @Override
+                public int compare(Entry lhs, Entry rhs) {
+                    return lhs.compareTo(rhs);
+                }
+            });
+            this.entriesSorted = true;
+        }
     }
 
     public ArrayList<String> getCategories() {
