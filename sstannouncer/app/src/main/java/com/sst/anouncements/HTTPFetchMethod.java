@@ -1,15 +1,11 @@
 package com.sst.anouncements;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Date;
 
 //HTTP Fetching Methodology
@@ -61,8 +57,6 @@ public class HTTPFetchMethod {
 
     public Date getModified(String location) throws FetchException
     {
-        if (!this.testConnection()) throw new FetchException(FetchException.ID_NO_CONNECTION);
-
         try {
             URL url = new URL(location);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -93,8 +87,6 @@ public class HTTPFetchMethod {
     }
 
     public String getResource(String location) throws FetchException {
-        if (!this.testConnection()) throw new FetchException(FetchException.ID_NO_CONNECTION);
-
         try {
             URL url = new URL(location);
 
@@ -128,25 +120,6 @@ public class HTTPFetchMethod {
         }
     }
 
-
-    //Tests Internet Connection by attempting to ping google.com
-    //This Code depends on google.com existing
-    private boolean testConnection()
-    {
-        try {
-            InetAddress address = InetAddress.getByName("google.com");
-            return address.isReachable(5000);
-        }catch(UnknownHostException e)
-        {
-            Log.e(HTTPFetchMethod.TAG, "No route found to google.com", e);
-            return false;
-        }
-        catch(Exception e){
-            Log.e(HTTPFetchMethod.TAG, "Unexpected Exception caught", e);
-            return false;
-        }
-
-    }
 
     private String extractResponse(HttpURLConnection connection)
     {
