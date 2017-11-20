@@ -125,7 +125,7 @@ public class FeedFragment extends ListFragment implements AdapterView.OnItemClic
 
             fetchFeedAsync = new fetchNewFeed();
 
-            this.drawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+            this.drawerLayout = getActivity().findViewById(R.id.drawer_layout);
             if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 this.drawerLayout.addDrawerListener(this.drawerListener);
             } else {

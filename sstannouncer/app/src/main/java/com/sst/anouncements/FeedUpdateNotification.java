@@ -73,8 +73,7 @@ public class FeedUpdateNotification {
     //Determines whether the new feed is Newer
     public boolean isUpdate(Date feedDate)
     {
-        if(feedDate.compareTo(this.previousFeed.getLastChanged()) == 1) return true;
-        else return false;
+        return feedDate.compareTo(this.previousFeed.getLastChanged()) == 1;
     }
 
     //Notifies users about changes to new feed compared to the stored internal previous feed object

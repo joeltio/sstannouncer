@@ -37,10 +37,10 @@ public class FeedArrayAdapter extends ArrayAdapter<Entry> {
                     parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.author_textView = (TextView) convertView.findViewById(R.id.author_textView);
-            viewHolder.title_textView = (TextView) convertView.findViewById(R.id.title_textView);
-            viewHolder.description_textView = (TextView) convertView.findViewById(R.id.description_textView);
-            viewHolder.date_textView = (TextView) convertView.findViewById(R.id.date_textView);
+            viewHolder.author_textView = convertView.findViewById(R.id.author_textView);
+            viewHolder.title_textView = convertView.findViewById(R.id.title_textView);
+            viewHolder.description_textView = convertView.findViewById(R.id.description_textView);
+            viewHolder.date_textView = convertView.findViewById(R.id.date_textView);
 
             convertView.setTag(viewHolder);
         } else {

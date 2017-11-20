@@ -165,8 +165,7 @@ public class Entry implements Parcelable {
             Entry otherEntry = (Entry)obj;
 
             if(!this.id.equals(otherEntry.id)) return false;
-            if(this.lastUpdated.compareTo(otherEntry.lastUpdated) != 0) return false;
-            else return true;
+            return this.lastUpdated.compareTo(otherEntry.lastUpdated) == 0;
         }
         return false;
     }

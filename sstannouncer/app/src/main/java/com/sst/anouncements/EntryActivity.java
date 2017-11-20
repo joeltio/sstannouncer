@@ -34,10 +34,10 @@ public class EntryActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.entryShown = intent.getParcelableExtra(ENTRY_EXTRA);
 
-        TextView title = (TextView) findViewById(R.id.entry_title);
-        TextView author = (TextView) findViewById(R.id.entry_author);
-        this.content = (WebView) findViewById(R.id.entry_content);
-        TextView published = (TextView) findViewById(R.id.entry_published);
+        TextView title = findViewById(R.id.entry_title);
+        TextView author = findViewById(R.id.entry_author);
+        this.content = findViewById(R.id.entry_content);
+        TextView published = findViewById(R.id.entry_published);
 
         title.setText(this.entryShown.getTitle());
         author.setText(this.entryShown.getAuthorName());
