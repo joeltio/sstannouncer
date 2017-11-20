@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-sdk android:maxSdkVersion="25"/>
+    <uses-sdk android:maxSdkVersion="26"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/announcer"
@@ -24,16 +24,19 @@
         <activity android:name="com.sst.anouncements.EntryActivity" />
 
         <!-- Service Boot -->
-        <receiver android:name="com.sst.anouncements.android.AndroidServiceBoot">
+        <receiver android:name="com.sst.anouncements.Bootloader">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <!-- Resource Service -->
+        <!-- Update Service -->
         <service
-            android:name="com.sst.anouncements.android.AndroidServiceAdaptor"
-            android:process=":res_service"
+            android:name="com.sst.anouncements.UpdateService"
+            android:exported="false"
             >
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
         </service>
     </application>
 

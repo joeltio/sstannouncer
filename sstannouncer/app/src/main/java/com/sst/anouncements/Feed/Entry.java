@@ -156,4 +156,24 @@ public class Entry implements Parcelable {
             return new Entry[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj.getClass() == Entry.class)
+        {
+            Entry otherEntry = (Entry)obj;
+
+            if(!this.id.equals(otherEntry.id)) return false;
+            if(this.lastUpdated.compareTo(otherEntry.lastUpdated) != 0) return false;
+            else return true;
+        }
+        return false;
+    }
+
+    public int compareTo(Entry entry)
+    {
+        return this.lastUpdated.compareTo(entry.lastUpdated);
+    }
+
 }

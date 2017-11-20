@@ -8,11 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
-import com.sst.anouncements.event.Event;
-import com.sst.anouncements.event.EventController;
-
-import java.util.Date;
-
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
@@ -31,12 +26,7 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void setRefreshRate(int refreshRate) {
-        double frequency = 1.0 / refreshRate;
-
-        String eventFrequencyString = getResources().getString(
-                R.string.event_resource_service_change_frequency);
-        FeedFragment.eventController.raise(new Event(eventFrequencyString, new Date(),
-                Double.toString(frequency)));
+        UpdateService.schedule(getActivity(), refreshRate);
     }
 
     @Override
@@ -45,9 +35,6 @@ public class SettingsFragment extends PreferenceFragment
             int refreshRate = Integer.parseInt(sharedPreferences.getString(
                     getResources().getString(R.string.pref_refresh_rate), ""));
 
-            if (FeedFragment.eventController == null) {
-                FeedFragment.eventController = new EventController();
-            }
             if (refreshRate != 0) {
                 setRefreshRate(refreshRate);
             } else {
