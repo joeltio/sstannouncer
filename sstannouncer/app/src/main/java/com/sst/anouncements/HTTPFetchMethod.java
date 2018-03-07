@@ -121,15 +121,15 @@ public class HTTPFetchMethod {
     }
 
 
-    private String extractResponse(HttpURLConnection connection)
-    {
-        try
-        {
+    private String extractResponse(HttpURLConnection connection) {
+        try {
             InputStream stream = connection.getInputStream();
             String encoding = connection.getContentEncoding();
             java.util.Scanner s = new java.util.Scanner(stream).useDelimiter("\\A");
             return s.hasNext() ? s.next() : "";
-        }catch (Exception e){ return null; }
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
 
