@@ -88,24 +88,22 @@ public class Feed {
         ArrayList<Entry> diff = new ArrayList<>();
         if(this.compareTo(otherFeed) != 0)
         {
-            this.sortEntries();
-            otherFeed.sortEntries();
 
-            boolean found = false;
+            /* Search for differing entries */
             for(Entry entry: this.entries)
             {
-                found = true;
+                boolean corresponding = false;
                 for(Entry otherEntry: otherFeed.entries)
                 {
-                    int result = entry.compareTo(otherEntry);
-                    if(result == -1)
+                    if(entry.equals(otherEntry))
                     {
-                        found = false;
+                        corresponding = true;
                         break;
                     }
                 }
 
-                if(found) diff.add(entry);
+                /* Unique entry */
+                if(!corresponding) diff.add(entry);
             }
         }
         return diff;

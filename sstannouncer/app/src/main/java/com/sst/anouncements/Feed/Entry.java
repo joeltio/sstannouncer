@@ -160,14 +160,10 @@ public class Entry implements Parcelable {
     @Override
     public boolean equals(Object obj) {
         if(obj == this) return true;
-        if(obj.getClass() == Entry.class)
-        {
-            Entry otherEntry = (Entry)obj;
+        if(obj.getClass() != Entry.class) return false;
 
-            if(!this.id.equals(otherEntry.id)) return false;
-            if(this.lastUpdated.compareTo(otherEntry.lastUpdated) != 0) return false;
-            else return true;
-        }
+        Entry otherEntry = (Entry)obj;
+        if(this.title.equals(otherEntry.title)) return true;
         return false;
     }
 
