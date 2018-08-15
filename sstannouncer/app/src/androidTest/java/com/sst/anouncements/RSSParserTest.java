@@ -1,6 +1,6 @@
 package com.sst.anouncements;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.sst.anouncements.Feed.Entry;
 import com.sst.anouncements.Feed.Feed;

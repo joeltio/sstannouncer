@@ -4,11 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceFragmentCompat;
 
-public class SettingsFragment extends PreferenceFragment
+public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class SettingsFragment extends PreferenceFragment
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                 getActivity());
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        addPreferencesFromResource(R.xml.pref_data_usage);
+//        addPreferencesFromResource(R.xml.pref_data_usage);
     }
 
     private void setRefreshRate(int refreshRate) {
@@ -41,5 +42,10 @@ public class SettingsFragment extends PreferenceFragment
                 setRefreshRate(-1);
             }
         }
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        addPreferencesFromResource(R.xml.pref_data_usage);
     }
 }
