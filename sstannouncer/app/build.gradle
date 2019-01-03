@@ -5,8 +5,8 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.sst.anouncements"
-        versionCode 21
-        versionName "3.0.4"
+        versionCode 22
+        versionName "3.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         minSdkVersion 19
         targetSdkVersion 28
