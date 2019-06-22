@@ -7,7 +7,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import sst.com.anouncements.feed.feedModule
 
-class MainApplication: Application() {
+class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
