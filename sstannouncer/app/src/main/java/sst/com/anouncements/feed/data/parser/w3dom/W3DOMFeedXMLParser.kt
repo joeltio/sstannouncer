@@ -1,0 +1,58 @@
+package sst.com.anouncements.feed.data.parser.w3dom
+
+import org.w3c.dom.Document
+import org.w3c.dom.Node
+import sst.com.anouncements.feed.data.Entry
+import sst.com.anouncements.feed.data.Feed
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.xml.xpath.XPathFactory
+import kotlin.collections.ArrayList
+
+
+// Parse parts of the feed from the document
+private fun parseFeedId(document: Document) = document.xpathString("/feed/id/text()")
+
+private fun parseEntry(entryNode: Node) =
+    Entry(
+        entryNode.xpathString("/entry/id/text()"),
+        entryNode.xpathDate("/entry/published/text()"),
+        entryNode.xpathDate("/entry/updated/text()"),
+        entryNode.xpathString("/entry/author/name/text()"),
+        entryNode.xpathString("/entry/link[@rel='alternate']/@href"),
+        entryNode.xpathString("/entry/title/text()"),
+        entryNode.xpathString("/entry/content/text()")
+    )
+
+private fun parseEntries(document: Document): List<Entry> {
+    val nodeList = document.xpathNodeList("/feed/entry")
+    return List(nodeList.length) {
+        parseEntry(nodeList.item(it))
+    }
+}
+
+private fun parseLastUpdated(document: Document): Date = document.xpathDate("/feed/updated/text()")
+
+private fun parseCategories(document: Document): List<String> {
+    val nodeList = document.xpathNodeList("/feed/category")
+    return List(nodeList.length) {
+        nodeList.item(it).xpathString("/category/@term")
+    }
+}
+
+private fun parseTitle(document: Document) = document.xpathString("/feed/title/text()")
+
+private fun parseSubtitle(document: Document) = document.xpathString("/feed/subtitle/text()")
+
+
+fun w3domParse(XML: String): Feed {
+    val document = createXMLDocument(XML)
+
+    val id = parseFeedId(document)
+    val entries = parseEntries(document)
+    val lastUpdated = parseLastUpdated(document)
+    val categories = parseCategories(document)
+    val title = parseTitle(document)
+    val subtitle = parseSubtitle(document)
+    return Feed(id, entries, lastUpdated, categories, title, subtitle)
+}
