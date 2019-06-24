@@ -3,6 +3,7 @@ package sst.com.anouncements.feed
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import sst.com.anouncements.feed.data.Feed
 import java.lang.IllegalArgumentException
 
 class FeedViewModel(
