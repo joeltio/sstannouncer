@@ -52,6 +52,9 @@ dependencies {
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 
+    // Apache commons for parsing
+    implementation 'org.apache.commons:commons-text:1.6'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "androidx.test:core:$androidx_test_version"
     androidTestImplementation "androidx.test:runner:$androidx_test_version"

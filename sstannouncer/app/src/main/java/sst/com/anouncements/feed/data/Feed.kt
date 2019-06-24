@@ -4,9 +4,9 @@ import java.util.Date
 
 data class Feed(
     val id: String,
-    val entries: Array<Entry>,
+    val entries: MutableList<Entry>,
     val lastUpdated: Date,
-    val categories: Array<String>,
+    val categories: List<String>,
     val title: String,
     val subtitle: String
 ) {
