@@ -5,6 +5,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import sst.com.anouncements.feed.feedModule
 
 class MainApplication : Application() {
     override fun onCreate() {
@@ -16,6 +17,8 @@ class MainApplication : Application() {
             androidContext(this@MainApplication)
 
             androidFileProperties()
+
+            modules(feedModule)
         }
     }
 }
