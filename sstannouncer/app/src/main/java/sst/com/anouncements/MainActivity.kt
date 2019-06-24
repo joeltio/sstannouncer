@@ -10,6 +10,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val mainFragment = FeedFragment()
+        val fragmentArgs = Bundle()
+        fragmentArgs.putString("feedUrl",  getString(R.string.blog_rss_url))
+        mainFragment.arguments = fragmentArgs
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment, mainFragment, mainFragment.tag)
             .commit()
