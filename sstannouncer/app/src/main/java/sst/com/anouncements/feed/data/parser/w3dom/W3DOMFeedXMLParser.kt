@@ -15,13 +15,13 @@ private fun parseFeedId(document: Document) = document.xpathString("/feed/id/tex
 
 private fun parseEntry(entryNode: Node) =
     Entry(
-        entryNode.xpathString("/entry/id/text()"),
-        entryNode.xpathDate("/entry/published/text()"),
-        entryNode.xpathDate("/entry/updated/text()"),
-        entryNode.xpathString("/entry/author/name/text()"),
-        entryNode.xpathString("/entry/link[@rel='alternate']/@href"),
-        entryNode.xpathString("/entry/title/text()"),
-        entryNode.xpathString("/entry/content/text()")
+        entryNode.xpathString("./id/text()"),
+        entryNode.xpathDate("./published/text()"),
+        entryNode.xpathDate("./updated/text()"),
+        entryNode.xpathString("./author/name/text()"),
+        entryNode.xpathString("./link[@rel='alternate']/@href"),
+        entryNode.xpathString("./title/text()"),
+        entryNode.xpathString("./content/text()")
     )
 
 private fun parseEntries(document: Document): List<Entry> {
