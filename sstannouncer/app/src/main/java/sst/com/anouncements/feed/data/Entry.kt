@@ -16,10 +16,12 @@ data class Entry(
     val relativePublishedDate: String by lazy { relativeDate(publishedDate) }
 
     val contentWithoutHTML: String by lazy {
+        // Remove any content in style tags
+        var content = this.content.replace("<style[^>]*>.*</style>".toRegex(), "")
         // Remove HTML tags
-        val content = this.content.replace("<[^>]*>".toRegex(), "")
+        content = content.replace("<[^>]*>".toRegex(), "")
         // Unescape characters, e.g. converting &lt; to <
-        StringEscapeUtils.unescapeHtml4(content)
+        StringEscapeUtils.unescapeHtml4(content).trim()
     }
 
     private fun relativeDate(date: Date): String {
