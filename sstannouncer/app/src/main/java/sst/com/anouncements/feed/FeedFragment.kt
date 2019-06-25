@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_feed.*
 import org.koin.android.ext.android.inject
@@ -45,5 +46,10 @@ class FeedFragment : Fragment() {
             layoutManager = viewManager
             adapter = viewAdapter
         }
+
+        // Add dividers to RecyclerView
+        val dividerItemDecoration = DividerItemDecoration(
+            feed_recycler_view.context, viewManager.orientation)
+        feed_recycler_view.addItemDecoration(dividerItemDecoration)
     }
 }
