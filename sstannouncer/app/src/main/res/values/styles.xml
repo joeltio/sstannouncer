@@ -15,5 +15,7 @@
     <style name="SecondaryText">
         <item name="android:textColor">@color/colorSecondaryText</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginTop">@dimen/text_top_margin</item>
+        <item name="android:lineSpacingExtra">@dimen/text_top_margin</item>
     </style>
 </resources>
