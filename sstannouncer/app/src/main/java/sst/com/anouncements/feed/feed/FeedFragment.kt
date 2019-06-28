@@ -1,4 +1,4 @@
-package sst.com.anouncements.feed
+package sst.com.anouncements.feed.feed
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,7 +21,9 @@ class FeedFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        feedViewModel = ViewModelProviders.of(this, FeedViewModelFactory(feedRepository, this, arguments))
+        feedViewModel = ViewModelProviders.of(this,
+            FeedViewModelFactory(feedRepository, this, arguments)
+        )
             .get(FeedViewModel::class.java)
     }
 

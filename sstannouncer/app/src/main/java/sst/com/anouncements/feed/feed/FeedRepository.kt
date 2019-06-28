@@ -1,4 +1,4 @@
-package sst.com.anouncements.feed
+package sst.com.anouncements.feed.feed
 
 import sst.com.anouncements.feed.data.Feed
 import sst.com.anouncements.feed.data.database.FeedDAL

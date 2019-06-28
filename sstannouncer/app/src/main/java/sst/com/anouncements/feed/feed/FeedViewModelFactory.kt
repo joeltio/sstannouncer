@@ -1,4 +1,4 @@
-package sst.com.anouncements.feed
+package sst.com.anouncements.feed.feed
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateVMFactory

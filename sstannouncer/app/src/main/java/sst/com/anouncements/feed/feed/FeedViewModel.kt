@@ -1,4 +1,4 @@
-package sst.com.anouncements.feed
+package sst.com.anouncements.feed.feed
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.*

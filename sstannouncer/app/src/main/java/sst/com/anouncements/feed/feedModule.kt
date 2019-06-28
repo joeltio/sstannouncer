@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import sst.com.anouncements.feed.data.database.FeedDAL
 import sst.com.anouncements.feed.data.database.room.FeedDatabase
 import sst.com.anouncements.feed.data.database.room.RoomDAL
+import sst.com.anouncements.feed.feed.FeedRepository
 import sst.com.anouncements.http.DefaultWebservice
 import sst.com.anouncements.http.Webservice
 
