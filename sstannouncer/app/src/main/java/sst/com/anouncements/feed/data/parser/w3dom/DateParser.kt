@@ -8,5 +8,5 @@ const val dateFormat = "yyyy-MM-dd'T'kk:mm:ss.SSSz"
 
 fun parseDate(dateString: String): Date {
     val format = SimpleDateFormat(dateFormat, Locale.getDefault())
-    return format.parse(dateString)
+    return format.parse(dateString)!!
 }
