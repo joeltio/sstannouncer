@@ -1,4 +1,4 @@
-package sst.com.anouncements.feed.feed
+package sst.com.anouncements.feed.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_feed.*
 import org.koin.android.ext.android.inject
 import sst.com.anouncements.R
-import sst.com.anouncements.feed.data.Feed
+import sst.com.anouncements.feed.model.Feed
+import sst.com.anouncements.feed.data.FeedRepository
 
 class FeedFragment : Fragment() {
     private val feedRepository: FeedRepository by inject()

@@ -1,8 +1,9 @@
-package sst.com.anouncements.feed.feed
+package sst.com.anouncements.feed.ui
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
-import sst.com.anouncements.feed.data.Feed
+import sst.com.anouncements.feed.model.Feed
+import sst.com.anouncements.feed.data.FeedRepository
 import java.lang.IllegalArgumentException
 
 class FeedViewModel(

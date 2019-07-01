@@ -1,6 +1,6 @@
-package sst.com.anouncements.feed.feed
+package sst.com.anouncements.feed.data
 
-import sst.com.anouncements.feed.data.Feed
+import sst.com.anouncements.feed.model.Feed
 import sst.com.anouncements.feed.data.database.FeedDAL
 import sst.com.anouncements.feed.data.parser.parse
 import sst.com.anouncements.http.Webservice

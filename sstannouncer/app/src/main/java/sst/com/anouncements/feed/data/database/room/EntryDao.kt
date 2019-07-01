@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
-import sst.com.anouncements.feed.data.Entry
 
 @Dao
 interface EntryDao {

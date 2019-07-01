@@ -4,8 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import sst.com.anouncements.feed.data.Entry
-import sst.com.anouncements.feed.data.database.room.FeedEntity
+import sst.com.anouncements.feed.model.Entry
 import java.util.*
 
 @Entity(foreignKeys = [

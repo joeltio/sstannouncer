@@ -3,7 +3,7 @@ package sst.com.anouncements.feed.data.database.room
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import sst.com.anouncements.feed.data.Feed
+import sst.com.anouncements.feed.model.Feed
 import java.util.*
 
 @Entity(indices = [Index(value = ["url"], unique = true)])

@@ -2,12 +2,9 @@ package sst.com.anouncements.feed.data.parser.w3dom
 
 import org.w3c.dom.Document
 import org.w3c.dom.Node
-import sst.com.anouncements.feed.data.Entry
-import sst.com.anouncements.feed.data.Feed
-import java.text.SimpleDateFormat
+import sst.com.anouncements.feed.model.Entry
+import sst.com.anouncements.feed.model.Feed
 import java.util.*
-import javax.xml.xpath.XPathFactory
-import kotlin.collections.ArrayList
 
 
 // Parse parts of the feed from the document

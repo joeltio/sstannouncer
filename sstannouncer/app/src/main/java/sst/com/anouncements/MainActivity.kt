@@ -2,7 +2,7 @@ package sst.com.anouncements
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import sst.com.anouncements.feed.feed.FeedFragment
+import sst.com.anouncements.feed.ui.FeedFragment
 
 class MainActivity : AppCompatActivity() {
 

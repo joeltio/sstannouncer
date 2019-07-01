@@ -1,6 +1,6 @@
 package sst.com.anouncements.feed.data.database.room
 
-import sst.com.anouncements.feed.data.Feed
+import sst.com.anouncements.feed.model.Feed
 import sst.com.anouncements.feed.data.database.FeedDAL
 
 class RoomDAL(private val database: FeedDatabase) : FeedDAL {

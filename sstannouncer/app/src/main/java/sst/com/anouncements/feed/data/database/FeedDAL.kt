@@ -1,6 +1,6 @@
 package sst.com.anouncements.feed.data.database
 
-import sst.com.anouncements.feed.data.Feed
+import sst.com.anouncements.feed.model.Feed
 
 interface FeedDAL {
     fun getFeed(feedURL: String): Feed

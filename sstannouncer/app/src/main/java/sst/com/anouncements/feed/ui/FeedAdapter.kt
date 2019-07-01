@@ -1,11 +1,11 @@
-package sst.com.anouncements.feed.feed
+package sst.com.anouncements.feed.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import sst.com.anouncements.R
-import sst.com.anouncements.feed.data.Entry
+import sst.com.anouncements.feed.model.Entry
 
 
 class FeedAdapter(private var entries: List<Entry>) : RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {

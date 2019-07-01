@@ -1,4 +1,4 @@
-package sst.com.anouncements.feed.data
+package sst.com.anouncements.feed.model
 
 import java.util.Date
 
