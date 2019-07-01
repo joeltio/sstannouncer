@@ -13,23 +13,14 @@ class FeedViewModel(
     private val viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val feedURL: String = savedStateHandle["feedUrl"] ?:
+    private val feedURL: String = savedStateHandle["feedUrl"] ?:
         throw IllegalArgumentException("missing feed URL")
-    val feedLiveData: LiveData<Feed>
+    val feedLiveData: MutableLiveData<Feed> = MutableLiveData()
 
     init {
-        feedLiveData = MutableLiveData()
-
         // Start retrieving data
-        val deferredFeed = uiScope.async(Dispatchers.IO) {
-            feedRepository.getFeed(feedURL)
-        }
-
-        // Update the UI once it's done
-        deferredFeed.invokeOnCompletion {
-            uiScope.launch(Dispatchers.Main) {
-                feedLiveData.value = deferredFeed.getCompleted()
-            }
+        uiScope.launch(Dispatchers.IO) {
+            feedLiveData.postValue(feedRepository.getFeed(feedURL))
         }
     }
 
