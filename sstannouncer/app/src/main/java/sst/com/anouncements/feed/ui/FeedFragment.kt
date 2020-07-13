@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -17,16 +17,8 @@ import sst.com.anouncements.feed.data.FeedRepository
 
 class FeedFragment : Fragment() {
     private val feedRepository: FeedRepository by inject()
-    private lateinit var feedViewModel: FeedViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        feedViewModel = ViewModelProviders.of(this,
-            FeedViewModelFactory(feedRepository, this, arguments)
-        )
-            .get(FeedViewModel::class.java)
-    }
+    private val feedViewModel: FeedViewModel by viewModels(
+        factoryProducer = { FeedViewModelFactory(feedRepository, this, arguments) })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_feed, container, false)
@@ -41,7 +33,7 @@ class FeedFragment : Fragment() {
         val viewAdapter = FeedAdapter(listOf())
 
         // Set an observer on the Feed LiveData for when the data is ready
-        feedViewModel.feedLiveData.observe(this, Observer<Feed> {
+        feedViewModel.feedLiveData.observe(viewLifecycleOwner, Observer<Feed> {
             viewAdapter.setEntries(it.entries)
         })
 

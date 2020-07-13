@@ -8,7 +8,10 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion("29.0.2")
+    buildToolsVersion("29.0.3")
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     defaultConfig {
         applicationId "sst.com.anouncements"
         minSdkVersion 19
@@ -54,6 +57,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     // ViewModel and LiveData
+    implementation "androidx.fragment:fragment-ktx:1.2.5"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     // Add ViewModel SavedState
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-alpha05"
