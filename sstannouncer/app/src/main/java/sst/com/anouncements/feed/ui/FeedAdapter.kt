@@ -1,6 +1,7 @@
 package sst.com.anouncements.feed.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
@@ -8,11 +9,15 @@ import sst.com.anouncements.R
 import sst.com.anouncements.feed.model.Entry
 
 
-class FeedAdapter(private var entries: List<Entry>) : RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
+class FeedAdapter(
+    private var entries: List<Entry>,
+    private val onItemClickListener: (Entry) -> Unit
+) : RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
     class FeedViewHolder(feedView: ViewGroup) : RecyclerView.ViewHolder(feedView) {
         val titleTextView: TextView = feedView.findViewById(R.id.title_text_view)
         val excerptTextView: TextView = feedView.findViewById(R.id.excerpt_text_view)
         val dateTextView: TextView = feedView.findViewById(R.id.date_text_view)
+        val layoutView : View = feedView.findViewById(R.id.feed_item_layout)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
@@ -28,6 +33,7 @@ class FeedAdapter(private var entries: List<Entry>) : RecyclerView.Adapter<FeedA
         holder.titleTextView.text = entry.title
         holder.excerptTextView.text = entry.contentWithoutHTML
         holder.dateTextView.text = entry.relativePublishedDate
+        holder.layoutView.setOnClickListener { onItemClickListener(entry) }
     }
 
     override fun getItemCount() = entries.size

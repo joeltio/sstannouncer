@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_feed.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import sst.com.anouncements.R
@@ -26,7 +28,11 @@ class FeedFragment : Fragment() {
         // Prepare for feed RecyclerView
         val viewManager = LinearLayoutManager(context)
         // Start with no elements, update later when the data is ready
-        val viewAdapter = FeedAdapter(listOf())
+        val viewAdapter = FeedAdapter(listOf()) {
+            val postArguments: Bundle = Bundle()
+            postArguments.putParcelable("post", it)
+            findNavController().navigate(R.id.action_feedFragment_to_postFragment, postArguments)
+        }
 
         // Set an observer on the Feed LiveData for when the data is ready
         feedViewModel.feedLiveData.observe(viewLifecycleOwner, Observer<Feed> {
