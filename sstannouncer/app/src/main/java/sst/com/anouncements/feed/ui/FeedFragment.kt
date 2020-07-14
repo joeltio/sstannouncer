@@ -1,24 +1,21 @@
 package sst.com.anouncements.feed.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_feed.*
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import sst.com.anouncements.R
 import sst.com.anouncements.feed.model.Feed
-import sst.com.anouncements.feed.data.FeedRepository
 
 class FeedFragment : Fragment() {
-    private val feedRepository: FeedRepository by inject()
-    private val feedViewModel: FeedViewModel by viewModels(
-        factoryProducer = { FeedViewModelFactory(feedRepository, this, arguments) })
+    private val feedViewModel: FeedViewModel by stateViewModel(bundle = { requireArguments() })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_feed, container, false)
