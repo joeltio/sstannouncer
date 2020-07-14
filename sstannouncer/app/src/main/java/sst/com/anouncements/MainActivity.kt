@@ -2,22 +2,20 @@ package sst.com.anouncements
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import sst.com.anouncements.feed.ui.FeedFragment
+import androidx.navigation.fragment.NavHostFragment
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        val mainFragment = FeedFragment()
+        // Create arguments for the starting fragment
         val fragmentArgs = Bundle()
         fragmentArgs.putString("feedUrl",  getString(R.string.blog_rss_url))
-        mainFragment.arguments = fragmentArgs
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment, mainFragment, mainFragment.tag)
-            .commit()
-
-        setContentView(R.layout.activity_main)
+        // Apparently findNavController can't be used. See https://stackoverflow.com/a/59275182/4428725
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment.navController
+            .setGraph(R.navigation.nav_graph, fragmentArgs)
     }
 }
