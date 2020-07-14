@@ -1,9 +1,12 @@
 package sst.com.anouncements.feed.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import org.apache.commons.text.StringEscapeUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Parcelize
 data class Entry(
     val id: String,
     val publishedDate: Date,
@@ -12,7 +15,7 @@ data class Entry(
     val url: String,
     val title: String,
     val content: String
-) {
+) : Parcelable {
     val relativePublishedDate: String by lazy { relativeDate(publishedDate) }
 
     val contentWithoutHTML: String by lazy {
