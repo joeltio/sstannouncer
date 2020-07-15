@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/content_margin"
+        android:paddingBottom="@dimen/content_margin"
+        android:paddingLeft="@dimen/content_margin"
+        android:paddingRight="@dimen/content_margin">
+
+    <TextView android:id="@+id/title_text_view"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            style="@style/PrimaryText"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView android:id="@+id/author_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/SecondaryText"
+        app:layout_constraintTop_toBottomOf="@id/title_text_view"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView android:id="@+id/date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/SecondaryText"
+            app:layout_constraintTop_toBottomOf="@id/title_text_view"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    <WebView android:id="@+id/content_web_view"
+            android:layout_width="0px"
+            android:layout_height="0px"
+            app:layout_constraintTop_toBottomOf="@id/author_text_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
