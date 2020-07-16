@@ -34,7 +34,7 @@
             app:layout_constraintRight_toRightOf="parent" />
 
     <Space
-            android:id="@+id/header_space"
+        android:id="@+id/header_space"
         android:layout_width="match_parent"
         android:layout_height="@dimen/content_margin"
         app:layout_constraintTop_toBottomOf="@id/date_text_view"
