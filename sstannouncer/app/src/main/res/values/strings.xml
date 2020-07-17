@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Announcer</string>
     <string name="blog_rss_url">http://studentsblog.sst.edu.sg/feeds/posts/default</string>
+    <string name="open_in_browser">Open in browser</string>
 </resources>

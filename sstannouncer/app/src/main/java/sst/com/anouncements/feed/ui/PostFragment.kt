@@ -1,14 +1,16 @@
 package sst.com.anouncements.feed.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.fragment_post_content.*
 import sst.com.anouncements.R
@@ -25,10 +27,22 @@ class PostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup toolbar
+        // Navigation component
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        view.findViewById<Toolbar>(R.id.toolbar)
-            .setupWithNavController(navController, appBarConfiguration)
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        // Open in browser button
+        toolbar.inflateMenu(R.menu.fragment_post)
+        toolbar.setOnMenuItemClickListener {
+            if (it.itemId == R.id.open_in_browser_menu_item) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(entry.url))
+                startActivity(intent)
+            }
+
+            true
+        }
 
         // Add content to the fragment
         title_text_view.text = entry.title
