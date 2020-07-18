@@ -1,6 +1,7 @@
 package sst.com.anouncements.feed.model
 
 import android.os.Parcelable
+import android.text.format.DateUtils
 import kotlinx.android.parcel.Parcelize
 import org.apache.commons.text.StringEscapeUtils
 import java.text.SimpleDateFormat
@@ -28,9 +29,7 @@ data class Entry(
     }
 
     private fun relativeDate(date: Date): String {
-        // TODO: Make the date more relative, like "today", "3 days ago"
-        val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
-        return dateFormat.format(date)
+        return DateUtils.getRelativeTimeSpanString(date.time).toString()
     }
 
     override fun equals(other: Any?) =
