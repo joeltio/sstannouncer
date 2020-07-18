@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import java.util.*
 
 @Dao
 interface FeedDao {
@@ -15,4 +16,7 @@ interface FeedDao {
 
     @Query("SELECT * FROM feedentity WHERE url = :feedUrl ")
     fun getFeed(feedUrl: String): FeedEntity
+
+    @Query("SELECT lastUpdated FROM feedentity WHERE url = :feedUrl")
+    fun getFeedLastUpdated(feedUrl: String): Date
 }

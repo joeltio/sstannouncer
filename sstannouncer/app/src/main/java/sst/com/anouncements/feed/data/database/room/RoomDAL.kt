@@ -2,6 +2,7 @@ package sst.com.anouncements.feed.data.database.room
 
 import sst.com.anouncements.feed.model.Feed
 import sst.com.anouncements.feed.data.database.FeedDAL
+import java.util.*
 
 class RoomDAL(private val database: FeedDatabase) : FeedDAL {
     override fun getFeed(feedURL: String): Feed {
@@ -42,5 +43,9 @@ class RoomDAL(private val database: FeedDatabase) : FeedDAL {
             EntryEntity(newFeed.entries[it], newFeed.id)
         }
         database.entryDao().insertEntries(entryEntities)
+    }
+
+    override fun getFeedLastUpdated(feedURL: String): Date {
+        return database.feedDao().getFeedLastUpdated(feedURL)
     }
 }
