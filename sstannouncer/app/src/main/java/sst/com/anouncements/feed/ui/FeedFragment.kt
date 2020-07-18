@@ -33,11 +33,6 @@ class FeedFragment : Fragment() {
             findNavController().navigate(R.id.action_feedFragment_to_postFragment, postArguments)
         }
 
-        // Set an observer on the Feed LiveData for when the data is ready
-        feedViewModel.feedLiveData.observe(viewLifecycleOwner, Observer<Feed> {
-            viewAdapter.setEntries(it.entries)
-        })
-
         feed_recycler_view.apply {
             layoutManager = viewManager
             adapter = viewAdapter
@@ -47,5 +42,26 @@ class FeedFragment : Fragment() {
         val dividerItemDecoration = DividerItemDecoration(
             feed_recycler_view.context, viewManager.orientation)
         feed_recycler_view.addItemDecoration(dividerItemDecoration)
+
+
+        // Create view model observers
+        feedViewModel.feedLiveData.observe(viewLifecycleOwner, Observer { feed ->
+            // Set adapter entries when the feed live data is updated
+            val sortedEntries = feed.entries.sortedByDescending { entry ->
+                entry.publishedDate.time
+            }
+            viewAdapter.setEntries(sortedEntries)
+        })
+
+        feedViewModel.isLoading.observe(viewLifecycleOwner, Observer {
+            // Update swipe refresh layout status
+            feed_swipe_refresh_layout.isRefreshing = it
+        })
+
+
+        // Setup swipe refresh layout
+        feed_swipe_refresh_layout.setOnRefreshListener {
+            feedViewModel.refresh()
+        }
     }
 }

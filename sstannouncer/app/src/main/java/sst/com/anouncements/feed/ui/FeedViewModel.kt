@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
 
 class FeedViewModel(
     savedStateHandle: SavedStateHandle,
-    feedRepository: FeedRepository
+    private val feedRepository: FeedRepository
 ) : ViewModel() {
     private val viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
@@ -16,11 +16,17 @@ class FeedViewModel(
     private val feedURL: String = savedStateHandle["feedUrl"] ?:
         throw IllegalArgumentException("missing feed URL")
     val feedLiveData: MutableLiveData<Feed> = MutableLiveData()
+    val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
-        // Start retrieving data
+        refresh()
+    }
+
+    fun refresh() {
+        isLoading.value = true
         uiScope.launch(Dispatchers.IO) {
             feedLiveData.postValue(feedRepository.getFeed(feedURL))
+            isLoading.postValue(false)
         }
     }
 
