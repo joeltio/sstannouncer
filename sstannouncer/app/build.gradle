@@ -38,6 +38,7 @@ dependencies {
     def androidx_version = '1.1.0'
     def androidx_test_version = '1.2.0'
     def lifecycle_version = '2.2.0'
+    def work_version = '2.3.4'
     def room_version = '2.2.5'
     def nav_version = '2.3.0'
     def koin_version = '2.1.6'
@@ -67,6 +68,9 @@ dependencies {
     // Navigation Component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    // WorkManager for background service
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
     // Room
     implementation "androidx.room:room-runtime:$room_version"
