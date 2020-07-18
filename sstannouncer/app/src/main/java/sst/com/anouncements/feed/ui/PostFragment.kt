@@ -5,14 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
-import kotlinx.android.synthetic.main.fragment_post_content.*
+import kotlinx.android.synthetic.main.fragment_post.*
 import sst.com.anouncements.R
 import sst.com.anouncements.feed.model.Entry
 
@@ -20,29 +14,12 @@ class PostFragment : Fragment() {
     private lateinit var entry: Entry
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         entry = requireArguments().getParcelable("post")!!
+        setHasOptionsMenu(true)
         return layoutInflater.inflate(R.layout.fragment_post, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Setup toolbar
-        // Navigation component
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        toolbar.setupWithNavController(navController, appBarConfiguration)
-
-        // Open in browser button
-        toolbar.inflateMenu(R.menu.fragment_post)
-        toolbar.setOnMenuItemClickListener {
-            if (it.itemId == R.id.open_in_browser_menu_item) {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(entry.url))
-                startActivity(intent)
-            }
-
-            true
-        }
 
         // Add content to the fragment
         title_text_view.text = entry.title
@@ -77,5 +54,19 @@ class PostFragment : Fragment() {
         @SuppressLint("SetJavaScriptEnabled")
         content_web_view.settings.javaScriptEnabled = true
         content_web_view.settings.loadsImagesAutomatically = true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_post, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.open_in_browser_menu_item) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(entry.url))
+            startActivity(intent)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
