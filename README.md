@@ -1,5 +1,5 @@
 # SST Announcer: Never miss an announcement again
-[![Build Status](https://travis-ci.org/joeltio/sstannouncer.svg?branch=kotlin)](https://travis-ci.org/joeltio/sstannouncer)
+[![Build Status](https://travis-ci.org/joeltio/sstannouncer.svg?branch=master)](https://travis-ci.org/joeltio/sstannouncer)
 
 I'm sure we all had those painful moments,
 it was all so subtle, so quiet, so easy to miss.
