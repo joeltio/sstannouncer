@@ -14,10 +14,10 @@ import sst.com.anouncements.feed.data.FeedRepository
 import sst.com.anouncements.feed.ui.FeedViewModel
 import sst.com.anouncements.http.DefaultWebservice
 import sst.com.anouncements.http.Webservice
+import sst.com.anouncements.notification.DefaultNotificationService
+import sst.com.anouncements.notification.NotificationService
 
 val feedModule: Module = module {
-    // Use the default webservice for the repository
-    factory { DefaultWebservice() } bind Webservice::class
     // Use the RoomDAL implementation for storing and retrieving data
     single {
         Room.databaseBuilder(androidApplication(), FeedDatabase::class.java, "feed-db").build()
