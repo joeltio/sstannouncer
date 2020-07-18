@@ -23,7 +23,14 @@ class RoomDAL(private val database: FeedDatabase) : FeedDAL {
     override fun hasFeed(feedURL: String): Boolean = database.feedDao().countFeed(feedURL) == 1
 
     override fun updateFeed(newFeed: Feed, feedURL: String) {
-        // TODO: make more efficient updating, only update what is new
+        val feedEntity = database.feedDao().getFeed(feedURL)
+        if (feedEntity.id == newFeed.id
+                && feedEntity.lastUpdated.compareTo(newFeed.lastUpdated) == 0) {
+            // Nothing has been updated so don't do anything
+            return
+        }
+
+        // This is not very efficient, but for small number of entries, it is acceptable
         overwriteFeed(newFeed, feedURL)
     }
 
