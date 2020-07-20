@@ -41,7 +41,9 @@ class MainActivity : AppCompatActivity() {
         // Enqueue a unique worker to update the feed and push notifications
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             UPDATE_FEED_WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
+            // IMPORTANT: If this is changed to .KEEP and the blog URL is changed, workers WILL NOT
+            // get the new blog URL
+            ExistingPeriodicWorkPolicy.REPLACE,
             UpdateFeedWorker.createWorkRequest(feedURL)
         )
     }

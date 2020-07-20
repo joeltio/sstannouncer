@@ -9,9 +9,9 @@ class DefaultWebservice : Webservice {
     }
 
     override fun headLastModified(url: String): Long {
-        with(URL(url).openConnection() as HttpURLConnection) {
+        return with(URL(url).openConnection() as HttpURLConnection) {
             requestMethod = "HEAD"
-            return lastModified
+            lastModified
         }
     }
 }
