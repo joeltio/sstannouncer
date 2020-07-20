@@ -13,7 +13,7 @@ android {
         jvmTarget = "1.8"
     }
     defaultConfig {
-        applicationId "sst.com.anouncements"
+        applicationId "com.sst.anouncements"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1

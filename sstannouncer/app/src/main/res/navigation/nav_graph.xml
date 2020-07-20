@@ -6,7 +6,7 @@
         app:startDestination="@id/feedFragment">
     <fragment
             android:id="@+id/feedFragment"
-            android:name="sst.com.anouncements.feed.ui.FeedFragment"
+            android:name="com.sst.anouncements.feed.ui.FeedFragment"
             android:label="@string/app_name">
         <argument
                 android:name="feedUrl"
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
             android:id="@+id/postFragment"
-            android:name="sst.com.anouncements.feed.ui.PostFragment"
+            android:name="com.sst.anouncements.feed.ui.PostFragment"
             android:label="@string/app_name" >
         <action
                 android:id="@+id/action_postFragment_to_feedFragment"
@@ -29,6 +29,6 @@
                 app:popUpTo="@id/feedFragment" />
         <argument
                 android:name="post"
-                app:argType="sst.com.anouncements.feed.model.Entry" />
+                app:argType="com.sst.anouncements.feed.model.Entry" />
     </fragment>
 </navigation>
