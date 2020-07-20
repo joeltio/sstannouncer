@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- Screen margins for phone sizes less than or equal to 360dp
+         See: https://material.io/design/layout/responsive-layout-grid.html#columns-gutters-margins -->
+    <dimen name="content_margin">16dp</dimen>
+    <dimen name="text_top_margin">2dp</dimen>
 </resources>

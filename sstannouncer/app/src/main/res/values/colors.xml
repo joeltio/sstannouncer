@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="fontPrimaryDark">#000000</color>
-    <color name="colorPrimary">#2196f3</color>
-    <color name="colorPrimaryDark">#1976d2</color>
+    <color name="colorPrimary">#1E88E5</color>
+    <color name="colorPrimaryDark">#1565C0</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="progress_1">#F44336</color>
-    <color name="progress_2">@color/colorPrimary</color>
-    <color name="progress_3">#4CAF50</color>
+    <color name="colorPrimaryText">#DE000000</color>
+    <color name="colorSecondaryText">#99000000</color>
 </resources>
