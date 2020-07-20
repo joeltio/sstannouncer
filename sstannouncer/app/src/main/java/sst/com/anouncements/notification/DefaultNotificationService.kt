@@ -3,10 +3,13 @@ package sst.com.anouncements.notification
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.navigation.NavDeepLinkBuilder
 import sst.com.anouncements.R
 import sst.com.anouncements.feed.model.Entry
 
@@ -36,16 +39,28 @@ class DefaultNotificationService(
         }
     }
 
-    override fun pushNewEntry(entry: Entry) {
-        val builder = NotificationCompat.Builder(appContext, POST_CHANNEL_ID)
-            .setAutoCancel(true)
-            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(entry.title)
-            .setContentText(entry.contentWithoutHTML)
+    private fun createPendingIntent(entry: Entry): PendingIntent {
+        val arguments = Bundle()
+        arguments.putParcelable("post", entry)
+        // Apparently the feed fragment can still pick up on this argument
+        arguments.putString("feedUrl", appContext.getString(R.string.blog_rss_url))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(POST_CHANNEL_ID)
+        return with(NavDeepLinkBuilder(appContext)) {
+            setGraph(R.navigation.nav_graph)
+            setDestination(R.id.postFragment)
+            setArguments(arguments)
+            createPendingIntent()
+        }
+    }
+
+    override fun pushNewEntry(entry: Entry) {
+        val builder = with(NotificationCompat.Builder(appContext, POST_CHANNEL_ID)) {
+            setAutoCancel(true)
+            setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+            setSmallIcon(R.drawable.ic_notification)
+            setContentTitle(entry.title)
+            setContentText(entry.contentWithoutHTML)
+            setContentIntent(createPendingIntent(entry))
         }
 
         with(NotificationManagerCompat.from(appContext)) {
