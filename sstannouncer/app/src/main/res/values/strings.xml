@@ -6,4 +6,7 @@
     <!-- Notification Channel -->
     <string name="post_channel_name">New Posts</string>
     <string name="post_channel_description">Show when there is a new announcement</string>
+
+    <!-- Error messages -->
+    <string name="error_unknown_host">The host could not be found. Please check your network connection.</string>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_feed.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import sst.com.anouncements.R
-import sst.com.anouncements.feed.model.Feed
+import java.net.UnknownHostException
 
 class FeedFragment : Fragment() {
     private val feedViewModel: FeedViewModel by stateViewModel(bundle = { requireArguments() })
@@ -46,8 +47,22 @@ class FeedFragment : Fragment() {
 
         // Create view model observers
         feedViewModel.feedLiveData.observe(viewLifecycleOwner, Observer { feed ->
+            // Show error message if there are any errors
+            if (feed.first == null) {
+                val exception = feed.second!!
+                // Use custom messages for common errors
+                val errorMessage = if (exception is UnknownHostException) {
+                    getString(R.string.error_unknown_host)
+                } else {
+                    exception.localizedMessage
+                }
+
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                return@Observer
+            }
+
             // Set adapter entries when the feed live data is updated
-            val sortedEntries = feed.entries.sortedByDescending { entry ->
+            val sortedEntries = feed.first!!.entries.sortedByDescending { entry ->
                 entry.publishedDate.time
             }
             viewAdapter.setEntries(sortedEntries)
