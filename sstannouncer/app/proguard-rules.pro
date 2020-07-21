@@ -5,6 +5,9 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
+-keepnames class androidx.navigation.fragment.NavHostFragment
+-keepnames class * extends android.os.Parcelable
+-keepnames class * extends java.io.Serializable
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
